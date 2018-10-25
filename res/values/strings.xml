@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">音乐</string>
+    <string name="local_tab_title">本地</string>
+    <string name="search_tab_title">搜索</string>
+
+
+</resources>
