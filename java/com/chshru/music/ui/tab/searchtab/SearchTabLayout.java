@@ -12,7 +12,7 @@ import com.chshru.music.service.StatusCallback;
 import com.chshru.music.ui.tab.BaseTab;
 import com.chshru.music.util.QQMusicApi;
 import com.chshru.music.util.QueryHandler;
-import com.chshru.music.util.QueryHandler.ExeRunnable;
+import com.chshru.music.util.QueryHandler.OnFinishRunnable;
 import com.chshru.music.util.Song;
 import com.chshru.music.ui.tab.searchtab.SearchResultAdapter.OnItemClickListener;
 
@@ -42,7 +42,7 @@ public class SearchTabLayout extends BaseTab {
 
     }
 
-    private ExeRunnable mRunnable = new ExeRunnable() {
+    private OnFinishRunnable mRunnable = new OnFinishRunnable() {
 
         @Override
         public void run() {

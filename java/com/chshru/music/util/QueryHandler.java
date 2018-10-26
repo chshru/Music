@@ -9,9 +9,9 @@ import android.os.Looper;
 
 public class QueryHandler {
 
-    private ExeRunnable mRunnable;
+    private OnFinishRunnable mRunnable;
 
-    public QueryHandler(Looper looper, ExeRunnable runnable) {
+    public QueryHandler(Looper looper, OnFinishRunnable runnable) {
         mHandler = new Handler(looper);
         mRunnable = runnable;
     }
@@ -24,7 +24,7 @@ public class QueryHandler {
     }
 
 
-    public static abstract class ExeRunnable implements Runnable {
+    public static abstract class OnFinishRunnable implements Runnable {
 
         private String mResult;
 

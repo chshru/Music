@@ -32,13 +32,8 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater
-                .from(parent.getContext())
-                .inflate(
-                        R.layout.item_search_song,
-                        parent,
-                        false
-                );
+        View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_search_song, parent, false);
         return new Holder(v);
     }
 

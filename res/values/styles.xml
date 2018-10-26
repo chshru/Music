@@ -6,11 +6,17 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-
+        <item name="android:textColorSecondary">@color/main_white</item>
     </style>
 
     <style name="TabBarText">
         <item name="android:textSize">17sp</item>
+    </style>
+
+    <style name="SearchView" parent="Widget.AppCompat.SearchView">
+        <item name="searchHintIcon">@null</item>
+        <item name="searchIcon">@null</item>
+        <item name="commitIcon">@drawable/ic_search_white_18dp</item>
     </style>
 
 </resources>
