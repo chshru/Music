@@ -88,8 +88,8 @@ public class HomeActivity extends ActivityBase implements StatusCallback {
                 bottomBar
         );
         mBottomLayout = new BottomLayout(bottomLayout, this);
-        findViewById(R.id.search_button)
-                .setOnClickListener(v -> startSearchActivity());
+        findViewById(R.id.search_button).setOnClickListener(
+                view -> startSearchActivity());
     }
 
     private ServiceConnection conn = new ServiceConnection() {

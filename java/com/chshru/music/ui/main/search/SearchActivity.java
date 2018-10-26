@@ -35,7 +35,14 @@ public class SearchActivity extends ActivityBase {
 
     @Override
     protected int getLayoutId() {
+        overridePendingTransition(0, 0);
         return R.layout.activity_search;
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(0, 0);
     }
 
     @Override
