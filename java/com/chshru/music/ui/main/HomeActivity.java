@@ -80,6 +80,7 @@ public class HomeActivity extends ActivityBase implements StatusCallback {
                 bottomBar
         );
         mBottomLayout = new BottomLayout(bottomLayout, this);
+        bottomLayout.setVisibility(View.GONE);
     }
 
     private ServiceConnection conn = new ServiceConnection() {
@@ -147,6 +148,7 @@ public class HomeActivity extends ActivityBase implements StatusCallback {
                 case MSG_FRESH_BOTTOM_BAR:
                     boolean playing = mPlayer.hasPrepare() && mPlayer.isPlaying();
                     mBottomLayout.freshLayout(playing, song);
+                    mBottomLayout.setVisibility(mCurSong != null);
                     break;
             }
 

@@ -22,16 +22,19 @@ public class BottomLayout {
     private TextView mArtist;
     private ImageButton mNext;
     private StatusCallback mCallback;
+    private View mRoot;
 
 
     public BottomLayout(View root, StatusCallback callback) {
+        mCallback = callback;
         mPause = root.findViewById(R.id.play_pause);
         mNext = root.findViewById(R.id.play_next);
         mTitle = root.findViewById(R.id.bottom_title);
         mArtist = root.findViewById(R.id.bottom_artist);
         mAlbum = root.findViewById(R.id.bottom_album);
-        mCallback = callback;
         mPause.setOnClickListener(v -> mCallback.requestPausePlayer(false));
+        mRoot = root;
+
     }
 
 
@@ -48,6 +51,14 @@ public class BottomLayout {
             mPause.play();
         } else if (!playing && mPause.isPlaying()) {
             mPause.pause();
+        }
+    }
+
+    public void setVisibility(boolean b) {
+        if (b) {
+            mRoot.setVisibility(View.VISIBLE);
+        } else {
+            mRoot.setVisibility(View.GONE);
         }
     }
 }
