@@ -26,10 +26,21 @@ public class AlbumImage extends AppCompatImageView {
     private final int NETWORK_ERROR = 2;
     private final int SERVER_ERROR = 3;
     private LoadThread mThread;
+    private boolean mHasCached;
+
+
+    public boolean hasCached() {
+        return mHasCached;
+    }
+
+    private void initialize() {
+        mHasCached = false;
+    }
 
     public void setImageUrl(String path) {
         mThread = new LoadThread(path);
         mThread.start();
+        mHasCached = true;
 
     }
 
@@ -91,14 +102,17 @@ public class AlbumImage extends AppCompatImageView {
 
     public AlbumImage(Context context) {
         super(context);
+        initialize();
     }
 
     public AlbumImage(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        initialize();
     }
 
     public AlbumImage(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        initialize();
     }
 
 }

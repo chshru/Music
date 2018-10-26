@@ -1,8 +1,9 @@
 package com.chshru.music.ui.view;
 
 import android.content.Context;
-import android.util.AttributeSet;
+import android.view.View;
 import android.widget.SearchView;
+import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.chshru.music.R;
@@ -13,11 +14,15 @@ import com.chshru.music.R;
 
 public class ActionSearchView extends SearchView {
 
-
     private void initialize() {
         onActionViewExpanded();
         setSubmitButtonEnabled(true);
         setQueryHint(getContext().getString(R.string.search));
+        initTextColor();
+        initBottomLine();
+    }
+
+    private void initTextColor() {
         int id = getContext().getResources().getIdentifier(
                 "android:id/search_src_text", null, null);
         TextView tv = findViewById(id);
@@ -25,6 +30,17 @@ public class ActionSearchView extends SearchView {
         tv.setTextColor(getResources().getColor(R.color.main_white));
     }
 
+    private void initBottomLine() {
+        int id = getContext().getResources().getIdentifier(
+                "android:id/search_plate", null, null);
+        View v = findViewById(id);
+        v.setBackground(null);
+
+        id = getContext().getResources().getIdentifier(
+                "android:id/submit_area", null, null);
+        v = findViewById(id);
+        v.setBackground(null);
+    }
 
     public ActionSearchView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -41,7 +57,7 @@ public class ActionSearchView extends SearchView {
         initialize();
     }
 
-    public static class OnTextChangeListener implements SearchView.OnQueryTextListener{
+    public static class OnTextChangeListener implements SearchView.OnQueryTextListener {
 
         @Override
         public boolean onQueryTextSubmit(String query) {

@@ -82,6 +82,7 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
         mHasPrepare = true;
+        mediaPlayer.start();
     }
 
 

@@ -1,5 +1,9 @@
 package com.chshru.music.util;
 
+import android.graphics.Bitmap;
+
+import java.util.BitSet;
+
 /**
  * Created by abc on 18-10-22.
  */
@@ -16,8 +20,12 @@ public class Song {
         this.artist = artist;
         this.link = link;
         this.album = album;
+        playing = false;
     }
 
+
+    public boolean playing;
+    public Bitmap albumBitmap;
 
     public int id; //数据库id
     String _id = "id";

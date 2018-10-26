@@ -38,7 +38,7 @@ public class SearchTabLayout extends BaseTab {
                 mRunnable
         );
         mSong = new ArrayList<>();
-        mAdapter = new SearchResultAdapter(mSong);
+        mAdapter = new SearchResultAdapter(mSong,mContext.getMainLooper());
 
     }
 

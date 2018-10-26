@@ -1,5 +1,9 @@
 package com.chshru.music.ui.tab.searchtab;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,7 +17,16 @@ import com.chshru.music.util.QQMusicApi;
 import com.chshru.music.util.Song;
 
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
+import java.util.Stack;
+
+import static android.net.sip.SipErrorCode.SERVER_ERROR;
 
 /**
  * Created by abc on 18-10-25.
@@ -23,10 +36,35 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
 
 
     private List<Song> mSong;
+    private Queue<Song> mCacheQueue;
     private OnItemClickListener mClickListener;
+    private LoadThread mThread;
+    private Handler mHandler;
 
-    public SearchResultAdapter(List<Song> list) {
+    public SearchResultAdapter(List<Song> list, Looper main) {
         mSong = list;
+        mNeedFreshItem = -1;
+        mHandler = new Handler(main);
+        mCacheQueue = new LinkedList<>(list);
+        mThread = new LoadThread();
+        mThread.start();
+    }
+
+    public void addAll(List<Song> list) {
+        mSong.addAll(list);
+        mCacheQueue.addAll(list);
+        if (mThread != null && !mThread.isAlive()) {
+            mThread = new LoadThread();
+            mThread.start();
+        }
+    }
+
+    public void clear() {
+        mSong.clear();
+    }
+
+    public Song get(int pos) {
+        return mSong.get(pos);
     }
 
     @NonNull
@@ -54,8 +92,13 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
         Song song = mSong.get(pos);
         h.name.setText(song.title);
         h.artist.setText(song.artist);
-        String url = QQMusicApi.buildAlbumUrl(song.album);
-        h.album.setImageUrl(url);
+
+        h.album.setImageBitmap(song.albumBitmap);
+        if (song.playing) {
+            h.playing.setVisibility(View.VISIBLE);
+        } else {
+            h.playing.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
@@ -63,17 +106,54 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
         return mSong.size();
     }
 
+    private class LoadThread extends Thread {
+
+        @Override
+        public void run() {
+            while (mCacheQueue.peek() != null) {
+                Song song = mCacheQueue.poll();
+                try {
+                    URL url = new URL(QQMusicApi.buildAlbumUrl(song.album));
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestMethod("GET");
+                    conn.setConnectTimeout(10000);
+                    if (conn.getResponseCode() == 200) {
+                        InputStream inputStream = conn.getInputStream();
+                        song.albumBitmap = BitmapFactory.decodeStream(inputStream);
+                        System.out.println("chenshanru " + song.title);
+                        mNeedFreshItem = mSong.lastIndexOf(song);
+                        mHandler.post(mFreshRunnable);
+                    } else {
+                        mCacheQueue.offer(song);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    mCacheQueue.offer(song);
+                }
+            }
+        }
+    }
+
+    private int mNeedFreshItem;
+    private Runnable mFreshRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mNeedFreshItem != -1) {
+                notifyItemChanged(mNeedFreshItem);
+            }
+        }
+    };
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         mClickListener = listener;
     }
 
     public static class OnItemClickListener {
-        void onItemClick(View v) {
+        public void onItemClick(View v) {
 
         }
 
-        void OnItemLongClick(View v) {
+        public void OnItemLongClick(View v) {
 
         }
     }
@@ -82,6 +162,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
         public TextView name;
         public TextView artist;
         public AlbumImage album;
+        public View playing;
 
 
         public Holder(View view) {
@@ -89,6 +170,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
             name = view.findViewById(R.id.tv_title);
             artist = view.findViewById(R.id.tv_artist);
             album = view.findViewById(R.id.iv_cover);
+            playing = view.findViewById(R.id.v_playing);
         }
     }
 }
