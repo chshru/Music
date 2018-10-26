@@ -54,11 +54,4 @@ public class BottomLayout {
         }
     }
 
-    public void setVisibility(boolean b) {
-        if (b) {
-            mRoot.setVisibility(View.VISIBLE);
-        } else {
-            mRoot.setVisibility(View.GONE);
-        }
-    }
 }

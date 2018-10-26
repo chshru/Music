@@ -17,6 +17,7 @@ import com.chshru.music.R;
 import com.chshru.music.base.ActivityBase;
 import com.chshru.music.base.MusicApp;
 import com.chshru.music.service.StatusCallback;
+import com.chshru.music.ui.main.search.SearchActivity;
 import com.chshru.music.ui.tab.localtab.LocalTabLayout;
 import com.chshru.music.ui.tab.searchtab.SearchTabLayout;
 import com.chshru.music.ui.tab.BaseTab;
@@ -87,7 +88,6 @@ public class HomeActivity extends ActivityBase implements StatusCallback {
                 bottomBar
         );
         mBottomLayout = new BottomLayout(bottomLayout, this);
-        bottomLayout.setVisibility(View.GONE);
         findViewById(R.id.search_button)
                 .setOnClickListener(v -> startSearchActivity());
     }
@@ -157,7 +157,6 @@ public class HomeActivity extends ActivityBase implements StatusCallback {
                 case MSG_FRESH_BOTTOM_BAR:
                     boolean playing = mPlayer.hasPrepare() && mPlayer.isPlaying();
                     mBottomLayout.freshLayout(playing, song);
-                    mBottomLayout.setVisibility(mCurSong != null);
                     break;
             }
 

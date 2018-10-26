@@ -1,4 +1,4 @@
-package com.chshru.music.ui.main;
+package com.chshru.music.ui.main.search;
 
 
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,8 +8,7 @@ import android.view.View;
 import com.chshru.music.R;
 import com.chshru.music.base.ActivityBase;
 import com.chshru.music.base.MusicApp;
-import com.chshru.music.ui.tab.searchtab.SearchResultAdapter;
-import com.chshru.music.ui.tab.searchtab.SearchResultAdapter.OnItemClickListener;
+import com.chshru.music.ui.main.search.SearchResultAdapter.OnItemClickListener;
 import com.chshru.music.ui.view.ActionSearchView;
 import com.chshru.music.ui.view.ActionSearchView.OnTextChangeListener;
 import com.chshru.music.util.QQMusicApi;
@@ -17,8 +16,6 @@ import com.chshru.music.util.QueryHandler;
 import com.chshru.music.util.QueryHandler.OnFinishRunnable;
 
 import java.util.ArrayList;
-
-import static android.support.v7.widget.RecyclerView.SCROLL_STATE_DRAGGING;
 
 /**
  * Created by abc on 18-10-26.

@@ -1,6 +1,5 @@
-package com.chshru.music.ui.tab.searchtab;
+package com.chshru.music.ui.main.search;
 
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Looper;
@@ -24,9 +23,6 @@ import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.Stack;
-
-import static android.net.sip.SipErrorCode.SERVER_ERROR;
 
 /**
  * Created by abc on 18-10-25.
@@ -120,7 +116,6 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
                     if (conn.getResponseCode() == 200) {
                         InputStream inputStream = conn.getInputStream();
                         song.albumBitmap = BitmapFactory.decodeStream(inputStream);
-                        System.out.println("chenshanru " + song.title);
                         mNeedFreshItem = mSong.lastIndexOf(song);
                         mHandler.post(mFreshRunnable);
                     } else {
@@ -150,11 +145,8 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
 
     public static class OnItemClickListener {
         public void onItemClick(View v) {
-
         }
-
         public void OnItemLongClick(View v) {
-
         }
     }
 
@@ -163,7 +155,6 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
         public TextView artist;
         public AlbumImage album;
         public View playing;
-
 
         public Holder(View view) {
             super(view);

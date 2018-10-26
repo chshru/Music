@@ -26,7 +26,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.main.SearchActivity" />
+        <activity android:name=".ui.main.search.SearchActivity" />
 
         <service android:name=".service.MediaService" />
     </application>
