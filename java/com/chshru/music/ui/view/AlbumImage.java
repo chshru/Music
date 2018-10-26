@@ -48,7 +48,7 @@ public class AlbumImage extends AppCompatImageView {
                 case SERVER_ERROR:
                     break;
             }
-            if (mThread.isAlive() || !mThread.isInterrupted()) {
+            if (mThread != null && (mThread.isAlive() || !mThread.isInterrupted())) {
                 mThread.interrupt();
                 mThread = null;
             }
