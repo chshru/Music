@@ -18,7 +18,7 @@ public class MusicPlayer {
     private CacheListener mCacheListener;
     private StatusCallback mCallback;
 
-    public MusicPlayer(Context context,StatusCallback callback) {
+    public MusicPlayer(Context context, StatusCallback callback) {
         mCacheServer = new HttpProxyCacheServer(
                 context.getApplicationContext());
         mCallback = callback;
@@ -43,7 +43,7 @@ public class MusicPlayer {
         String local = url;
         if (isHttpUrl(url) && !mCacheServer.isCached(url)) {
             local = mCacheServer.getProxyUrl(url);
-            if(mCacheListener != null) {
+            if (mCacheListener != null) {
                 mCacheServer.registerCacheListener(mCacheListener, url);
             }
         }

@@ -1,6 +1,6 @@
 package com.chshru.music.manager;
 
-import com.chshru.music.util.MusicTableHelper;
+import com.chshru.music.util.SongTable;
 
 /**
  * Created by abc on 18-10-23.
@@ -8,9 +8,9 @@ import com.chshru.music.util.MusicTableHelper;
 
 public class DataManager {
 
-    private MusicTableHelper mMusicTable;
+    private SongTable mMusicTable;
 
-    public DataManager(MusicTableHelper helper) {
+    public DataManager(SongTable helper) {
         mMusicTable = helper;
     }
 

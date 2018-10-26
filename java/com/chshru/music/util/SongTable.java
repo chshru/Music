@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by abc on 18-10-22.
  */
 
-public class MusicTableHelper extends SQLiteOpenHelper {
+public class SongTable extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "data.db";
     private static final int DB_VERSION = 1;
@@ -31,7 +31,7 @@ public class MusicTableHelper extends SQLiteOpenHelper {
                     .append(")")
                     .toString();
 
-    public MusicTableHelper(Context context) {
+    public SongTable(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
 

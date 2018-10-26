@@ -9,9 +9,11 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <SearchView
+                android:id="@+id/sv_saerch_aty"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"></SearchView>
+                android:layout_height="match_parent" />
         </LinearLayout>
 
     </android.support.design.widget.AppBarLayout>

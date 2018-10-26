@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import com.chshru.music.R;
 import com.chshru.music.base.ActivityBase;
+import com.chshru.music.base.MusicApp;
 import com.chshru.music.service.StatusCallback;
 import com.chshru.music.ui.tab.localtab.LocalTabLayout;
 import com.chshru.music.ui.tab.searchtab.SearchTabLayout;
@@ -23,7 +24,7 @@ import com.chshru.music.ui.tab.TabAdapter;
 import com.chshru.music.service.MediaService;
 import com.chshru.music.service.MusicPlayer;
 import com.chshru.music.service.PlayService;
-import com.chshru.music.util.MusicTableHelper;
+import com.chshru.music.util.SongTable;
 import com.chshru.music.util.QQMusicApi;
 import com.chshru.music.util.Song;
 
@@ -37,7 +38,7 @@ public class HomeActivity extends ActivityBase implements StatusCallback {
     private Intent mIntent;
     private BottomLayout mBottomLayout;
 
-    private MusicTableHelper helper;
+    private SongTable mSongTable;
     private Song mCurSong;
 
 
@@ -65,9 +66,10 @@ public class HomeActivity extends ActivityBase implements StatusCallback {
 
     private void initializeParams() {
         mIntent = new Intent(this, MediaService.class);
-        helper = new MusicTableHelper(this);
-        mPlayer = new MusicPlayer(this, this);
-        findViewById(R.id.search_button).setOnClickListener(v -> startSearchActivity());
+        MusicApp app = (MusicApp) getApplication();
+        if (!app.hasInitlized()) app.init(this);
+        mSongTable = app.getSongTable();
+        mPlayer = app.getPlayer();
         startService(mIntent);
     }
 
@@ -86,6 +88,8 @@ public class HomeActivity extends ActivityBase implements StatusCallback {
         );
         mBottomLayout = new BottomLayout(bottomLayout, this);
         bottomLayout.setVisibility(View.GONE);
+        findViewById(R.id.search_button)
+                .setOnClickListener(v -> startSearchActivity());
     }
 
     private ServiceConnection conn = new ServiceConnection() {
