@@ -67,8 +67,13 @@ public class HomeActivity extends ActivityBase implements StatusCallback {
         mIntent = new Intent(this, MediaService.class);
         helper = new MusicTableHelper(this);
         mPlayer = new MusicPlayer(this, this);
-
+        findViewById(R.id.search_button).setOnClickListener(v -> startSearchActivity());
         startService(mIntent);
+    }
+
+    private void startSearchActivity() {
+        Intent intent = new Intent(this, SearchActivity.class);
+        startActivity(intent);
     }
 
 
