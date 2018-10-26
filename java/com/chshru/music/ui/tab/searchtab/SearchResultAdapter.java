@@ -58,7 +58,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
         });
         Song song = mSong.get(pos);
         h.name.setText(song.title);
-        h.artist.setText(song.mid);
+        h.artist.setText(song.artist);
         String url = QQMusicApi.buildAlbumUrl(song.album);
         h.album.setImageUrl(url);
     }
