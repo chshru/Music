@@ -25,7 +25,7 @@
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_gravity="center"
-            android:src="@drawable/default_cover" />
+            android:src="@drawable/default_album_cover" />
         <View
             android:layout_width="5dp"
             android:layout_height="match_parent" />
@@ -81,7 +81,7 @@
             android:layout_marginEnd="10dp"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:scaleType="fitXY"
-            android:src="@drawable/ic_skip_next_black_18dp"
+            android:src="@drawable/icon_skip_to_next"
             tools:ignore="ContentDescription" />
     </LinearLayout>
 

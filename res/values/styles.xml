@@ -16,7 +16,7 @@
     <style name="SearchView" parent="Widget.AppCompat.SearchView">
         <item name="searchHintIcon">@null</item>
         <item name="searchIcon">@null</item>
-        <item name="commitIcon">@drawable/ic_search_white_18dp</item>
+        <item name="commitIcon">@drawable/icon_search_white</item>
     </style>
 
 </resources>
