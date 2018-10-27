@@ -67,7 +67,10 @@ public class HomeActivity extends ActivityBase implements StatusCallback {
     }
 
     private void startSearchActivity() {
-        Intent intent = new Intent(this, SearchActivity.class);
+        Intent intent = new Intent(
+                getApplicationContext(),
+                SearchActivity.class
+        );
         startActivity(intent);
     }
 
@@ -87,12 +90,12 @@ public class HomeActivity extends ActivityBase implements StatusCallback {
     private ServiceConnection conn = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder binder) {
-            mPlayer.addPlayService((PlayService) binder);
+            mPlayer.setService((PlayService) binder);
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            mPlayer.delPlayService();
+            mPlayer.removeService();
         }
     };
 
