@@ -28,11 +28,11 @@ public class MusicPlayer {
         mCacheListener = listener;
     }
 
-    public void addPlayService(PlayService service) {
+    public void setService(PlayService service) {
         mService = service;
     }
 
-    public void delPlayService() {
+    public void removeService() {
         mService = null;
     }
 
@@ -84,13 +84,6 @@ public class MusicPlayer {
 
     public boolean hasPrepare() {
         return mService != null && mService.hasPrepare();
-    }
-
-    private boolean isHttpUrl(String url) {
-        if (url.contains("http")) {
-            return true;
-        }
-        return false;
     }
 
 }
