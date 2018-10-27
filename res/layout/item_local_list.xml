@@ -2,50 +2,44 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
+    android:layout_height="wrap_content"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:gravity="center_vertical"
     android:orientation="horizontal">
 
-    <View
-        android:layout_width="10dp"
-        android:layout_height="match_parent" />
-
     <ImageView
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_gravity="center"
-        tools:ignore="ContentDescription" />
-
-    <View
-        android:layout_width="10dp"
-        android:layout_height="match_parent" />
-
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center_vertical"
-        android:text="本地歌曲"
-        android:textSize="15sp" />
-
-    <TextView
+        android:id="@+id/iv_icon"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        android:text="110 首"
-        android:textSize="12sp" />
-
-    <View
-        android:layout_width="10dp"
-        android:layout_height="match_parent" />
-
-    <ImageView
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/icon_local_list"
         tools:ignore="ContentDescription" />
 
-    <View
-        android:layout_width="10dp"
-        android:layout_height="match_parent" />
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_weight="1"
+        android:text="本地音乐"
+        android:textColor="@color/dark" />
+
+    <TextView
+        android:id="@+id/tv_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="100 首" />
+
+    <ImageView
+        android:id="@+id/iv_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:scaleType="center"
+        android:layout_margin="16dp"
+        android:src="@drawable/icon_play_circle"
+        android:tint="@color/colorPrimary" />
 
 </LinearLayout>

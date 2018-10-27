@@ -48,6 +48,7 @@
         android:layout_marginTop="16dp"
         android:ellipsize="end"
         android:lines="1"
+        android:textColor="@color/dark"
         app:layout_constraintBottom_toTopOf="@+id/tv_artist"
         app:layout_constraintEnd_toStartOf="@+id/iv_resource"
         app:layout_constraintHorizontal_bias="0.0"

@@ -44,7 +44,7 @@ public class HomeActivity extends ActivityBase implements StatusCallback {
     protected void initialize() {
         initializePages();
         initializeParams();
-        initButtomBar();
+        initBottomBar();
     }
 
     private void initializePages() {
@@ -52,7 +52,7 @@ public class HomeActivity extends ActivityBase implements StatusCallback {
         BaseTab page2 = new OnlineTab(this, R.layout.page_two_online);
         BaseTab[] pages = {page1, page2};
         ViewPager viewPager = findViewById(R.id.viewpager);
-        TabLayout tabLayout = findViewById(R.id.tablayout);
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
         viewPager.setAdapter(new TabAdapter(this, pages));
         tabLayout.setupWithViewPager(viewPager);
     }
@@ -60,7 +60,7 @@ public class HomeActivity extends ActivityBase implements StatusCallback {
     private void initializeParams() {
         mIntent = new Intent(this, MediaService.class);
         MusicApp app = (MusicApp) getApplication();
-        if (!app.hasInitlized()) app.init(this);
+        if (!app.hasInitialized()) app.init(this);
         mSongTable = app.getSongTable();
         mPlayer = app.getPlayer();
         startService(mIntent);
@@ -75,7 +75,7 @@ public class HomeActivity extends ActivityBase implements StatusCallback {
     }
 
 
-    private void initButtomBar() {
+    private void initBottomBar() {
         ViewGroup bottomBar = findViewById(R.id.bottom_bar);
         View bottomLayout = View.inflate(
                 getApplicationContext(),

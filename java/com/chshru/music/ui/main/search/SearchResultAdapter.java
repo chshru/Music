@@ -108,6 +108,9 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
         public void run() {
             while (mCacheQueue.peek() != null) {
                 Song song = mCacheQueue.poll();
+                if (song.albumBitmap != null) {
+                    continue;
+                }
                 try {
                     URL url = new URL(QQMusicApi.buildAlbumUrl(song.album));
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
