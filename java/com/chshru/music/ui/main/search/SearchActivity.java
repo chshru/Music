@@ -102,7 +102,7 @@ public class SearchActivity extends ActivityBase {
         @Override
         public void onItemClick(View v) {
             int pos = mRecycler.getChildAdapterPosition(v);
-            if (mCurPos != -1 && mAdapter.getItemCount() < mCurPos) {
+            if (mCurPos != -1 && mCurPos < mAdapter.getItemCount()) {
                 mAdapter.get(mCurPos).playing = false;
                 mAdapter.notifyItemChanged(mCurPos);
             }
