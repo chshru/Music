@@ -11,9 +11,9 @@ import com.chshru.music.util.Song;
 
 public interface StatusCallback {
 
-    void requestChangeSong(Song song);
+    void onSongChanged(Song song);
 
-    void requestPausePlayer(boolean pause);
+    void togglePlayer();
 
     Looper getMainLooper();
 

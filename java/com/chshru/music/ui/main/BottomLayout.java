@@ -32,7 +32,7 @@ public class BottomLayout {
         mTitle = root.findViewById(R.id.bottom_title);
         mArtist = root.findViewById(R.id.bottom_artist);
         mAlbum = root.findViewById(R.id.bottom_album);
-        mPause.setOnClickListener(v -> mCallback.requestPausePlayer(false));
+        mPause.setOnClickListener(v -> mCallback.togglePlayer());
         mRoot = root;
 
     }
@@ -42,10 +42,6 @@ public class BottomLayout {
         if (song != null) {
             mTitle.setText(song.title);
             mArtist.setText(song.artist);
-            if (mPause.isPlaying()) {
-                mPause.pause();
-            }
-            return;
         }
         if (playing && !mPause.isPlaying()) {
             mPause.play();

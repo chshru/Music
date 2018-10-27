@@ -87,7 +87,7 @@ public class SearchActivity extends ActivityBase {
                 if (!loading && totalItemCount - visibleItemCount <= firstVisibleItem) {
                     mQueriedPos++;
                     loading = true;
-                    queryMore();
+                    onQueryMore();
                 }
             }
 
@@ -109,40 +109,38 @@ public class SearchActivity extends ActivityBase {
             mCurPos = pos;
             mAdapter.get(mCurPos).playing = true;
             mAdapter.notifyItemChanged(mCurPos);
-            String url = QQMusicApi.buildSongUrl(mAdapter.get(pos).mid);
-            app.getPlayer().prepare(url);
+            app.getPlayer().prepare(mAdapter.get(pos));
         }
     };
 
     private OnFinishRunnable mRunnable = new OnFinishRunnable() {
         @Override
         public void run() {
-            queryComplete(getResult());
+            onQueryComplete(getResult());
         }
     };
 
-    private void startQuery() {
+    private void onQueryStart() {
         mQueriedPos = 1;
         mAdapter.clear();
         new Thread(() -> QQMusicApi.query(mQueriedPos, 20, mQueryString, mHandler)).start();
     }
 
-    private void queryMore() {
+    private void onQueryMore() {
         new Thread(() -> QQMusicApi.query(mQueriedPos, 20, mQueryString, mHandler)).start();
     }
 
-    private void queryComplete(String result) {
+    private void onQueryComplete(String result) {
         mAdapter.addAll(QQMusicApi.getSongFromResult(result));
         mAdapter.notifyDataSetChanged();
     }
 
     private void onQuerySubmit(String str) {
-        System.out.println("chenshanru mQueryString = " + mQueryString);
         if (str.equals(mQueryString)) {
             return;
         }
         mQueryString = str;
-        startQuery();
+        onQueryStart();
     }
 
     private OnTextChangeListener mSearchListener = new OnTextChangeListener() {

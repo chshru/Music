@@ -2,10 +2,10 @@ package com.chshru.music.service;
 
 import android.content.Context;
 
+import com.chshru.music.util.QQMusicApi;
+import com.chshru.music.util.Song;
 import com.danikula.videocache.CacheListener;
 import com.danikula.videocache.HttpProxyCacheServer;
-
-import java.io.File;
 
 /**
  * Created by abc on 18-10-22.
@@ -36,18 +36,25 @@ public class MusicPlayer {
         mService = null;
     }
 
-    public void prepare(String url) {
+    public void prepare(Song song) {
         if (mService == null) {
             return;
         }
-        String local = url;
-        if (isHttpUrl(url) && !mCacheServer.isCached(url)) {
+        String local, url;
+        if (song.type == Song.TYPE_NET) {
+            url = QQMusicApi.buildSongUrl(song.mid);
             local = mCacheServer.getProxyUrl(url);
-            if (mCacheListener != null) {
-                mCacheServer.registerCacheListener(mCacheListener, url);
-            }
+        } else {
+            url = song.link;
+            local = url;
+        }
+        if (mCacheListener != null) {
+            mCacheServer.registerCacheListener(mCacheListener, url);
         }
         mService.prepare(local);
+        if (mCallback != null) {
+            mCallback.onSongChanged(song);
+        }
     }
 
     public void start() {

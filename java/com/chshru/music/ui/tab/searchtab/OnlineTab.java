@@ -1,5 +1,4 @@
-package com.chshru.music.ui.tab.localtab;
-
+package com.chshru.music.ui.tab.searchtab;
 
 import android.content.Context;
 import android.view.View;
@@ -12,21 +11,18 @@ import com.chshru.music.ui.tab.BaseTab;
  * Created by abc on 18-10-25.
  */
 
-public class LocalTabLayout extends BaseTab {
+public class OnlineTab extends BaseTab {
 
-
-
-    public LocalTabLayout(StatusCallback callback, int resId) {
+    public OnlineTab(StatusCallback callback, int resId) {
         super(callback, resId);
     }
 
     @Override
     protected void initialize() {
-        mTitleTd = R.string.local_tab_title;
+        mTitleTd = R.string.search_tab_title;
     }
-
     @Override
     public void initChild(Context context, View root) {
-
     }
+
 }
