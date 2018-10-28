@@ -17,6 +17,7 @@ public class MusicPlayer {
     private PlayService mService;
     private CacheListener mCacheListener;
     private StatusCallback mCallback;
+    private Song mCurSong;
 
     public MusicPlayer(Context context, StatusCallback callback) {
         mCacheServer = new HttpProxyCacheServer(
@@ -40,6 +41,10 @@ public class MusicPlayer {
         if (mService == null) {
             return;
         }
+        if (mCurSong != null && mCurSong.equals(song)) {
+            return;
+        }
+        mCurSong = new Song(song);
         String local, url;
         if (song.type == Song.TYPE_NET) {
             url = QQMusicApi.buildSongUrl(song.mid);
@@ -55,6 +60,10 @@ public class MusicPlayer {
         if (mCallback != null) {
             mCallback.onSongChanged(song);
         }
+    }
+
+    public Song getCurSong() {
+        return mCurSong;
     }
 
     public void start() {
