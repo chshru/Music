@@ -2,8 +2,6 @@ package com.chshru.music.util;
 
 import android.graphics.Bitmap;
 
-import java.util.BitSet;
-
 /**
  * Created by abc on 18-10-22.
  */
@@ -20,6 +18,18 @@ public class Song {
         this.artist = artist;
         this.link = link;
         this.album = album;
+        playing = false;
+    }
+
+    public Song(Song song) {
+        this.id = song.id;
+        this.albumBitmap = song.albumBitmap;
+        this.type = song.type;
+        this.mid = song.mid;
+        this.title = song.title;
+        this.artist = song.artist;
+        this.link = song.link;
+        this.album = song.album;
         playing = false;
     }
 
@@ -50,7 +60,11 @@ public class Song {
     public String link;
     String _link = "link";
 
+
     public boolean equals(Song song) {
+        if (song == null) {
+            return false;
+        }
         return this.id == song.id;
     }
 
