@@ -19,6 +19,7 @@ public class ListActivity extends ActivityBase {
     private RecyclerView mRecycler;
     private SearchResultAdapter mAdapter;
     private MusicApp mApp;
+    private int mCurPos;
 
     @Override
     protected int getLayoutId() {
@@ -34,10 +35,18 @@ public class ListActivity extends ActivityBase {
 
     @Override
     protected void initialize() {
+        mCurPos = -1;
         mApp = (MusicApp) getApplication();
         String title = mApp.getListData().getTitle();
         int pos = mApp.getListData().getPos();
         List<Song> list = mApp.getListData().getList(pos);
+        for (Song song : list) {
+            if (song.equals(mApp.getPlayer().getCurSong())) {
+                song.playing = true;
+                mCurPos = list.indexOf(song);
+                break;
+            }
+        }
         mAdapter = new SearchResultAdapter(list, getMainLooper());
         mRecycler = findViewById(R.id.list_recycler);
         mRecycler.setLayoutManager(new LinearLayoutManager(this));
@@ -47,8 +56,14 @@ public class ListActivity extends ActivityBase {
             @Override
             public void onItemClick(View v) {
                 int pos = mRecycler.getChildAdapterPosition(v);
-                Song song = mAdapter.get(pos);
-                mApp.getPlayer().prepare(song);
+                if (mCurPos != -1 && mCurPos < mAdapter.getItemCount()) {
+                    mAdapter.get(mCurPos).playing = false;
+                    mAdapter.notifyItemChanged(mCurPos);
+                }
+                mCurPos = pos;
+                mAdapter.get(mCurPos).playing = true;
+                mAdapter.notifyItemChanged(mCurPos);
+                mApp.getPlayer().prepare(mAdapter.get(pos));
             }
         });
     }
