@@ -14,8 +14,10 @@ import com.chshru.music.ui.view.ActionSearchView.OnTextChangeListener;
 import com.chshru.music.util.QQMusicApi;
 import com.chshru.music.util.QueryHandler;
 import com.chshru.music.util.QueryHandler.OnFinishRunnable;
+import com.chshru.music.util.Song;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by abc on 18-10-26.
@@ -131,7 +133,18 @@ public class SearchActivity extends ActivityBase {
     }
 
     private void onQueryComplete(String result) {
-        mAdapter.addAll(QQMusicApi.getSongFromResult(result));
+        if (app.getListData().getList(0).size() == 0) {
+            app.getListData().getList(0).addAll(QQMusicApi.getSongFromResult(result));
+        }
+        List<Song> list = QQMusicApi.getSongFromResult(result);
+        for (Song song : list) {
+            if (song.equals(app.getPlayer().getCurSong())) {
+                song.playing = true;
+                mCurPos = list.indexOf(song);
+                break;
+            }
+        }
+        mAdapter.addAll(list);
         mAdapter.notifyDataSetChanged();
     }
 
