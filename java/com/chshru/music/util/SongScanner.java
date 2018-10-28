@@ -48,7 +48,6 @@ public class SongScanner {
                                 link,
                                 LocalMusicApi.getAlbumArtFromId(album, mContext)
                         );
-                        //System.out.println(song);
                         mList.add(song);
                     }
                 }
