@@ -133,9 +133,6 @@ public class SearchActivity extends ActivityBase {
     }
 
     private void onQueryComplete(String result) {
-        if (app.getListData().getList(0).size() == 0) {
-            app.getListData().getList(0).addAll(QQMusicApi.getSongFromResult(result));
-        }
         List<Song> list = QQMusicApi.getSongFromResult(result);
         for (Song song : list) {
             if (song.equals(app.getPlayer().getCurSong())) {

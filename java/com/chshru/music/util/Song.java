@@ -22,17 +22,18 @@ public class Song {
     }
 
     public Song(Song song) {
-        this.id = song.id;
-        this.albumBitmap = song.albumBitmap;
-        this.type = song.type;
-        this.mid = song.mid;
-        this.title = song.title;
-        this.artist = song.artist;
-        this.link = song.link;
-        this.album = song.album;
-        playing = false;
+        if (song != null) {
+            this.id = song.id;
+            this.albumBitmap = song.albumBitmap;
+            this.type = song.type;
+            this.mid = song.mid;
+            this.title = song.title;
+            this.artist = song.artist;
+            this.link = song.link;
+            this.album = song.album;
+            playing = false;
+        }
     }
-
 
     public boolean playing;
     public Bitmap albumBitmap;
@@ -76,6 +77,7 @@ public class Song {
                 _mid + "=" + mid +
                 _title + "=" + title +
                 _artist + "=" + artist +
-                _link + "=" + link;
+                _link + "=" + link +
+                _album + "=" + album;
     }
 }

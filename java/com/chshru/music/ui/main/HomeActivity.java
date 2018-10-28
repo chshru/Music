@@ -13,6 +13,7 @@ import com.chshru.music.R;
 import com.chshru.music.base.ActivityBase;
 import com.chshru.music.base.MusicApp;
 import com.chshru.music.service.StatusCallback;
+import com.chshru.music.ui.main.list.ListData;
 import com.chshru.music.ui.main.search.SearchActivity;
 import com.chshru.music.ui.tab.localtab.LocalTab;
 import com.chshru.music.ui.tab.searchtab.OnlineTab;
@@ -21,6 +22,7 @@ import com.chshru.music.ui.tab.TabAdapter;
 import com.chshru.music.service.MediaService;
 import com.chshru.music.service.MusicPlayer;
 import com.chshru.music.service.PlayService;
+import com.chshru.music.util.SongScanner;
 import com.chshru.music.util.SongTable;
 import com.chshru.music.util.Song;
 
@@ -63,6 +65,9 @@ public class HomeActivity extends ActivityBase implements StatusCallback {
         if (!app.hasInitialized()) app.init(this);
         mSongTable = app.getSongTable();
         mPlayer = app.getPlayer();
+        SongScanner scanner = new SongScanner(this, app.getListData().getList(ListData.P_LOCAL));
+        scanner.startScan();
+
         startService(mIntent);
     }
 
@@ -85,6 +90,7 @@ public class HomeActivity extends ActivityBase implements StatusCallback {
         mBottomLayout = new BottomLayout(bottomLayout, this);
         findViewById(R.id.search_button).setOnClickListener(
                 view -> startSearchActivity());
+        mBottomLayout.freshLayout(mPlayer.isPlaying(), mPlayer.getCurSong());
     }
 
     private ServiceConnection conn = new ServiceConnection() {

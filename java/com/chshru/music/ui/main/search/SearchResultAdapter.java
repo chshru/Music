@@ -88,8 +88,12 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
         Song song = mSong.get(pos);
         h.name.setText(song.title);
         h.artist.setText(song.artist);
+        if (song.albumBitmap != null) {
+            h.album.setImageBitmap(song.albumBitmap);
+        } else {
+            h.album.setImageResource(R.drawable.default_album_cover);
+        }
 
-        h.album.setImageBitmap(song.albumBitmap);
         if (song.playing) {
             h.playing.setVisibility(View.VISIBLE);
         } else {
@@ -112,22 +116,30 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
                     continue;
                 }
                 try {
-                    URL url = new URL(QQMusicApi.buildAlbumUrl(song.album));
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setRequestMethod("GET");
-                    conn.setConnectTimeout(10000);
-                    if (conn.getResponseCode() == 200) {
-                        InputStream inputStream = conn.getInputStream();
-                        song.albumBitmap = BitmapFactory.decodeStream(inputStream);
-                        mNeedFreshItem = mSong.lastIndexOf(song);
-                        mHandler.post(mFreshRunnable);
+                    if (song.type == Song.TYPE_LOCAL) {
+                        song.albumBitmap = BitmapFactory.decodeFile(song.album);
                     } else {
-                        mCacheQueue.offer(song);
+                        URL url = new URL(QQMusicApi.buildAlbumUrl(song.album));
+                        solveNetUrl(url, song);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                     mCacheQueue.offer(song);
                 }
+            }
+        }
+
+        private void solveNetUrl(URL url, Song song) throws IOException {
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setConnectTimeout(10000);
+            if (conn.getResponseCode() == 200) {
+                InputStream inputStream = conn.getInputStream();
+                song.albumBitmap = BitmapFactory.decodeStream(inputStream);
+                mNeedFreshItem = mSong.lastIndexOf(song);
+                mHandler.post(mFreshRunnable);
+            } else {
+                mCacheQueue.offer(song);
             }
         }
     }
@@ -149,6 +161,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
     public static class OnItemClickListener {
         public void onItemClick(View v) {
         }
+
         public void OnItemLongClick(View v) {
         }
     }

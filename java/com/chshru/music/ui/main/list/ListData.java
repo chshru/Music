@@ -9,9 +9,9 @@ import java.util.List;
 public class ListData {
 
 
-    public final int P_LOCAL = 0;
-    public final int P_HISTORY = 1;
-    public final int P_LOVE = 2;
+    public static final int P_LOCAL = 0;
+    public static final int P_HISTORY = 1;
+    public static final int P_LOVE = 2;
 
 
     private List<List<Song>> mList;

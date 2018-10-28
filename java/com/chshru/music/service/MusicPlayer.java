@@ -44,12 +44,16 @@ public class MusicPlayer {
         if (mCurSong != null && mCurSong.equals(song)) {
             return;
         }
-        mCurSong = new Song(song);
+        if (mCurSong != null && mCurSong.type == Song.TYPE_LOCAL) {
+            mCurSong.playing = false;
+        }
         String local, url;
         if (song.type == Song.TYPE_NET) {
             url = QQMusicApi.buildSongUrl(song.mid);
             local = mCacheServer.getProxyUrl(url);
+            mCurSong = song;
         } else {
+            mCurSong = new Song(song);
             url = song.link;
             local = url;
         }
@@ -58,7 +62,7 @@ public class MusicPlayer {
         }
         mService.prepare(local);
         if (mCallback != null) {
-            mCallback.onSongChanged(song);
+            mCallback.onSongChanged(mCurSong);
         }
     }
 

@@ -42,6 +42,7 @@ public class BottomLayout {
         if (song != null) {
             mTitle.setText(song.title);
             mArtist.setText(song.artist);
+            mAlbum.setImageBitmap(song.albumBitmap);
         }
         if (playing && !mPause.isPlaying()) {
             mPause.play();
