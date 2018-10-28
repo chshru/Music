@@ -2,6 +2,7 @@ package com.chshru.music.util;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Handler;
 import android.provider.MediaStore.Audio.Media;
 
 import java.text.Collator;
@@ -15,11 +16,19 @@ public class SongScanner {
     private Context mContext;
     private List<Song> mList;
     private ChinaInitial mChina;
+    private Handler mHandler;
+    private Runnable mRunnable;
 
     public SongScanner(Context context, List<Song> list) {
         mChina = new ChinaInitial();
         mContext = context;
         mList = list;
+    }
+
+
+    public void setCallback(Handler handler, Runnable runnable) {
+        mHandler = handler;
+        mRunnable = runnable;
     }
 
     public void startScan() {
@@ -55,6 +64,9 @@ public class SongScanner {
             Collections.sort(mList, cmp);
             if (cursor != null) {
                 cursor.close();
+            }
+            if (mHandler != null) {
+                mHandler.post(mRunnable);
             }
         }).start();
     }

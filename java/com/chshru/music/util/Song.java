@@ -66,7 +66,13 @@ public class Song {
         if (song == null) {
             return false;
         }
-        return this.id == song.id;
+        if (type != song.type) {
+            return false;
+        }
+        if (type == TYPE_NET) {
+            return mid.equals(song.mid);
+        }
+        return id == song.id;
     }
 
 

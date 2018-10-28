@@ -44,8 +44,8 @@ public class HomeActivity extends ActivityBase implements StatusCallback {
 
     @Override
     protected void initialize() {
-        initializePages();
         initializeParams();
+        initializePages();
         initBottomBar();
     }
 
@@ -65,9 +65,6 @@ public class HomeActivity extends ActivityBase implements StatusCallback {
         if (!app.hasInitialized()) app.init(this);
         mSongTable = app.getSongTable();
         mPlayer = app.getPlayer();
-        SongScanner scanner = new SongScanner(this, app.getListData().getList(ListData.P_LOCAL));
-        scanner.startScan();
-
         startService(mIntent);
     }
 

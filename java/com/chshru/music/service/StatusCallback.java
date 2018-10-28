@@ -1,5 +1,6 @@
 package com.chshru.music.service;
 
+import android.app.Application;
 import android.content.Context;
 import android.os.Looper;
 
@@ -18,4 +19,6 @@ public interface StatusCallback {
     Looper getMainLooper();
 
     Context getApplicationContext();
+
+    Application getApplication();
 }

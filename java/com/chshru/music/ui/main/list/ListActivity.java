@@ -4,6 +4,7 @@ package com.chshru.music.ui.main.list;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
 import com.chshru.music.R;
 import com.chshru.music.base.ActivityBase;
@@ -38,6 +39,8 @@ public class ListActivity extends ActivityBase {
         mCurPos = -1;
         mApp = (MusicApp) getApplication();
         String title = mApp.getListData().getTitle();
+        TextView titleTv = findViewById(R.id.list_title);
+        titleTv.setText(title);
         int pos = mApp.getListData().getPos();
         List<Song> list = mApp.getListData().getList(pos);
         for (Song song : list) {
@@ -63,7 +66,8 @@ public class ListActivity extends ActivityBase {
                 mCurPos = pos;
                 mAdapter.get(mCurPos).playing = true;
                 mAdapter.notifyItemChanged(mCurPos);
-                mApp.getPlayer().prepare(mAdapter.get(pos));
+                Song song = mAdapter.get(mCurPos);
+                mApp.getPlayer().prepare(song);
             }
         });
     }

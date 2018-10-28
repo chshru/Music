@@ -9,16 +9,14 @@ import com.chshru.music.util.Song;
 
 import java.util.List;
 
-public class LocalSongList {
+public class MyLoveList {
 
     private Context mContext;
     private View mRoot;
     private List<Song> mList;
     private TextView mCount;
 
-
-
-    LocalSongList(Context context, View root, List<Song> list) {
+    MyLoveList(Context context, View root, List<Song> list) {
         mContext = context;
         mRoot = root;
         mList = list;
@@ -27,7 +25,7 @@ public class LocalSongList {
 
     private void initialize() {
         TextView listName = mRoot.findViewById(R.id.tv_name);
-        listName.setText(R.string.local_song);
+        listName.setText(R.string.my_love);
         mCount = mRoot.findViewById(R.id.tv_desc);
         mCount.setVisibility(View.INVISIBLE);
 

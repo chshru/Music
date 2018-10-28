@@ -13,7 +13,6 @@ public class ListData {
     public static final int P_HISTORY = 1;
     public static final int P_LOVE = 2;
 
-
     private List<List<Song>> mList;
     private String mTitle;
     private int mPos;
