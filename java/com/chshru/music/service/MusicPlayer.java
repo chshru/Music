@@ -2,10 +2,14 @@ package com.chshru.music.service;
 
 import android.content.Context;
 
+import com.chshru.music.base.MusicApp;
+import com.chshru.music.ui.main.list.ListData;
 import com.chshru.music.util.QQMusicApi;
 import com.chshru.music.util.Song;
 import com.danikula.videocache.CacheListener;
 import com.danikula.videocache.HttpProxyCacheServer;
+
+import java.util.List;
 
 /**
  * Created by abc on 18-10-22.
@@ -44,18 +48,30 @@ public class MusicPlayer {
         if (mCurSong != null && mCurSong.equals(song)) {
             return;
         }
-        if (mCurSong != null && mCurSong.type == Song.TYPE_LOCAL) {
+        if (mCurSong != null) {
             mCurSong.playing = false;
         }
         String local, url;
         if (song.type == Song.TYPE_NET) {
             url = QQMusicApi.buildSongUrl(song.mid);
             local = mCacheServer.getProxyUrl(url);
-            mCurSong = song;
-        } else {
             mCurSong = new Song(song);
-            url = song.link;
+        } else {
+            mCurSong = song;
+            url = mCurSong.link;
             local = url;
+        }
+        List<Song> history = ((MusicApp) mCallback.getApplication())
+                .getListData().getList(ListData.P_HISTORY);
+        boolean wasIn = false;
+        for (Song s : history) {
+            if (s.equals(mCurSong)) {
+                wasIn = true;
+                break;
+            }
+        }
+        if (!wasIn) {
+            history.add(mCurSong);
         }
         if (mCacheListener != null) {
             mCacheServer.registerCacheListener(mCacheListener, url);
