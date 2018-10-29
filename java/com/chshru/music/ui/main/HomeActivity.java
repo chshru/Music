@@ -117,7 +117,12 @@ public class HomeActivity extends ActivityBase implements StatusCallback {
     }
 
     @Override
-    public void togglePlayer() {
+    public void togglePlayer(boolean real) {
+        if (!real) {
+            mBottomLayout.freshLayout(mPlayer.isPlaying(), null);
+            return;
+        }
+
         if (!mPlayer.hasPrepare()) {
             return;
         }
@@ -129,6 +134,6 @@ public class HomeActivity extends ActivityBase implements StatusCallback {
 
     @Override
     public void onSongChanged(Song song) {
-        mBottomLayout.freshLayout(true, song);
+        mBottomLayout.freshLayout(mPlayer.isPlaying(), song);
     }
 }

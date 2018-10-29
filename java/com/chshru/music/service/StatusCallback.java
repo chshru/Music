@@ -14,7 +14,7 @@ public interface StatusCallback {
 
     void onSongChanged(Song song);
 
-    void togglePlayer();
+    void togglePlayer(boolean real);
 
     Looper getMainLooper();
 

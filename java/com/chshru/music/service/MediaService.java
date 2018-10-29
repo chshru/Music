@@ -12,7 +12,7 @@ import java.lang.ref.SoftReference;
  * Created by abc on 18-10-22.
  */
 
-public class MediaService extends Service implements MediaPlayer.OnPreparedListener {
+public class MediaService extends Service {
 
     private MediaPlayer mPlayer;
     private boolean mHasPrepare;
@@ -47,10 +47,9 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
         try {
             mHasPrepare = false;
             mPlayer.setDataSource(url);
-            mPlayer.setOnPreparedListener(this);
             mPlayer.prepareAsync();
-        } catch (Exception ignored) {
-            ignored.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -79,12 +78,13 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
         return mPlayer.isPlaying();
     }
 
-    @Override
-    public void onPrepared(MediaPlayer mediaPlayer) {
-        mHasPrepare = true;
-        mediaPlayer.start();
+    public void setPrepared(boolean prepared) {
+        mHasPrepare = prepared;
     }
 
+    private void setPreparedListener(MediaPlayer.OnPreparedListener listener) {
+        mPlayer.setOnPreparedListener(listener);
+    }
 
     private class PlayBinder extends Binder implements PlayService {
 
@@ -128,6 +128,18 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
         public boolean hasPrepare() {
             return mService.get().hasPrepare();
         }
+
+        @Override
+        public void setPreparedListener(MediaPlayer.OnPreparedListener listener) {
+            mService.get().setPreparedListener(listener);
+        }
+
+        @Override
+        public void serPrepared(boolean b) {
+            mService.get().setPrepared(b);
+        }
+
+
     }
 
 

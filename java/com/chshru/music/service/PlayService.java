@@ -1,5 +1,7 @@
 package com.chshru.music.service;
 
+import android.media.MediaPlayer;
+
 /**
  * Created by abc on 18-10-22.
  */
@@ -21,4 +23,7 @@ public interface PlayService {
 
     boolean hasPrepare();
 
+    void setPreparedListener(MediaPlayer.OnPreparedListener listener);
+
+    void serPrepared(boolean b);
 }

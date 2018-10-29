@@ -32,7 +32,7 @@ public class BottomLayout {
         mTitle = root.findViewById(R.id.bottom_title);
         mArtist = root.findViewById(R.id.bottom_artist);
         mAlbum = root.findViewById(R.id.bottom_album);
-        mPause.setOnClickListener(v -> mCallback.togglePlayer());
+        mPause.setOnClickListener(v -> mCallback.togglePlayer(true));
         mRoot = root;
 
     }

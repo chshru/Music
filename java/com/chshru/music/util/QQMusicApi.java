@@ -85,7 +85,7 @@ public class QQMusicApi {
                     j.getString("songmid"),
                     j.getString("songname"),
                     j.getJSONArray("singer").getJSONObject(0).getString("name"),
-                    "aaa",
+                    null,
                     j.getString("albummid")
             );
             ans.add(m);

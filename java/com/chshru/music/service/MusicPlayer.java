@@ -1,6 +1,7 @@
 package com.chshru.music.service;
 
 import android.content.Context;
+import android.media.MediaPlayer;
 
 import com.chshru.music.base.MusicApp;
 import com.chshru.music.ui.main.list.ListData;
@@ -15,7 +16,7 @@ import java.util.List;
  * Created by abc on 18-10-22.
  */
 
-public class MusicPlayer {
+public class MusicPlayer implements MediaPlayer.OnPreparedListener {
 
     private HttpProxyCacheServer mCacheServer;
     private PlayService mService;
@@ -61,6 +62,10 @@ public class MusicPlayer {
             url = QQMusicApi.buildSongUrl(song.mid);
             local = mCacheServer.getProxyUrl(url);
             mCurSong = new Song(song);
+        } else if (song.link == null) {
+            url = QQMusicApi.buildSongUrl(song.mid);
+            local = mCacheServer.getProxyUrl(url);
+            mCurSong = song;
         } else {
             mCurSong = song;
             url = mCurSong.link;
@@ -76,15 +81,25 @@ public class MusicPlayer {
             }
         }
         if (!wasIn) {
+            mCurSong.type = Song.TYPE_LOCAL;
             history.add(mCurSong);
         }
         if (mCacheListener != null) {
             mCacheServer.registerCacheListener(mCacheListener, url);
         }
+        mService.setPreparedListener(this);
         mService.prepare(local);
         if (mCallback != null) {
             mCallback.onSongChanged(mCurSong);
         }
+    }
+
+
+    @Override
+    public void onPrepared(MediaPlayer player) {
+        mService.serPrepared(true);
+        player.start();
+        mCallback.togglePlayer(false);
     }
 
     public Song getCurSong() {
