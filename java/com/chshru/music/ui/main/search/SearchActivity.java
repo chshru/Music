@@ -133,6 +133,9 @@ public class SearchActivity extends ActivityBase {
     }
 
     private void onQueryComplete(String result) {
+        if (result == null || (result != null && result.isEmpty())) {
+            return;
+        }
         List<Song> list = QQMusicApi.getSongFromResult(result);
         for (Song song : list) {
             if (song.equals(app.getPlayer().getCurSong())) {
@@ -160,6 +163,16 @@ public class SearchActivity extends ActivityBase {
             mSearch.clearFocus();
             mAdapter.stopLoad();
             onQuerySubmit(queryText);
+            return true;
+        }
+
+        @Override
+        public boolean onQueryTextChange(String newText) {
+            if (mAdapter.getItemCount() != 0) {
+                mAdapter.stopLoad();
+                mAdapter.clear();
+                mAdapter.notifyDataSetChanged();
+            }
             return true;
         }
     };
