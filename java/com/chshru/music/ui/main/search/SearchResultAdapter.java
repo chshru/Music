@@ -106,6 +106,12 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
         return mSong.size();
     }
 
+    public void stopLoad() {
+        if (mThread != null && mThread.isAlive()) {
+            mThread.interrupt();
+        }
+    }
+
     private class LoadThread extends Thread {
 
         @Override
