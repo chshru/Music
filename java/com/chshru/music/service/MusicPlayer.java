@@ -29,6 +29,11 @@ public class MusicPlayer {
         mCallback = callback;
     }
 
+    public void setCallback(StatusCallback callback) {
+        mCallback = callback;
+        mCallback.onSongChanged(mCurSong);
+    }
+
     public void addCacheListener(CacheListener listener) {
         mCacheListener = listener;
     }

@@ -69,6 +69,14 @@ public class LocalTab extends BaseTab {
         //scanner.startScan();
         mHistory = new HistoryList(mContext, history, list);
         history.setOnClickListener(view -> {
+            List<Song> listHis = app.getListData().getList(ListData.P_HISTORY);
+            for (Song song : listHis) {
+                if (song.playing) {
+                    if (!song.equals(app.getPlayer().getCurSong())) {
+                        song.playing = false;
+                    }
+                }
+            }
             app.getListData().setPos(ListData.P_HISTORY);
             app.getListData().setTitle(mContext.getString(R.string.history));
             Intent intent = new Intent(mContext, ListActivity.class);
