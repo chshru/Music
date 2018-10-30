@@ -38,25 +38,30 @@ public class Song {
     public boolean playing;
     public Bitmap albumBitmap;
 
+
     public int id; //数据库id
     String _id = "id";
 
+
     public int type; //网络,本地
+    String _type = "type";
+
 
     public String album;
-
     String _album = "album";
 
-    String _type = "type";
 
     public String mid; //网络songid
     String _mid = "mid";
 
+
     public String title;
     String _title = "title";
 
+
     public String artist;
     String _artist = "artist";
+
 
     public String link;
     String _link = "link";
@@ -65,12 +70,6 @@ public class Song {
     public boolean equals(Song song) {
         if (song == null) {
             return false;
-        }
-        if (type != song.type) {
-            return false;
-        }
-        if (type == TYPE_NET) {
-            return mid.equals(song.mid);
         }
         return id == song.id;
     }
