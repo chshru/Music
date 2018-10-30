@@ -6,7 +6,7 @@ import android.content.Context;
 import com.chshru.music.service.MusicPlayer;
 import com.chshru.music.service.StatusCallback;
 import com.chshru.music.ui.main.list.ListData;
-import com.chshru.music.util.SongTable;
+import com.chshru.music.util.HistoryTable;
 
 /**
  * Created by abc on 18-10-22.
@@ -15,7 +15,7 @@ import com.chshru.music.util.SongTable;
 public class MusicApp extends Application {
 
     private MusicPlayer mPlayer;
-    private SongTable mSongTable;
+    private HistoryTable mHistoryTable;
     private boolean mHasInit;
     private ListData mListData;
 
@@ -28,7 +28,8 @@ public class MusicApp extends Application {
     public void init(StatusCallback callback) {
         Context context = getApplicationContext();
         mPlayer = new MusicPlayer(context, callback);
-        mSongTable = new SongTable(context);
+        mHistoryTable = new HistoryTable(context);
+        mPlayer.setHistoryTable(mHistoryTable);
         mListData = new ListData();
         mHasInit = true;
     }
@@ -41,8 +42,8 @@ public class MusicApp extends Application {
         return mPlayer;
     }
 
-    public SongTable getSongTable() {
-        return mSongTable;
+    public HistoryTable getHistoryTable() {
+        return mHistoryTable;
     }
 
     public ListData getListData() {

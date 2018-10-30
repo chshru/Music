@@ -21,7 +21,7 @@ import com.chshru.music.ui.tab.TabAdapter;
 import com.chshru.music.service.MediaService;
 import com.chshru.music.service.MusicPlayer;
 import com.chshru.music.service.PlayService;
-import com.chshru.music.util.SongTable;
+import com.chshru.music.util.HistoryTable;
 import com.chshru.music.util.Song;
 
 
@@ -31,9 +31,7 @@ public class HomeActivity extends ActivityBase implements StatusCallback {
     private Intent mIntent;
     private BottomLayout mBottomLayout;
 
-    private SongTable mSongTable;
-    private Song mCurSong;
-
+    private HistoryTable mHistoryTable;
 
     @Override
     protected int getLayoutId() {
@@ -61,7 +59,7 @@ public class HomeActivity extends ActivityBase implements StatusCallback {
         mIntent = new Intent(this, MediaService.class);
         MusicApp app = (MusicApp) getApplication();
         if (!app.hasInitialized()) app.init(this);
-        mSongTable = app.getSongTable();
+        mHistoryTable = app.getHistoryTable();
         mPlayer = app.getPlayer();
         mPlayer.setCallback(this);
         startService(mIntent);

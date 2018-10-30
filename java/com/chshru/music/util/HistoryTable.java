@@ -10,11 +10,11 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by abc on 18-10-22.
  */
 
-public class SongTable extends SQLiteOpenHelper {
+public class HistoryTable extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "data.db";
     private static final int DB_VERSION = 1;
-    private static final String TABLE_NAME = "music";
+    private static final String TABLE_NAME = "history";
 
 
     private static final String CREATE_MUSIC_TABLE =
@@ -31,7 +31,7 @@ public class SongTable extends SQLiteOpenHelper {
                     .append(")")
                     .toString();
 
-    public SongTable(Context context) {
+    public HistoryTable(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
 

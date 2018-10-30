@@ -5,6 +5,7 @@ import android.media.MediaPlayer;
 
 import com.chshru.music.base.MusicApp;
 import com.chshru.music.ui.main.list.ListData;
+import com.chshru.music.util.HistoryTable;
 import com.chshru.music.util.QQMusicApi;
 import com.chshru.music.util.Song;
 import com.danikula.videocache.CacheListener;
@@ -23,6 +24,7 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
     private CacheListener mCacheListener;
     private StatusCallback mCallback;
     private Song mCurSong;
+    private HistoryTable mHistoryTable;
 
     public MusicPlayer(Context context, StatusCallback callback) {
         mCacheServer = new HttpProxyCacheServer(
@@ -33,6 +35,10 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
     public void setCallback(StatusCallback callback) {
         mCallback = callback;
         mCallback.onSongChanged(mCurSong);
+    }
+
+    public void setHistoryTable(HistoryTable historyTable) {
+        mHistoryTable = historyTable;
     }
 
     public void addCacheListener(CacheListener listener) {
