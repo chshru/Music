@@ -37,6 +37,11 @@ public class LocalTab extends BaseTab {
     }
 
     @Override
+    public void freshChild() {
+        mHandler.post(mFreshRunnable);
+    }
+
+    @Override
     protected void initialize() {
         mTitleTd = R.string.local_tab_title;
     }

@@ -23,6 +23,8 @@ public abstract class BaseTab {
         initialize();
     }
 
+    public abstract void freshChild();
+
     public int getResId() {
         return mLayoutId;
     }

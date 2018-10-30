@@ -1,4 +1,4 @@
-package com.chshru.music.ui.tab.searchtab;
+package com.chshru.music.ui.tab.onlinetab;
 
 import android.content.Context;
 import android.view.View;
@@ -15,6 +15,11 @@ public class OnlineTab extends BaseTab {
 
     public OnlineTab(StatusCallback callback, int resId) {
         super(callback, resId);
+    }
+
+    @Override
+    public void freshChild() {
+
     }
 
     @Override
