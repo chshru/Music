@@ -89,6 +89,7 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
         if (!wasIn) {
             mCurSong.type = Song.TYPE_LOCAL;
             history.add(mCurSong);
+            mHistoryTable.insert(mCurSong);
         }
         if (mCacheListener != null) {
             mCacheServer.registerCacheListener(mCacheListener, url);

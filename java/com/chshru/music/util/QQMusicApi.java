@@ -82,11 +82,11 @@ public class QQMusicApi {
             Song m = new Song(
                     j.getInteger("songid"),
                     Song.TYPE_NET,
+                    j.getString("albummid"),
                     j.getString("songmid"),
                     j.getString("songname"),
                     j.getJSONArray("singer").getJSONObject(0).getString("name"),
-                    null,
-                    j.getString("albummid")
+                    null
             );
             ans.add(m);
         }

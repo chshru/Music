@@ -29,6 +29,7 @@ public class LocalTab extends BaseTab {
     private MyLoveList mLoveList;
     private Handler mHandler;
     private MusicApp app;
+    private SongScanner scanner;
 
     public LocalTab(StatusCallback callback, int resId) {
         super(callback, resId);
@@ -42,6 +43,8 @@ public class LocalTab extends BaseTab {
 
     @Override
     public void initChild(Context context, View root) {
+        scanner = new SongScanner(context);
+        scanner.setCallback(mHandler, mFreshRunnable);
         initLocalList(context, root);
         initHistoryList(context, root);
         initMyLoveList(context, root);
@@ -51,23 +54,25 @@ public class LocalTab extends BaseTab {
         View myLove = root.findViewById(R.id.list_my_love);
         app = (MusicApp) mCallback.getApplication();
         List<Song> list = app.getListData().getList(ListData.P_LOVE);
-        mLoveList = new MyLoveList(mContext, myLove, list);
+        mLoveList = new MyLoveList(context, myLove, list);
         myLove.setOnClickListener(view -> {
             app.getListData().setPos(ListData.P_LOVE);
             app.getListData().setTitle(mContext.getString(R.string.my_love));
-            Intent intent = new Intent(mContext, ListActivity.class);
-            mContext.startActivity(intent);
+            Intent intent = new Intent(context, ListActivity.class);
+            context.startActivity(intent);
         });
     }
 
     private void initHistoryList(Context context, View root) {
         View history = root.findViewById(R.id.list_history);
         app = (MusicApp) mCallback.getApplication();
-        List<Song> list = app.getListData().getList(ListData.P_HISTORY);
-        //SongScanner scanner = new SongScanner(mContext, list);
-        //scanner.setCallback(mHandler, mFreshRunnable);
-        //scanner.startScan();
-        mHistory = new HistoryList(mContext, history, list);
+        List<Song> historyList = app.getListData().getList(ListData.P_HISTORY);
+        mHistory = new HistoryList(context, history, historyList);
+        mHistory.freshCount();
+        if (historyList.size() == 0) {
+            scanner.setHistoryList(historyList);
+            scanner.startHistoryScan(app.getHistoryTable());
+        }
         history.setOnClickListener(view -> {
             List<Song> listHis = app.getListData().getList(ListData.P_HISTORY);
             for (Song song : listHis) {
@@ -79,31 +84,38 @@ public class LocalTab extends BaseTab {
             }
             app.getListData().setPos(ListData.P_HISTORY);
             app.getListData().setTitle(mContext.getString(R.string.history));
-            Intent intent = new Intent(mContext, ListActivity.class);
-            mContext.startActivity(intent);
+            Intent intent = new Intent(context, ListActivity.class);
+            context.startActivity(intent);
         });
     }
 
     private void initLocalList(Context context, View root) {
         View localSong = root.findViewById(R.id.list_local_song);
         app = (MusicApp) mCallback.getApplication();
-        List<Song> list = app.getListData().getList(ListData.P_LOCAL);
-        SongScanner scanner = new SongScanner(mContext, list);
-        scanner.setCallback(mHandler, mFreshRunnable);
-        scanner.startScan();
-        mLocalSong = new LocalSongList(mContext, localSong, list);
+        List<Song> localList = app.getListData().getList(ListData.P_LOCAL);
+        mLocalSong = new LocalSongList(context, localSong, localList);
+        mLocalSong.freshCount();
+        if (localList.size() == 0) {
+            scanner.setLocalList(localList);
+            scanner.startLocalScan();
+        }
         localSong.setOnClickListener(view -> {
             app.getListData().setPos(ListData.P_LOCAL);
             app.getListData().setTitle(mContext.getString(R.string.local_song));
-            Intent intent = new Intent(mContext, ListActivity.class);
-            mContext.startActivity(intent);
+            Intent intent = new Intent(context, ListActivity.class);
+            context.startActivity(intent);
         });
     }
 
     private Runnable mFreshRunnable = new Runnable() {
         @Override
         public void run() {
-            mLocalSong.freshCount();
+            if (mLocalSong != null) {
+                mLocalSong.freshCount();
+            }
+            if (mHistory != null) {
+                mHistory.freshCount();
+            }
         }
     };
 }

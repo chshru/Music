@@ -122,7 +122,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
                     continue;
                 }
                 try {
-                    if (song.type == Song.TYPE_LOCAL) {
+                    if (song.album != null && song.album.length() > 15) {
                         song.albumBitmap = BitmapFactory.decodeFile(song.album);
                     } else {
                         URL url = new URL(QQMusicApi.buildAlbumUrl(song.album));

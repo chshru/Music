@@ -24,6 +24,7 @@ public class HistoryTable extends SQLiteOpenHelper {
                     .append(" (")
                     .append("id integer primary key,")
                     .append("type integer,")
+                    .append("album text,")
                     .append("mid integer,")
                     .append("title text,")
                     .append("artist text,")
@@ -48,12 +49,13 @@ public class HistoryTable extends SQLiteOpenHelper {
     public void insert(Song song) {
         SQLiteDatabase db = getReadableDatabase();
         ContentValues values = new ContentValues();
-        values.put(song._id, song.id);
-        values.put(song._type, song.type);
-        values.put(song._mid, song.mid);
-        values.put(song._title, song.title);
-        values.put(song._artist, song.artist);
-        values.put(song._link, song.link);
+        values.put(Song._id, song.id);
+        values.put(Song._type, song.type);
+        values.put(Song._album, song.album);
+        values.put(Song._mid, song.mid);
+        values.put(Song._title, song.title);
+        values.put(Song._artist, song.artist);
+        values.put(Song._link, song.link);
         db.insert(TABLE_NAME, null, values);
     }
 
@@ -63,17 +65,26 @@ public class HistoryTable extends SQLiteOpenHelper {
 
     public void delete(Song m) {
         SQLiteDatabase db = getReadableDatabase();
-        String sql = m._id + "=?";
+        String sql = Song._id + "=?";
         String[] args = {Integer.toString(m.id)};
         db.delete(TABLE_NAME, sql, args);
     }
 
 
-    public Cursor query(Song m) {
+    public Cursor query() {
         SQLiteDatabase db = getReadableDatabase();
+        String[] columns = {
+                Song._id,
+                Song._type,
+                Song._album,
+                Song._mid,
+                Song._title,
+                Song._artist,
+                Song._link,
+        };
         return db.query(
                 TABLE_NAME,
-                null,
+                columns,
                 null,
                 null,
                 null,

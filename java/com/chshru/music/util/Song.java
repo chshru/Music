@@ -10,7 +10,7 @@ public class Song {
     public static final int TYPE_LOCAL = 0;
     public static final int TYPE_NET = 1;
 
-    public Song(int id, int type, String mid, String title, String artist, String link, String album) {
+    public Song(int id, int type, String album, String mid, String title, String artist, String link) {
         this.id = id;
         this.type = type;
         this.mid = mid;
@@ -40,31 +40,31 @@ public class Song {
 
 
     public int id; //数据库id
-    String _id = "id";
+    public static String _id = "id";
 
 
     public int type; //网络,本地
-    String _type = "type";
+    public static String _type = "type";
 
 
     public String album;
-    String _album = "album";
+    public static String _album = "album";
 
 
     public String mid; //网络songid
-    String _mid = "mid";
+    public static String _mid = "mid";
 
 
     public String title;
-    String _title = "title";
+    public static String _title = "title";
 
 
     public String artist;
-    String _artist = "artist";
+    public static String _artist = "artist";
 
 
     public String link;
-    String _link = "link";
+    public static String _link = "link";
 
 
     public boolean equals(Song song) {

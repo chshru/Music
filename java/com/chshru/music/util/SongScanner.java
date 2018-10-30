@@ -14,25 +14,56 @@ import java.util.List;
 public class SongScanner {
 
     private Context mContext;
-    private List<Song> mList;
+    private List<Song> mLocalList;
+    private List<Song> mHistoryList;
+    private List<Song> mLoveList;
     private ChinaInitial mChina;
     private Handler mHandler;
     private Runnable mRunnable;
 
-    public SongScanner(Context context, List<Song> list) {
+    public SongScanner(Context context) {
         mChina = new ChinaInitial();
         mContext = context;
-        mList = list;
     }
 
+    public void setLocalList(List<Song> localList) {
+        mLocalList = localList;
+    }
+
+    public void setHistoryList(List<Song> historyList) {
+        mHistoryList = historyList;
+    }
+
+    public void setLoveList(List<Song> loveList) {
+        mLoveList = loveList;
+    }
 
     public void setCallback(Handler handler, Runnable runnable) {
         mHandler = handler;
         mRunnable = runnable;
     }
 
-    public void startScan() {
-        mList.clear();
+    public void startHistoryScan(HistoryTable table) {
+        Cursor cursor = table.query();
+        cursor.moveToFirst();
+        if (cursor.getCount() != 0) {
+            do {
+                int id = cursor.getInt(0);
+                int type = cursor.getInt(1);
+                String album = cursor.getString(2);
+                String mid = cursor.getString(3);
+                String title = cursor.getString(4);
+                String artist = cursor.getString(5);
+                String link = cursor.getString(6);
+                Song song = new Song(id, type, album, mid, title, artist, link);
+                mHistoryList.add(song);
+            } while (cursor.moveToNext());
+        }
+        mHandler.post(mRunnable);
+    }
+
+    public void startLocalScan() {
+        mLocalList.clear();
         new Thread(() -> {
             Cursor cursor = mContext.getContentResolver().query(
                     Media.EXTERNAL_CONTENT_URI,
@@ -51,17 +82,17 @@ public class SongScanner {
                         Song song = new Song(
                                 Integer.valueOf(id),
                                 Song.TYPE_LOCAL,
+                                LocalMusicApi.getAlbumArtFromId(album, mContext),
                                 null,
                                 title,
                                 artist,
-                                link,
-                                LocalMusicApi.getAlbumArtFromId(album, mContext)
+                                link
                         );
-                        mList.add(song);
+                        mLocalList.add(song);
                     }
                 }
             }
-            Collections.sort(mList, cmp);
+            Collections.sort(mLocalList, cmp);
             if (cursor != null) {
                 cursor.close();
             }
@@ -100,4 +131,5 @@ public class SongScanner {
     private String getHeadChar(String str) {
         return mChina.getPyHeadStr(str, true);
     }
+
 }

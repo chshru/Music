@@ -3,6 +3,7 @@ package com.chshru.music.ui.main;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.database.Cursor;
 import android.os.IBinder;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -13,6 +14,7 @@ import com.chshru.music.R;
 import com.chshru.music.base.ActivityBase;
 import com.chshru.music.base.MusicApp;
 import com.chshru.music.service.StatusCallback;
+import com.chshru.music.ui.main.list.ListData;
 import com.chshru.music.ui.main.search.SearchActivity;
 import com.chshru.music.ui.tab.localtab.LocalTab;
 import com.chshru.music.ui.tab.searchtab.OnlineTab;
@@ -23,6 +25,8 @@ import com.chshru.music.service.MusicPlayer;
 import com.chshru.music.service.PlayService;
 import com.chshru.music.util.HistoryTable;
 import com.chshru.music.util.Song;
+
+import java.util.List;
 
 
 public class HomeActivity extends ActivityBase implements StatusCallback {
