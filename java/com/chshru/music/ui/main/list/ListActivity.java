@@ -11,6 +11,7 @@ import com.chshru.music.base.ActivityBase;
 import com.chshru.music.base.MusicApp;
 import com.chshru.music.ui.main.search.SearchResultAdapter;
 import com.chshru.music.ui.main.search.SearchResultAdapter.OnItemClickListener;
+import com.chshru.music.ui.tab.localtab.LocalTab;
 import com.chshru.music.util.Song;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class ListActivity extends ActivityBase {
     private SearchResultAdapter mAdapter;
     private MusicApp mApp;
     private int mCurPos;
+    private int mStartType;
 
     @Override
     protected int getLayoutId() {
@@ -50,6 +52,7 @@ public class ListActivity extends ActivityBase {
                 break;
             }
         }
+        mStartType = getIntent().getIntExtra(LocalTab.STARY_TYPE, -1);
         mAdapter = new SearchResultAdapter(list, getMainLooper());
         mRecycler = findViewById(R.id.list_recycler);
         mRecycler.setLayoutManager(new LinearLayoutManager(this));
@@ -59,15 +62,15 @@ public class ListActivity extends ActivityBase {
             @Override
             public void onItemClick(View v) {
                 int pos = mRecycler.getChildAdapterPosition(v);
+                System.out.println("chenshanru pos = " + pos);
                 if (mCurPos != -1 && mCurPos < mAdapter.getItemCount()) {
                     mAdapter.get(mCurPos).playing = false;
-                    mAdapter.notifyItemChanged(mCurPos);
                 }
                 mCurPos = pos;
                 mAdapter.get(mCurPos).playing = true;
-                mAdapter.notifyItemChanged(mCurPos);
                 Song song = mAdapter.get(mCurPos);
                 mApp.getPlayer().prepare(song);
+                mAdapter.notifyDataSetChanged();
             }
         });
     }

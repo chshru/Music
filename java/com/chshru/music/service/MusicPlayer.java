@@ -64,38 +64,41 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
             mCurSong.playing = false;
         }
         String local, url;
-        if (song.type == Song.TYPE_NET) {
+        if (song.type == Song.TYPE_NET || song.link == null) {
             url = QQMusicApi.buildSongUrl(song.mid);
             local = mCacheServer.getProxyUrl(url);
-            mCurSong = new Song(song);
-        } else if (song.link == null) {
-            url = QQMusicApi.buildSongUrl(song.mid);
-            local = mCacheServer.getProxyUrl(url);
-            mCurSong = song;
         } else {
-            mCurSong = song;
-            url = mCurSong.link;
+            url = song.link;
             local = url;
-        }
-        List<Song> history = ((MusicApp) mCallback.getApplication())
-                .getListData().getList(ListData.P_HISTORY);
-        boolean wasIn = false;
-        for (Song s : history) {
-            if (s.equals(mCurSong)) {
-                wasIn = true;
-                break;
-            }
-        }
-        if (!wasIn) {
-            mCurSong.type = Song.TYPE_LOCAL;
-            history.add(mCurSong);
-            mHistoryTable.insert(mCurSong);
-        }
-        if (mCacheListener != null) {
-            mCacheServer.registerCacheListener(mCacheListener, url);
         }
         mService.setPreparedListener(this);
         mService.prepare(local);
+
+        mCurSong = new Song(song);
+        mCurSong.type = Song.TYPE_LOCAL;
+        mCurSong.time = String.valueOf(System.currentTimeMillis());
+        List<Song> history = ((MusicApp) mCallback.getApplication())
+                .getListData().getList(ListData.P_HISTORY);
+        Song tempSong = null;
+        for (Song s : history) {
+            if (s.equals(mCurSong)) {
+                tempSong = s;
+                history.remove(s);
+                break;
+            }
+        }
+        if (tempSong != null) {
+            tempSong.copyFrom(mCurSong);
+        } else {
+            tempSong = new Song(mCurSong);
+        }
+        history.add(0, tempSong);
+        mHistoryTable.insert(mCurSong);
+
+        if (mCacheListener != null) {
+            mCacheServer.registerCacheListener(mCacheListener, url);
+        }
+
         if (mCallback != null) {
             mCallback.onSongChanged(mCurSong);
         }

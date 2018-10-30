@@ -31,7 +31,23 @@ public class Song {
             this.artist = song.artist;
             this.link = song.link;
             this.album = song.album;
-            playing = false;
+            this.playing = song.playing;
+            this.time = song.time;
+        }
+    }
+
+    public void copyFrom(Song song) {
+        if (song != null) {
+            this.id = song.id;
+            this.albumBitmap = song.albumBitmap;
+            this.type = song.type;
+            this.mid = song.mid;
+            this.title = song.title;
+            this.artist = song.artist;
+            this.link = song.link;
+            this.album = song.album;
+            this.playing = song.playing;
+            this.time = song.time;
         }
     }
 
@@ -66,6 +82,9 @@ public class Song {
     public String link;
     public static String _link = "link";
 
+    public String time;
+    public static String _time = "time";
+
 
     public boolean equals(Song song) {
         if (song == null) {
@@ -85,4 +104,5 @@ public class Song {
                 _link + "=" + link +
                 _album + "=" + album;
     }
+
 }

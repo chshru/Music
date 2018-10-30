@@ -24,6 +24,11 @@ import java.util.List;
 
 public class LocalTab extends BaseTab {
 
+    public static final int START_BY_LOCAL = 1;
+    public static final int START_BY_HISTORY = 2;
+    public static final int START_BY_LOVE = 3;
+    public static final String STARY_TYPE = "start_type";
+
     private LocalSongList mLocalSong;
     private HistoryList mHistory;
     private MyLoveList mLoveList;
@@ -64,6 +69,7 @@ public class LocalTab extends BaseTab {
             app.getListData().setPos(ListData.P_LOVE);
             app.getListData().setTitle(mContext.getString(R.string.my_love));
             Intent intent = new Intent(context, ListActivity.class);
+            intent.putExtra(STARY_TYPE, START_BY_LOVE);
             context.startActivity(intent);
         });
     }
@@ -90,6 +96,7 @@ public class LocalTab extends BaseTab {
             app.getListData().setPos(ListData.P_HISTORY);
             app.getListData().setTitle(mContext.getString(R.string.history));
             Intent intent = new Intent(context, ListActivity.class);
+            intent.putExtra(STARY_TYPE, START_BY_HISTORY);
             context.startActivity(intent);
         });
     }
@@ -108,6 +115,7 @@ public class LocalTab extends BaseTab {
             app.getListData().setPos(ListData.P_LOCAL);
             app.getListData().setTitle(mContext.getString(R.string.local_song));
             Intent intent = new Intent(context, ListActivity.class);
+            intent.putExtra(STARY_TYPE, START_BY_LOCAL);
             context.startActivity(intent);
         });
     }

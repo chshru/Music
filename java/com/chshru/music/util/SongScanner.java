@@ -55,10 +55,13 @@ public class SongScanner {
                 String title = cursor.getString(4);
                 String artist = cursor.getString(5);
                 String link = cursor.getString(6);
+                String time = cursor.getString(7);
                 Song song = new Song(id, type, album, mid, title, artist, link);
+                song.time = time;
                 mHistoryList.add(song);
             } while (cursor.moveToNext());
         }
+        Collections.sort(mHistoryList, cmpByTime);
         mHandler.post(mRunnable);
     }
 
@@ -92,7 +95,7 @@ public class SongScanner {
                     }
                 }
             }
-            Collections.sort(mLocalList, cmp);
+            Collections.sort(mLocalList, cmpByTitle);
             if (cursor != null) {
                 cursor.close();
             }
@@ -102,7 +105,14 @@ public class SongScanner {
         }).start();
     }
 
-    private Comparator<Song> cmp = (o1, o2) -> {
+    private Comparator<Song> cmpByTime = (o1, o2) -> {
+        if (o2.time != null && o1.time != null) {
+            return o2.time.compareTo(o1.time);
+        }
+        return 0;
+    };
+
+    private Comparator<Song> cmpByTitle = (o1, o2) -> {
         String str1 = o1.title;
         String str2 = o2.title;
         if (isEnglish(str1) && isEnglish(str2))

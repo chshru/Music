@@ -28,7 +28,8 @@ public class HistoryTable extends SQLiteOpenHelper {
                     .append("mid integer,")
                     .append("title text,")
                     .append("artist text,")
-                    .append("link text")
+                    .append("link text,")
+                    .append("time text")
                     .append(")")
                     .toString();
 
@@ -56,6 +57,7 @@ public class HistoryTable extends SQLiteOpenHelper {
         values.put(Song._title, song.title);
         values.put(Song._artist, song.artist);
         values.put(Song._link, song.link);
+        values.put(Song._time, song.time);
         db.insert(TABLE_NAME, null, values);
     }
 
@@ -81,6 +83,7 @@ public class HistoryTable extends SQLiteOpenHelper {
                 Song._title,
                 Song._artist,
                 Song._link,
+                Song._time,
         };
         return db.query(
                 TABLE_NAME,
