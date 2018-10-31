@@ -8,6 +8,7 @@ import android.view.View;
 import com.chshru.music.R;
 import com.chshru.music.base.ActivityBase;
 import com.chshru.music.base.MusicApp;
+import com.chshru.music.manager.HttpManager;
 import com.chshru.music.ui.main.search.SearchResultAdapter.OnItemClickListener;
 import com.chshru.music.ui.view.ActionSearchView;
 import com.chshru.music.ui.view.ActionSearchView.OnTextChangeListener;
@@ -34,6 +35,7 @@ public class SearchActivity extends ActivityBase {
     private int mQueriedPos;
     private LinearLayoutManager mLayoutManager;
     private String mQueryString;
+    private OnScrollListener mOnScrollListener;
 
     @Override
     protected int getLayoutId() {
@@ -56,6 +58,7 @@ public class SearchActivity extends ActivityBase {
         mSearch.setOnQueryTextListener(mSearchListener);
         mRecycler = findViewById(R.id.search_aty_recycler);
         mAdapter = new SearchResultAdapter(new ArrayList<>(), getMainLooper());
+        mAdapter.setCacheServer(HttpManager.getCacheServer(this));
         mAdapter.setOnItemClickListener(mItemClickListener);
         mLayoutManager = new LinearLayoutManager(this);
         mRecycler.setLayoutManager(mLayoutManager);
@@ -65,40 +68,48 @@ public class SearchActivity extends ActivityBase {
             mSearch.clearFocus();
             finish();
         });
-        mRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
-
-            private int totalItemCount;
-            private int previousTotal = 0;
-            private int visibleItemCount;
-            private int firstVisibleItem;
-            private boolean loading = true;
-
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                visibleItemCount = recyclerView.getChildCount();
-                totalItemCount = mLayoutManager.getItemCount();
-                firstVisibleItem = mLayoutManager.findFirstVisibleItemPosition();
-                if (loading) {
-                    if (totalItemCount > previousTotal) {
-                        loading = false;
-                        previousTotal = totalItemCount;
-                    }
-                }
-
-                if (!loading && totalItemCount - visibleItemCount <= firstVisibleItem) {
-                    mQueriedPos++;
-                    loading = true;
-                    onQueryMore();
-                }
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-            }
-        });
+        mOnScrollListener = new OnScrollListener();
+        mRecycler.addOnScrollListener(mOnScrollListener);
     }
+
+    private class OnScrollListener extends RecyclerView.OnScrollListener {
+
+        public int totalItemCount;
+        public int previousTotal;
+        public int visibleItemCount;
+        public int firstVisibleItem;
+        public boolean loading = true;
+
+        public void init() {
+            totalItemCount = 0;
+            previousTotal = 0;
+            visibleItemCount = 0;
+            firstVisibleItem = 0;
+            loading = true;
+        }
+
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+            visibleItemCount = recyclerView.getChildCount();
+            totalItemCount = mLayoutManager.getItemCount();
+            firstVisibleItem = mLayoutManager.findFirstVisibleItemPosition();
+            if (loading) {
+                if (totalItemCount > previousTotal) {
+                    loading = false;
+                    previousTotal = totalItemCount;
+                }
+            }
+
+            if (!loading && totalItemCount - visibleItemCount <= firstVisibleItem) {
+                mQueriedPos++;
+                loading = true;
+                onQueryMore();
+            }
+        }
+
+    }
+
 
     private OnItemClickListener mItemClickListener = new OnItemClickListener() {
         @Override
@@ -162,6 +173,7 @@ public class SearchActivity extends ActivityBase {
         public boolean onQueryTextSubmit(String queryText) {
             mSearch.clearFocus();
             mAdapter.stopLoad();
+            mOnScrollListener.init();
             onQuerySubmit(queryText);
             return true;
         }
