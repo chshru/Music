@@ -89,11 +89,13 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
         }
         if (tempSong != null) {
             tempSong.copyFrom(mCurSong);
+            mHistoryTable.update(mCurSong);
         } else {
             tempSong = new Song(mCurSong);
+            mHistoryTable.insert(mCurSong);
         }
         history.add(0, tempSong);
-        mHistoryTable.insert(mCurSong);
+
 
         if (mCacheListener != null) {
             mCacheServer.registerCacheListener(mCacheListener, url);

@@ -58,17 +58,23 @@ public class HistoryTable extends SQLiteOpenHelper {
         values.put(Song._artist, song.artist);
         values.put(Song._link, song.link);
         values.put(Song._time, song.time);
+        delete(song);
         db.insert(TABLE_NAME, null, values);
     }
 
-    public void update(Song m) {
-
+    public void update(Song song) {
+        SQLiteDatabase db = getReadableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(Song._time, song.time);
+        String sql = Song._id + "=?";
+        String[] args = {Integer.toString(song.id)};
+        db.update(TABLE_NAME, values, sql, args);
     }
 
-    public void delete(Song m) {
+    public void delete(Song song) {
         SQLiteDatabase db = getReadableDatabase();
         String sql = Song._id + "=?";
-        String[] args = {Integer.toString(m.id)};
+        String[] args = {Integer.toString(song.id)};
         db.delete(TABLE_NAME, sql, args);
     }
 
