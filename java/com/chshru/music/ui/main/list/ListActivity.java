@@ -61,16 +61,24 @@ public class ListActivity extends ActivityBase {
         mAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View v) {
-                int pos = mRecycler.getChildAdapterPosition(v);
-                System.out.println("chenshanru pos = " + pos);
-                if (mCurPos != -1 && mCurPos < mAdapter.getItemCount()) {
-                    mAdapter.get(mCurPos).playing = false;
+                if (mStartType != LocalTab.START_BY_HISTORY) {
+                    int pos = mRecycler.getChildAdapterPosition(v);
+                    if (mCurPos != -1 && mCurPos < mAdapter.getItemCount()) {
+                        mAdapter.get(mCurPos).playing = false;
+                    }
+                    mCurPos = pos;
+                    mAdapter.get(mCurPos).playing = true;
+                    Song song = mAdapter.get(mCurPos);
+                    mApp.getPlayer().prepare(song);
+                    mAdapter.notifyDataSetChanged();
+                } else {
+                    mAdapter.get(0).playing = false;
+                    int pos = mRecycler.getChildAdapterPosition(v);
+                    mAdapter.get(pos).playing = true;
+                    Song song = mAdapter.get(pos);
+                    mApp.getPlayer().prepare(song);
+                    mAdapter.notifyDataSetChanged();
                 }
-                mCurPos = pos;
-                mAdapter.get(mCurPos).playing = true;
-                Song song = mAdapter.get(mCurPos);
-                mApp.getPlayer().prepare(song);
-                mAdapter.notifyDataSetChanged();
             }
         });
     }
