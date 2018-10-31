@@ -70,14 +70,14 @@ public class ListActivity extends ActivityBase {
                     mAdapter.get(mCurPos).playing = true;
                     Song song = mAdapter.get(mCurPos);
                     mApp.getPlayer().prepare(song);
-                    mAdapter.notifyDataSetChanged();
+                    mAdapter.notifyDataDelayed(1000);
                 } else {
                     mAdapter.get(0).playing = false;
                     int pos = mRecycler.getChildAdapterPosition(v);
                     mAdapter.get(pos).playing = true;
                     Song song = mAdapter.get(pos);
                     mApp.getPlayer().prepare(song);
-                    mAdapter.notifyDataSetChanged();
+                    mAdapter.notifyDataDelayed(1000);
                 }
             }
         });

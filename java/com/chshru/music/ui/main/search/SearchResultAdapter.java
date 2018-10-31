@@ -67,6 +67,10 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
         return mSong.get(pos);
     }
 
+    public void notifyDataDelayed(int time) {
+        mHandler.postDelayed(mFreshRunnable, time);
+    }
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
