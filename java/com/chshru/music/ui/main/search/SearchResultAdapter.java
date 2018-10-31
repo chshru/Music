@@ -14,6 +14,7 @@ import com.chshru.music.R;
 import com.chshru.music.ui.view.AlbumImage;
 import com.chshru.music.util.QQMusicApi;
 import com.chshru.music.util.Song;
+import com.danikula.videocache.HttpProxyCacheServer;
 
 
 import java.io.IOException;
@@ -30,7 +31,7 @@ import java.util.Queue;
 
 public class SearchResultAdapter extends RecyclerView.Adapter {
 
-
+    private HttpProxyCacheServer mCacheServer;
     private List<Song> mSong;
     private Queue<Song> mCacheQueue;
     private OnItemClickListener mClickListener;
@@ -39,11 +40,14 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
 
     public SearchResultAdapter(List<Song> list, Looper main) {
         mSong = list;
-        mNeedFreshItem = -1;
         mHandler = new Handler(main);
         mCacheQueue = new LinkedList<>(list);
         mThread = new LoadThread();
         mThread.start();
+    }
+
+    public void setCacheServer(HttpProxyCacheServer cacheServer) {
+        mCacheServer = cacheServer;
     }
 
     public void addAll(List<Song> list) {
@@ -117,6 +121,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
         @Override
         public void run() {
             while (mCacheQueue.peek() != null) {
+
                 Song song = mCacheQueue.poll();
                 if (song.albumBitmap != null) {
                     continue;
@@ -124,41 +129,46 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
                 try {
                     if (song.album != null && song.album.length() > 15) {
                         song.albumBitmap = BitmapFactory.decodeFile(song.album);
-                    } else {
-                        URL url = new URL(QQMusicApi.buildAlbumUrl(song.album));
-                        solveNetUrl(url, song);
+                    } else if (song.album != null) {
+                        solveNetUrl(QQMusicApi.buildAlbumUrl(song.album), song);
                     }
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                     mCacheQueue.offer(song);
                 }
             }
         }
 
-        private void solveNetUrl(URL url, Song song) throws IOException {
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.setConnectTimeout(10000);
-            if (conn.getResponseCode() == 200) {
-                InputStream inputStream = conn.getInputStream();
-                song.albumBitmap = BitmapFactory.decodeStream(inputStream);
-                mNeedFreshItem = mSong.lastIndexOf(song);
-                mHandler.post(mFreshRunnable);
+        private void solveNetUrl(String str, Song song) throws Exception {
+            String local = null;
+            String link = str;
+            if (mCacheServer != null) {
+                local = mCacheServer.getProxyUrl(str);
+            }
+            if (local == null || (local != null && local.contains("http"))) {
+                if (local != null) {
+                    link = local;
+                }
+                URL url = new URL(link);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.setConnectTimeout(10000);
+                if (conn.getResponseCode() == 200) {
+                    InputStream inputStream = conn.getInputStream();
+                    song.albumBitmap = BitmapFactory.decodeStream(inputStream);
+                    mHandler.post(mFreshRunnable);
+                } else {
+                    mCacheQueue.offer(song);
+                }
             } else {
-                mCacheQueue.offer(song);
+                local = local.replace("file://", "");
+                song.albumBitmap = BitmapFactory.decodeFile(local);
+                mHandler.post(mFreshRunnable);
             }
         }
     }
 
-    private int mNeedFreshItem;
-    private Runnable mFreshRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (mNeedFreshItem != -1) {
-                notifyItemChanged(mNeedFreshItem);
-            }
-        }
-    };
+    private Runnable mFreshRunnable = this::notifyDataSetChanged;
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         mClickListener = listener;
