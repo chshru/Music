@@ -2,6 +2,7 @@ package com.chshru.music.ui.tab.localtab;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.chshru.music.R;
@@ -17,7 +18,6 @@ public class LocalSongList {
     private TextView mCount;
 
 
-
     LocalSongList(Context context, View root, List<Song> list) {
         mContext = context;
         mRoot = root;
@@ -28,6 +28,8 @@ public class LocalSongList {
     private void initialize() {
         TextView listName = mRoot.findViewById(R.id.tv_name);
         listName.setText(R.string.local_song);
+        ImageView iconLeft = mRoot.findViewById(R.id.iv_icon);
+        iconLeft.setImageResource(R.drawable.icon_local_list);
         mCount = mRoot.findViewById(R.id.tv_desc);
         mCount.setVisibility(View.INVISIBLE);
 

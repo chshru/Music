@@ -2,6 +2,7 @@ package com.chshru.music.ui.tab.localtab;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.chshru.music.R;
@@ -26,6 +27,8 @@ public class MyLoveList {
     private void initialize() {
         TextView listName = mRoot.findViewById(R.id.tv_name);
         listName.setText(R.string.my_love);
+        ImageView iconLeft = mRoot.findViewById(R.id.iv_icon);
+        iconLeft.setImageResource(R.drawable.icon_favorite_list);
         mCount = mRoot.findViewById(R.id.tv_desc);
         mCount.setVisibility(View.INVISIBLE);
 

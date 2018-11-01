@@ -129,6 +129,10 @@ public class LocalTab extends BaseTab {
             if (mHistory != null) {
                 mHistory.freshCount();
             }
+
+            if (mLoveList != null) {
+                mLoveList.freshCount();
+            }
         }
     };
 }
