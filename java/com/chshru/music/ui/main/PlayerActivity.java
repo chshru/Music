@@ -11,6 +11,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.chshru.music.R;
 import com.chshru.music.base.MusicApp;
@@ -34,6 +35,8 @@ public class PlayerActivity extends Activity implements StatusCallback {
     private ObjectAnimator mAnimator;
     private MusicPlayer mPlayer;
     private PlayPauseButton mPause;
+    private TextView mTitle;
+    private TextView mArtist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +62,8 @@ public class PlayerActivity extends Activity implements StatusCallback {
         mAlbumPic = findViewById(R.id.civ_cover);
         mPlayingBg = findViewById(R.id.playingBgIv);
         mPause = findViewById(R.id.playPauseIv);
+        mTitle = findViewById(R.id.tv_title);
+        mArtist = findViewById(R.id.tv_artist);
         mPause.setOnClickListener(view -> togglePlayer(true));
         mApp = (MusicApp) getApplication();
         mPlayer = mApp.getPlayer();
@@ -86,6 +91,10 @@ public class PlayerActivity extends Activity implements StatusCallback {
             mAlbumPic.setImageBitmap(song.albumBitmap);
             Drawable bg = ImageUtil.createBgFromBitmap(song.albumBitmap, 12, this);
             ImageUtil.startChangeAnimation(mPlayingBg, bg);
+        }
+        if (song != null) {
+            mTitle.setText(song.title);
+            mArtist.setText(song.artist);
         }
         if (mPlayer.isPlaying()) {
 
