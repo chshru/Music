@@ -27,9 +27,9 @@ public class MusicApp extends Application {
         mHasInit = false;
     }
 
-    public void init(StatusCallback callback) {
+    public void init() {
         Context context = getApplicationContext();
-        mPlayer = new MusicPlayer(context, callback);
+        mPlayer = new MusicPlayer(context, this);
         mHistoryTable = new HistoryTable(context);
         mLoveTable = new LoveTable(context);
         mPlayer.setHistoryTable(mHistoryTable);

@@ -11,6 +11,7 @@ import com.chshru.music.util.Song;
 import com.danikula.videocache.CacheListener;
 import com.danikula.videocache.HttpProxyCacheServer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,19 +23,21 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
     private HttpProxyCacheServer mCacheServer;
     private PlayService mService;
     private CacheListener mCacheListener;
-    private StatusCallback mCallback;
     private Song mCurSong;
     private HistoryTable mHistoryTable;
+    private List<StatusCallback> mCallbacks;
+    private MusicApp mApp;
 
-    public MusicPlayer(Context context, StatusCallback callback) {
+    public MusicPlayer(Context context, MusicApp app) {
         mCacheServer = new HttpProxyCacheServer(
                 context.getApplicationContext());
-        mCallback = callback;
+        mCallbacks = new ArrayList<>();
+        mApp = app;
     }
 
-    public void setCallback(StatusCallback callback) {
-        mCallback = callback;
-        mCallback.onSongChanged(mCurSong);
+    public void addCallback(StatusCallback callback) {
+        mCallbacks.add(callback);
+        callback.onSongChanged(mCurSong);
     }
 
     public void setHistoryTable(HistoryTable historyTable) {
@@ -77,8 +80,7 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
         mCurSong = new Song(song);
         mCurSong.type = Song.TYPE_LOCAL;
         mCurSong.time = String.valueOf(System.currentTimeMillis());
-        List<Song> history = ((MusicApp) mCallback.getApplication())
-                .getListData().getList(ListData.P_HISTORY);
+        List<Song> history = mApp.getListData().getList(ListData.P_HISTORY);
         Song tempSong = null;
         for (Song s : history) {
             if (s.equals(mCurSong)) {
@@ -101,9 +103,12 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
             mCacheServer.registerCacheListener(mCacheListener, url);
         }
 
-        if (mCallback != null) {
-            mCallback.onSongChanged(mCurSong);
+        for (StatusCallback callback : mCallbacks) {
+            if (callback != null) {
+                callback.onSongChanged(mCurSong);
+            }
         }
+
     }
 
 
@@ -111,7 +116,11 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
     public void onPrepared(MediaPlayer player) {
         mService.serPrepared(true);
         player.start();
-        mCallback.togglePlayer(false);
+        for (StatusCallback callback : mCallbacks) {
+            if (callback != null) {
+                callback.togglePlayer(false);
+            }
+        }
     }
 
     public Song getCurSong() {
@@ -147,4 +156,17 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
         return mService != null && mService.hasPrepare();
     }
 
+    public void togglePause() {
+        if (!hasPrepare()) {
+            return;
+        }
+        boolean playing = isPlaying();
+        if (playing) pause();
+        else start();
+        for (StatusCallback callback : mCallbacks) {
+            if (callback != null) {
+                callback.togglePlayer(false);
+            }
+        }
+    }
 }

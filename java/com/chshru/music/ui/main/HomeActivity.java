@@ -60,10 +60,10 @@ public class HomeActivity extends ActivityBase implements StatusCallback {
     private void initializeParams() {
         mIntent = new Intent(this, MediaService.class);
         MusicApp app = (MusicApp) getApplication();
-        if (!app.hasInitialized()) app.init(this);
+        if (!app.hasInitialized()) app.init();
         mHistoryTable = app.getHistoryTable();
         mPlayer = app.getPlayer();
-        mPlayer.setCallback(this);
+        mPlayer.addCallback(this);
         startService(mIntent);
     }
 
@@ -122,14 +122,7 @@ public class HomeActivity extends ActivityBase implements StatusCallback {
             mBottomLayout.freshLayout(mPlayer.isPlaying(), null);
             return;
         }
-
-        if (!mPlayer.hasPrepare()) {
-            return;
-        }
-        boolean playing = mPlayer.isPlaying();
-        if (playing) mPlayer.pause();
-        else mPlayer.start();
-        mBottomLayout.freshLayout(!playing, null);
+        mPlayer.togglePause();
     }
 
     @Override
