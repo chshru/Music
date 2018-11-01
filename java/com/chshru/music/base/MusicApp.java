@@ -7,6 +7,7 @@ import com.chshru.music.service.MusicPlayer;
 import com.chshru.music.service.StatusCallback;
 import com.chshru.music.ui.main.list.ListData;
 import com.chshru.music.util.HistoryTable;
+import com.chshru.music.util.LoveTable;
 
 /**
  * Created by abc on 18-10-22.
@@ -18,6 +19,7 @@ public class MusicApp extends Application {
     private HistoryTable mHistoryTable;
     private boolean mHasInit;
     private ListData mListData;
+    private LoveTable mLoveTable;
 
     @Override
     public void onCreate() {
@@ -29,9 +31,14 @@ public class MusicApp extends Application {
         Context context = getApplicationContext();
         mPlayer = new MusicPlayer(context, callback);
         mHistoryTable = new HistoryTable(context);
+        mLoveTable = new LoveTable(context);
         mPlayer.setHistoryTable(mHistoryTable);
         mListData = new ListData();
         mHasInit = true;
+    }
+
+    public LoveTable getLoveTable() {
+        return mLoveTable;
     }
 
     public boolean hasInitialized() {
