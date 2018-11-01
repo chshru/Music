@@ -103,6 +103,7 @@ public class HomeActivity extends ActivityBase implements StatusCallback {
     @Override
     protected void onResume() {
         super.onResume();
+        onSongChanged(null);
         bindService(
                 mIntent,
                 conn,

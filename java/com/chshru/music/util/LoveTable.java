@@ -17,7 +17,7 @@ public class LoveTable extends SQLiteOpenHelper {
     private static final String TABLE_NAME = "love";
 
 
-    private static final String CREATE_MUSIC_TABLE =
+    public static final String CREATE_MUSIC_TABLE =
             new StringBuilder()
                     .append("create table ")
                     .append(TABLE_NAME)
@@ -39,7 +39,8 @@ public class LoveTable extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(CREATE_MUSIC_TABLE);
+        db.execSQL(LoveTable.CREATE_MUSIC_TABLE);
+        db.execSQL(HistoryTable.CREATE_MUSIC_TABLE);
     }
 
     @Override

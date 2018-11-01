@@ -43,6 +43,27 @@ public class SongScanner {
         mRunnable = runnable;
     }
 
+    public void startLoveScan(LoveTable table) {
+        Cursor cursor = table.query();
+        cursor.moveToFirst();
+        if (cursor.getCount() != 0) {
+            do {
+                int id = cursor.getInt(0);
+                int type = cursor.getInt(1);
+                String album = cursor.getString(2);
+                String mid = cursor.getString(3);
+                String title = cursor.getString(4);
+                String artist = cursor.getString(5);
+                String link = cursor.getString(6);
+                String time = cursor.getString(7);
+                Song song = new Song(id, type, album, mid, title, artist, link);
+                song.time = time;
+                mLoveList.add(song);
+            } while (cursor.moveToNext());
+        }
+        mHandler.post(mRunnable);
+    }
+
     public void startHistoryScan(HistoryTable table) {
         Cursor cursor = table.query();
         cursor.moveToFirst();

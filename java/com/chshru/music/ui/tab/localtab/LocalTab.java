@@ -63,8 +63,13 @@ public class LocalTab extends BaseTab {
     private void initMyLoveList(Context context, View root) {
         View myLove = root.findViewById(R.id.list_my_love);
         app = (MusicApp) mCallback.getApplication();
-        List<Song> list = app.getListData().getList(ListData.P_LOVE);
-        mLoveList = new MyLoveList(context, myLove, list);
+        List<Song> loveList = app.getListData().getList(ListData.P_LOVE);
+        mLoveList = new MyLoveList(context, myLove, loveList);
+        mLoveList.freshCount();
+        if (loveList.size() == 0) {
+            scanner.setLoveList(loveList);
+            scanner.startLoveScan(app.getLoveTable());
+        }
         myLove.setOnClickListener(view -> {
             app.getListData().setPos(ListData.P_LOVE);
             app.getListData().setTitle(mContext.getString(R.string.my_love));
