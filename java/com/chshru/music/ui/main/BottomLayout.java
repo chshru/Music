@@ -1,5 +1,6 @@
 package com.chshru.music.ui.main;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -33,6 +34,12 @@ public class BottomLayout {
         mArtist = root.findViewById(R.id.bottom_artist);
         mAlbum = root.findViewById(R.id.bottom_album);
         mPause.setOnClickListener(v -> mCallback.togglePlayer(true));
+        root.findViewById(R.id.bottom_linear).setOnClickListener(
+                v -> mCallback.getApplicationContext().startActivity(
+                        new Intent(mCallback.getApplicationContext(),
+                                PlayerActivity.class)
+                )
+        );
         mRoot = root;
 
     }

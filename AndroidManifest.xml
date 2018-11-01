@@ -29,6 +29,7 @@
         </activity>
         <activity android:name=".ui.main.search.SearchActivity" />
         <activity android:name=".ui.main.list.ListActivity" />
+        <activity android:name=".ui.main.PlayerActivity" />
 
         <service android:name=".service.MediaService" />
     </application>
