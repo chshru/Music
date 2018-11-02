@@ -24,10 +24,8 @@ import java.util.List;
 
 public class LocalTab extends BaseTab {
 
-    public static final int START_BY_LOCAL = 1;
-    public static final int START_BY_HISTORY = 2;
-    public static final int START_BY_LOVE = 3;
     public static final String STARY_TYPE = "start_type";
+    public static final String STARY_TITLE = "start_title";
 
     private LocalSongList mLocalSong;
     private HistoryList mHistory;
@@ -71,10 +69,9 @@ public class LocalTab extends BaseTab {
             scanner.startLoveScan(app.getLoveTable());
         }
         myLove.setOnClickListener(view -> {
-            app.getListData().setPos(ListData.P_LOVE);
-            app.getListData().setTitle(mContext.getString(R.string.my_love));
             Intent intent = new Intent(context, ListActivity.class);
-            intent.putExtra(STARY_TYPE, START_BY_LOVE);
+            intent.putExtra(STARY_TYPE, ListData.P_LOVE);
+            intent.putExtra(STARY_TITLE, R.string.my_love);
             context.startActivity(intent);
         });
     }
@@ -98,10 +95,9 @@ public class LocalTab extends BaseTab {
                     }
                 }
             }
-            app.getListData().setPos(ListData.P_HISTORY);
-            app.getListData().setTitle(mContext.getString(R.string.history));
             Intent intent = new Intent(context, ListActivity.class);
-            intent.putExtra(STARY_TYPE, START_BY_HISTORY);
+            intent.putExtra(STARY_TYPE, ListData.P_HISTORY);
+            intent.putExtra(STARY_TITLE, R.string.history);
             context.startActivity(intent);
         });
     }
@@ -117,10 +113,9 @@ public class LocalTab extends BaseTab {
             scanner.startLocalScan();
         }
         localSong.setOnClickListener(view -> {
-            app.getListData().setPos(ListData.P_LOCAL);
-            app.getListData().setTitle(mContext.getString(R.string.local_song));
             Intent intent = new Intent(context, ListActivity.class);
-            intent.putExtra(STARY_TYPE, START_BY_LOCAL);
+            intent.putExtra(STARY_TYPE, ListData.P_LOCAL);
+            intent.putExtra(STARY_TITLE, R.string.local_song);
             context.startActivity(intent);
         });
     }

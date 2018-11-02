@@ -10,6 +10,7 @@ import com.chshru.music.base.ActivityBase;
 import com.chshru.music.base.MusicApp;
 import com.chshru.music.manager.HttpManager;
 import com.chshru.music.service.StatusCallback;
+import com.chshru.music.ui.main.list.ListData;
 import com.chshru.music.ui.main.search.SearchResultAdapter.OnItemClickListener;
 import com.chshru.music.ui.view.ActionSearchView;
 import com.chshru.music.ui.view.ActionSearchView.OnTextChangeListener;
@@ -140,6 +141,7 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
     private OnItemClickListener mItemClickListener = new OnItemClickListener() {
         @Override
         public void onItemClick(View v) {
+            app.getListData().setPos(ListData.P_SEARCH);
             int pos = mRecycler.getChildAdapterPosition(v);
             if (mCurPos != -1 && mCurPos < mAdapter.getItemCount()) {
                 mAdapter.get(mCurPos).playing = false;

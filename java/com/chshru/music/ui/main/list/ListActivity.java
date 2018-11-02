@@ -41,12 +41,17 @@ public class ListActivity extends ActivityBase implements StatusCallback {
     @Override
     protected void initialize() {
         mCurPos = -1;
+        mStartType = getIntent().getIntExtra(LocalTab.STARY_TYPE, -1);
+        if (mStartType == -1) {
+            return;
+        }
         mApp = (MusicApp) getApplication();
-        String title = mApp.getListData().getTitle();
-        TextView titleTv = findViewById(R.id.list_title);
-        titleTv.setText(title);
-        int pos = mApp.getListData().getPos();
-        List<Song> list = mApp.getListData().getList(pos);
+        int title = getIntent().getIntExtra(LocalTab.STARY_TITLE, -1);
+        if (title != -1) {
+            TextView titleTv = findViewById(R.id.list_title);
+            titleTv.setText(title);
+        }
+        List<Song> list = mApp.getListData().getList(mStartType);
         for (Song song : list) {
             if (song.equals(mApp.getPlayer().getCurSong())) {
                 song.playing = true;
@@ -55,7 +60,7 @@ public class ListActivity extends ActivityBase implements StatusCallback {
                 song.playing = false;
             }
         }
-        mStartType = getIntent().getIntExtra(LocalTab.STARY_TYPE, -1);
+
         mAdapter = new SearchResultAdapter(list, getMainLooper());
         mRecycler = findViewById(R.id.list_recycler);
         mRecycler.setLayoutManager(new LinearLayoutManager(this));
@@ -95,34 +100,10 @@ public class ListActivity extends ActivityBase implements StatusCallback {
     private OnItemClickListener mItemClick = new OnItemClickListener() {
         @Override
         public void onItemClick(View v) {
-            if (mStartType == LocalTab.START_BY_LOCAL) {
-                int pos = mRecycler.getChildAdapterPosition(v);
-                if (mCurPos != -1 && mCurPos < mAdapter.getItemCount()) {
-                    mAdapter.get(mCurPos).playing = false;
-                }
-                mCurPos = pos;
-                mAdapter.get(mCurPos).playing = true;
-                Song song = mAdapter.get(mCurPos);
-                mApp.getPlayer().prepare(song);
-                mAdapter.notifyDataDelayed(500);
-            } else if (mStartType == LocalTab.START_BY_HISTORY) {
-                mAdapter.get(0).playing = false;
-                int pos = mRecycler.getChildAdapterPosition(v);
-                mAdapter.get(pos).playing = true;
-                Song song = mAdapter.get(pos);
-                mApp.getPlayer().prepare(song);
-                mAdapter.notifyDataDelayed(500);
-            } else if (mStartType == LocalTab.START_BY_LOVE) {
-                int pos = mRecycler.getChildAdapterPosition(v);
-                if (mCurPos != -1 && mCurPos < mAdapter.getItemCount()) {
-                    mAdapter.get(mCurPos).playing = false;
-                }
-                mCurPos = pos;
-                mAdapter.get(mCurPos).playing = true;
-                Song song = mAdapter.get(mCurPos);
-                mApp.getPlayer().prepare(song);
-                mAdapter.notifyDataDelayed(500);
-            }
+            mApp.getListData().setPos(mStartType);
+            int pos = mRecycler.getChildAdapterPosition(v);
+            Song song = mAdapter.get(pos);
+            mApp.getPlayer().prepare(song);
         }
     };
 }

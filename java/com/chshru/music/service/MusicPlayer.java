@@ -86,24 +86,25 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
         mCurSong = new Song(song);
         mCurSong.type = Song.TYPE_LOCAL;
         mCurSong.time = String.valueOf(System.currentTimeMillis());
-        List<Song> history = mApp.getListData().getList(ListData.P_HISTORY);
-        Song tempSong = null;
-        for (Song s : history) {
-            if (s.equals(mCurSong)) {
-                tempSong = s;
-                history.remove(s);
-                break;
+        if (mApp.getListData().getPos() != ListData.P_HISTORY) {
+            List<Song> history = mApp.getListData().getList(ListData.P_HISTORY);
+            Song tempSong = null;
+            for (Song s : history) {
+                if (s.equals(mCurSong)) {
+                    tempSong = s;
+                    history.remove(s);
+                    break;
+                }
             }
+            if (tempSong != null) {
+                tempSong.copyFrom(mCurSong);
+                mHistoryTable.update(mCurSong);
+            } else {
+                tempSong = new Song(mCurSong);
+                mHistoryTable.insert(mCurSong);
+            }
+            history.add(0, tempSong);
         }
-        if (tempSong != null) {
-            tempSong.copyFrom(mCurSong);
-            mHistoryTable.update(mCurSong);
-        } else {
-            tempSong = new Song(mCurSong);
-            mHistoryTable.insert(mCurSong);
-        }
-        history.add(0, tempSong);
-
 
         if (mCacheListener != null) {
             mCacheServer.registerCacheListener(mCacheListener, url);

@@ -12,6 +12,7 @@ public class ListData {
     public static final int P_LOCAL = 0;
     public static final int P_HISTORY = 1;
     public static final int P_LOVE = 2;
+    public static final int P_SEARCH = 3;
 
     private List<List<Song>> mList;
     private String mTitle;
