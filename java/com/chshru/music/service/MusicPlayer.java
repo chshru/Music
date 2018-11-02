@@ -27,6 +27,7 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
     private HistoryTable mHistoryTable;
     private List<StatusCallback> mCallbacks;
     private MusicApp mApp;
+    private List<Song> mCurSongList;
 
     public MusicPlayer(Context context, MusicApp app) {
         mCacheServer = new HttpProxyCacheServer(
@@ -130,7 +131,19 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
                 callback.togglePlayer(false);
             }
         }
+        int listPos = mApp.getListData().getPos();
+        mCurSongList = mApp.getListData().getList(listPos);
+        int songPos = -1;
+        for (int i = 0; i < mCurSongList.size(); i++) {
+            if (mCurSongList.get(i).equals(mCurSong)) {
+                songPos = i;
+                break;
+            }
+        }
+        if (songPos != -1) {
+            songPos = (songPos + 1) % mCurSongList.size();
 
+        }
     }
 
     @Override
