@@ -49,7 +49,8 @@ public class ListActivity extends ActivityBase {
             if (song.equals(mApp.getPlayer().getCurSong())) {
                 song.playing = true;
                 mCurPos = list.indexOf(song);
-                break;
+            } else if (song.playing) {
+                song.playing = false;
             }
         }
         mStartType = getIntent().getIntExtra(LocalTab.STARY_TYPE, -1);
@@ -61,7 +62,7 @@ public class ListActivity extends ActivityBase {
         mAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View v) {
-                if (mStartType != LocalTab.START_BY_HISTORY) {
+                if (mStartType == LocalTab.START_BY_LOCAL) {
                     int pos = mRecycler.getChildAdapterPosition(v);
                     if (mCurPos != -1 && mCurPos < mAdapter.getItemCount()) {
                         mAdapter.get(mCurPos).playing = false;
@@ -70,14 +71,24 @@ public class ListActivity extends ActivityBase {
                     mAdapter.get(mCurPos).playing = true;
                     Song song = mAdapter.get(mCurPos);
                     mApp.getPlayer().prepare(song);
-                    mAdapter.notifyDataDelayed(1000);
-                } else {
+                    mAdapter.notifyDataDelayed(500);
+                } else if (mStartType == LocalTab.START_BY_HISTORY) {
                     mAdapter.get(0).playing = false;
                     int pos = mRecycler.getChildAdapterPosition(v);
                     mAdapter.get(pos).playing = true;
                     Song song = mAdapter.get(pos);
                     mApp.getPlayer().prepare(song);
-                    mAdapter.notifyDataDelayed(1000);
+                    mAdapter.notifyDataDelayed(500);
+                } else if (mStartType == LocalTab.START_BY_LOVE) {
+                    int pos = mRecycler.getChildAdapterPosition(v);
+                    if (mCurPos != -1 && mCurPos < mAdapter.getItemCount()) {
+                        mAdapter.get(mCurPos).playing = false;
+                    }
+                    mCurPos = pos;
+                    mAdapter.get(mCurPos).playing = true;
+                    Song song = mAdapter.get(mCurPos);
+                    mApp.getPlayer().prepare(song);
+                    mAdapter.notifyDataDelayed(500);
                 }
             }
         });

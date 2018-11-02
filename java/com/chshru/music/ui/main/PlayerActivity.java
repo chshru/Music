@@ -104,7 +104,7 @@ public class PlayerActivity extends Activity implements StatusCallback {
             mLove.setImageResource(R.drawable.icon_favorite_white);
             for (Song s : mLoveList) {
                 if (s.equals(song)) {
-                    mLoveList.remove(song);
+                    mLoveList.remove(s);
                     break;
                 }
             }
