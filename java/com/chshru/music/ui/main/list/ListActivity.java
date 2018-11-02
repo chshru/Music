@@ -89,7 +89,7 @@ public class ListActivity extends ActivityBase implements StatusCallback {
         for (int i = 0; i < mAdapter.getItemCount(); i++) {
             mAdapter.get(i).playing = mAdapter.get(i).equals(song);
         }
-        mAdapter.notifyDataDelayed(500);
+        mAdapter.notifyDataDelayed(200);
     }
 
     @Override

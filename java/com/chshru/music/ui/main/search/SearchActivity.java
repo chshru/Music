@@ -33,7 +33,6 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
     private SearchResultAdapter mAdapter;
     private QueryHandler mHandler;
     private MusicApp app;
-    private int mCurPos;
     private int mQueriedPos;
     private LinearLayoutManager mLayoutManager;
     private String mQueryString;
@@ -53,7 +52,6 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
 
     @Override
     protected void initialize() {
-        mCurPos = -1;
         mQueriedPos = 1;
         app = (MusicApp) getApplication();
         mSearch = findViewById(R.id.sv_search_aty);
@@ -79,7 +77,7 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
         for (int i = 0; i < mAdapter.getItemCount(); i++) {
             mAdapter.get(i).playing = mAdapter.get(i).equals(song);
         }
-        mAdapter.notifyDataDelayed(500);
+        mAdapter.notifyDataDelayed(200);
     }
 
     @Override
@@ -143,13 +141,6 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
         public void onItemClick(View v) {
             app.getListData().setPos(ListData.P_SEARCH);
             int pos = mRecycler.getChildAdapterPosition(v);
-            if (mCurPos != -1 && mCurPos < mAdapter.getItemCount()) {
-                mAdapter.get(mCurPos).playing = false;
-                mAdapter.notifyItemChanged(mCurPos);
-            }
-            mCurPos = pos;
-            mAdapter.get(mCurPos).playing = true;
-            mAdapter.notifyItemChanged(mCurPos);
             app.getPlayer().prepare(mAdapter.get(pos));
         }
     };
@@ -179,7 +170,6 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
         for (Song song : list) {
             if (song.equals(app.getPlayer().getCurSong())) {
                 song.playing = true;
-                mCurPos = list.indexOf(song);
                 break;
             }
         }

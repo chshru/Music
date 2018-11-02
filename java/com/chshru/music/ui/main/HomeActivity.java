@@ -85,7 +85,6 @@ public class HomeActivity extends ActivityBase implements StatusCallback {
         mBottomLayout = new BottomLayout(bottomLayout, this);
         findViewById(R.id.search_button).setOnClickListener(
                 view -> startSearchActivity());
-        //mBottomLayout.freshLayout(mPlayer.isPlaying(), mPlayer.getCurSong());
     }
 
     private ServiceConnection conn = new ServiceConnection() {
