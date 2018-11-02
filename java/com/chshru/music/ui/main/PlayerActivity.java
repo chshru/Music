@@ -90,7 +90,6 @@ public class PlayerActivity extends Activity implements StatusCallback {
         mLoveList = mApp.getListData().getList(ListData.P_LOVE);
         mPlayer = mApp.getPlayer();
         createAnimator();
-        mPlayer.addCallback(this);
     }
 
     private void onLoveClick() {
@@ -114,6 +113,18 @@ public class PlayerActivity extends Activity implements StatusCallback {
             mLove.setImageResource(R.drawable.icon_favorite_red);
             mLoveList.add(song);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mPlayer.addCallback(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mPlayer.rmCallback(this);
     }
 
     @Override

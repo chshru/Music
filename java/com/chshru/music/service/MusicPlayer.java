@@ -36,8 +36,10 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
     }
 
     public void addCallback(StatusCallback callback) {
-        mCallbacks.add(callback);
-        callback.onSongChanged(mCurSong);
+        if (!mCallbacks.contains(callback)) {
+            mCallbacks.add(callback);
+            callback.onSongChanged(mCurSong);
+        }
     }
 
     public void setHistoryTable(HistoryTable historyTable) {
@@ -46,6 +48,10 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
 
     public void addCacheListener(CacheListener listener) {
         mCacheListener = listener;
+    }
+
+    public void rmCallback(StatusCallback callback) {
+        mCallbacks.remove(callback);
     }
 
     public void setService(PlayService service) {
@@ -111,6 +117,20 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
 
     }
 
+    public boolean hasService() {
+        return mService != null;
+    }
+
+    private MediaPlayer.OnCompletionListener mOnComplete = mp -> toggleNextSong();
+
+    private void toggleNextSong() {
+        for (StatusCallback callback : mCallbacks) {
+            if (callback != null) {
+                callback.togglePlayer(false);
+            }
+        }
+
+    }
 
     @Override
     public void onPrepared(MediaPlayer player) {

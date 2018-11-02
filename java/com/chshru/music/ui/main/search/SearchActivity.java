@@ -9,6 +9,7 @@ import com.chshru.music.R;
 import com.chshru.music.base.ActivityBase;
 import com.chshru.music.base.MusicApp;
 import com.chshru.music.manager.HttpManager;
+import com.chshru.music.service.StatusCallback;
 import com.chshru.music.ui.main.search.SearchResultAdapter.OnItemClickListener;
 import com.chshru.music.ui.view.ActionSearchView;
 import com.chshru.music.ui.view.ActionSearchView.OnTextChangeListener;
@@ -24,7 +25,7 @@ import java.util.List;
  * Created by abc on 18-10-26.
  */
 
-public class SearchActivity extends ActivityBase {
+public class SearchActivity extends ActivityBase implements StatusCallback {
 
     private ActionSearchView mSearch;
     private RecyclerView mRecycler;
@@ -70,6 +71,31 @@ public class SearchActivity extends ActivityBase {
         });
         mOnScrollListener = new OnScrollListener();
         mRecycler.addOnScrollListener(mOnScrollListener);
+    }
+
+    @Override
+    public void onSongChanged(Song song) {
+        for (int i = 0; i < mAdapter.getItemCount(); i++) {
+            mAdapter.get(i).playing = mAdapter.get(i).equals(song);
+        }
+        mAdapter.notifyDataDelayed(500);
+    }
+
+    @Override
+    public void togglePlayer(boolean real) {
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        app.getPlayer().addCallback(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        app.getPlayer().rmCallback(this);
     }
 
     private class OnScrollListener extends RecyclerView.OnScrollListener {
@@ -144,7 +170,7 @@ public class SearchActivity extends ActivityBase {
     }
 
     private void onQueryComplete(String result) {
-        if (result == null || (result != null && result.isEmpty())) {
+        if (result == null || result.isEmpty()) {
             return;
         }
         List<Song> list = QQMusicApi.getSongFromResult(result);

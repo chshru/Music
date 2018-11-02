@@ -63,7 +63,6 @@ public class HomeActivity extends ActivityBase implements StatusCallback {
         if (!app.hasInitialized()) app.init();
         mHistoryTable = app.getHistoryTable();
         mPlayer = app.getPlayer();
-        mPlayer.addCallback(this);
         startService(mIntent);
     }
 
@@ -93,6 +92,7 @@ public class HomeActivity extends ActivityBase implements StatusCallback {
         @Override
         public void onServiceConnected(ComponentName name, IBinder binder) {
             mPlayer.setService((PlayService) binder);
+            unbindService(conn);
         }
 
         @Override
@@ -104,17 +104,20 @@ public class HomeActivity extends ActivityBase implements StatusCallback {
     protected void onResume() {
         super.onResume();
         onSongChanged(null);
-        bindService(
-                mIntent,
-                conn,
-                BIND_AUTO_CREATE
-        );
+        mPlayer.addCallback(this);
+        if (!mPlayer.hasService()) {
+            bindService(
+                    mIntent,
+                    conn,
+                    BIND_AUTO_CREATE
+            );
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unbindService(conn);
+        mPlayer.rmCallback(this);
     }
 
     @Override
