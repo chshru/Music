@@ -18,6 +18,7 @@ public interface PlayService {
 
     void prepare(String url);
 
+    void setCompletionListener(MediaPlayer.OnCompletionListener listener);
 
     boolean isPlaying();
 

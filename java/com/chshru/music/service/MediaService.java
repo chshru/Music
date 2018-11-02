@@ -53,6 +53,10 @@ public class MediaService extends Service {
         }
     }
 
+    private void setCompletionListener(MediaPlayer.OnCompletionListener listener) {
+        mPlayer.setOnCompletionListener(listener);
+    }
+
     private void start() {
         mPlayer.start();
     }
@@ -117,6 +121,11 @@ public class MediaService extends Service {
         @Override
         public void prepare(String url) {
             mService.get().prepare(url);
+        }
+
+        @Override
+        public void setCompletionListener(MediaPlayer.OnCompletionListener listener) {
+            mService.get().setCompletionListener(listener);
         }
 
         @Override

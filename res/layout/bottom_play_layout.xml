@@ -14,18 +14,20 @@
         android:layout_height="57dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        tools:ignore="UselessParent">
 
         <View
             android:layout_width="5dp"
             android:layout_height="match_parent" />
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/bottom_album"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_gravity="center"
             android:src="@drawable/default_album_cover" />
+
         <View
             android:layout_width="5dp"
             android:layout_height="match_parent" />

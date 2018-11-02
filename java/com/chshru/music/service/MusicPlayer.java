@@ -82,6 +82,7 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
             local = url;
         }
         mService.setPreparedListener(this);
+        mService.setCompletionListener(mOnComplete);
         mService.prepare(local);
 
         mCurSong = new Song(song);
@@ -123,16 +124,13 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
         return mService != null;
     }
 
-    private MediaPlayer.OnCompletionListener mOnComplete = mp -> toggleNextSong();
+    private MediaPlayer.OnCompletionListener mOnComplete = mp -> toggleNextSong(1);
 
-    private void toggleNextSong() {
-        for (StatusCallback callback : mCallbacks) {
-            if (callback != null) {
-                callback.togglePlayer(false);
-            }
-        }
+    private void toggleNextSong(int d) {
+
         int listPos = mApp.getListData().getPos();
         mCurSongList = mApp.getListData().getList(listPos);
+        if (mCurSongList.size() == 0) return;
         int songPos = -1;
         for (int i = 0; i < mCurSongList.size(); i++) {
             if (mCurSongList.get(i).equals(mCurSong)) {
@@ -140,10 +138,15 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
                 break;
             }
         }
-        if (songPos != -1) {
-            songPos = (songPos + 1) % mCurSongList.size();
-
+        if (songPos == -1) songPos = 0;
+        int tot = mCurSongList.size();
+        if (d > 0) {
+            songPos = (songPos + 1) % tot;
         }
+        if (d < 0) {
+            songPos = songPos - 1 >= 0 ? songPos - 1 : tot - 1;
+        }
+        prepare(mCurSongList.get(songPos));
     }
 
     @Override
@@ -173,6 +176,14 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
             return;
         }
         mService.release();
+    }
+
+    public void next() {
+        toggleNextSong(1);
+    }
+
+    public void prev() {
+        toggleNextSong(-1);
     }
 
     public boolean isPlaying() {

@@ -3,6 +3,8 @@ package com.chshru.music.ui.main;
 
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -47,6 +49,18 @@ public class PlayerActivity extends Activity implements StatusCallback {
     private boolean mCurIsLove;
     private LoveTable mLoveTable;
 
+    private int[] mRandPic = {
+            R.drawable.music_album_1,
+            R.drawable.music_album_2,
+            R.drawable.music_album_3,
+            R.drawable.music_album_4,
+            R.drawable.music_album_5,
+            R.drawable.music_album_6,
+            R.drawable.music_album_7,
+            R.drawable.music_album_8,
+            R.drawable.music_album_9,
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,6 +103,10 @@ public class PlayerActivity extends Activity implements StatusCallback {
         mLoveTable = mApp.getLoveTable();
         mLoveList = mApp.getListData().getList(ListData.P_LOVE);
         mPlayer = mApp.getPlayer();
+        findViewById(R.id.prevPlayIv).setOnClickListener(
+                view -> mPlayer.prev());
+        findViewById(R.id.nextvPlayIv).setOnClickListener(
+                view -> mPlayer.next());
         createAnimator();
     }
 
@@ -129,23 +147,29 @@ public class PlayerActivity extends Activity implements StatusCallback {
 
     @Override
     public void onSongChanged(Song song) {
-        updateUI();
+        updateUI(true);
     }
 
     @Override
     public void togglePlayer(boolean real) {
         if (!real) {
-            updateUI();
+            updateUI(false);
             return;
         }
         mPlayer.togglePause();
     }
 
-    private void updateUI() {
+    private void updateUI(boolean b) {
         Song song = mPlayer.getCurSong();
-        if (song != null && song.albumBitmap != null) {
-            mAlbumPic.setImageBitmap(song.albumBitmap);
-            Drawable bg = ImageUtil.createBgFromBitmap(song.albumBitmap, 12, this);
+        if (song != null && b) {
+            Bitmap bitmap = song.albumBitmap;
+            if (bitmap == null) {
+                int rand = (int) (Math.random() * 8);
+                bitmap = BitmapFactory.decodeResource(
+                        getResources(), mRandPic[rand]);
+            }
+            mAlbumPic.setImageBitmap(bitmap);
+            Drawable bg = ImageUtil.createBgFromBitmap(bitmap, 12, this);
             ImageUtil.startChangeAnimation(mPlayingBg, bg);
         }
         if (song != null) {
@@ -167,12 +191,16 @@ public class PlayerActivity extends Activity implements StatusCallback {
             if (mAnimator.isPaused()) {
                 mAnimator.resume();
             }
-            mPause.play();
+            if (!mPause.isPlaying()) {
+                mPause.play();
+            }
         } else {
             if (mAnimator.isRunning()) {
                 mAnimator.pause();
             }
-            mPause.pause();
+            if (mPause.isPlaying()) {
+                mPause.pause();
+            }
         }
     }
 

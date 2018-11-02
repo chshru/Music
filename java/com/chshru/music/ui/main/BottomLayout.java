@@ -24,6 +24,7 @@ public class BottomLayout {
     private ImageButton mNext;
     private StatusCallback mCallback;
     private View mRoot;
+    private BottomController mController;
 
 
     public BottomLayout(View root, StatusCallback callback) {
@@ -33,7 +34,6 @@ public class BottomLayout {
         mTitle = root.findViewById(R.id.bottom_title);
         mArtist = root.findViewById(R.id.bottom_artist);
         mAlbum = root.findViewById(R.id.bottom_album);
-        mPause.setOnClickListener(v -> mCallback.togglePlayer(true));
         root.findViewById(R.id.bottom_linear).setOnClickListener(
                 v -> mCallback.getApplicationContext().startActivity(
                         new Intent(mCallback.getApplicationContext(),
@@ -41,9 +41,14 @@ public class BottomLayout {
                 )
         );
         mRoot = root;
-
     }
 
+    public void setController(BottomController controller) {
+        mController = controller;
+        mPause.setOnClickListener(v -> mController.onPauseClick());
+        mRoot.findViewById(R.id.play_next).setOnClickListener(
+                view -> mController.onNextClick());
+    }
 
     public void freshLayout(boolean playing, Song song) {
         if (song != null) {
@@ -56,6 +61,12 @@ public class BottomLayout {
         } else if (!playing && mPause.isPlaying()) {
             mPause.pause();
         }
+    }
+
+    public interface BottomController {
+        void onPauseClick();
+
+        void onNextClick();
     }
 
 }

@@ -25,7 +25,7 @@ import com.chshru.music.util.HistoryTable;
 import com.chshru.music.util.Song;
 
 
-public class HomeActivity extends ActivityBase implements StatusCallback {
+public class HomeActivity extends ActivityBase implements StatusCallback, BottomLayout.BottomController {
 
     private MusicPlayer mPlayer;
     private Intent mIntent;
@@ -74,7 +74,6 @@ public class HomeActivity extends ActivityBase implements StatusCallback {
         startActivity(intent);
     }
 
-
     private void initBottomBar() {
         ViewGroup bottomBar = findViewById(R.id.bottom_bar);
         View bottomLayout = View.inflate(
@@ -83,6 +82,7 @@ public class HomeActivity extends ActivityBase implements StatusCallback {
                 bottomBar
         );
         mBottomLayout = new BottomLayout(bottomLayout, this);
+        mBottomLayout.setController(this);
         findViewById(R.id.search_button).setOnClickListener(
                 view -> startSearchActivity());
     }
@@ -136,5 +136,15 @@ public class HomeActivity extends ActivityBase implements StatusCallback {
                 tab.freshChild();
             }
         }
+    }
+
+    @Override
+    public void onPauseClick() {
+        togglePlayer(true);
+    }
+
+    @Override
+    public void onNextClick() {
+        mPlayer.next();
     }
 }
