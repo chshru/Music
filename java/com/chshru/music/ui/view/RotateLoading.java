@@ -21,7 +21,7 @@ import com.chshru.music.R;
  */
 public class RotateLoading extends View {
 
-    private static final int DEFAULT_WIDTH = 6;
+    private static final int DEFAULT_WIDTH = 3;
     private static final int DEFAULT_SHADOW_POSITION = 2;
     private static final int DEFAULT_SPEED_OF_DEGREE = 10;
 

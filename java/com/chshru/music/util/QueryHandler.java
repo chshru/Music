@@ -20,7 +20,7 @@ public class QueryHandler {
 
     public void exeComplete(String result) {
         mRunnable.setResult(result);
-        mHandler.post(mRunnable);
+        mHandler.postDelayed(mRunnable, 500);
     }
 
 

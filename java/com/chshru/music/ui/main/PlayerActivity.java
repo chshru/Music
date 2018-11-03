@@ -205,7 +205,7 @@ public class PlayerActivity extends Activity implements StatusCallback {
     }
 
     private void createAnimator() {
-        mAnimator = ObjectAnimator.ofFloat(mAlbumPic, "rotation", 0F, 359F);
+        mAnimator = ObjectAnimator.ofFloat(mAlbumPic, "rotation", 0F, 360F);
         mAnimator.setDuration(20 * 1000);
         mAnimator.setRepeatCount(-1);
         mAnimator.setRepeatMode(ObjectAnimator.RESTART);

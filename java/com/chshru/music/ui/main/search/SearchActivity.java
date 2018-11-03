@@ -38,7 +38,8 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
     private LinearLayoutManager mLayoutManager;
     private String mQueryString;
     private OnScrollListener mOnScrollListener;
-    private RotateLoading mLoading;
+    private RotateLoading mTopLoading;
+    private RotateLoading mBottomLoading;
 
     @Override
     protected int getLayoutId() {
@@ -66,6 +67,11 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
         mRecycler.setLayoutManager(mLayoutManager);
         mRecycler.setAdapter(mAdapter);
         mHandler = new QueryHandler(getMainLooper(), mRunnable);
+        mTopLoading = findViewById(R.id.search_loading);
+        mBottomLoading = findViewById(R.id.more_loading);
+        int color = getResources().getColor(R.color.colorPrimary);
+        mTopLoading.setLoadingColor(color);
+        mBottomLoading.setLoadingColor(color);
         findViewById(R.id.back).setOnClickListener(view -> {
             mSearch.clearFocus();
             finish();
@@ -157,10 +163,16 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
     private void onQueryStart() {
         mQueriedPos = 1;
         mAdapter.clear();
+        if (!mTopLoading.isStart()) {
+            mTopLoading.start();
+        }
         new Thread(() -> QQMusicApi.query(mQueriedPos, 20, mQueryString, mHandler)).start();
     }
 
     private void onQueryMore() {
+        if (!mBottomLoading.isStart()) {
+            mBottomLoading.start();
+        }
         new Thread(() -> QQMusicApi.query(mQueriedPos, 20, mQueryString, mHandler)).start();
     }
 
@@ -174,6 +186,12 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
                 song.playing = true;
                 break;
             }
+        }
+        if (mTopLoading.isStart()) {
+            mTopLoading.stop();
+        }
+        if (mBottomLoading.isStart()) {
+            mBottomLoading.stop();
         }
         mAdapter.addAll(list);
         mAdapter.notifyDataSetChanged();
@@ -204,6 +222,12 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
                 mAdapter.stopLoad();
                 mAdapter.clear();
                 mAdapter.notifyDataSetChanged();
+            }
+            if (mTopLoading.isStart()) {
+                mTopLoading.stop();
+            }
+            if (mBottomLoading.isStart()) {
+                mBottomLoading.stop();
             }
             return true;
         }
