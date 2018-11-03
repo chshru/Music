@@ -1,7 +1,9 @@
 package com.chshru.music.service;
 
 import android.content.Context;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.view.View;
 
 import com.chshru.music.base.MusicApp;
 import com.chshru.music.ui.main.list.ListData;
@@ -28,11 +30,18 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
     private List<StatusCallback> mCallbacks;
     private MusicApp mApp;
     private List<Song> mCurSongList;
+    private AudioManager mAudioManager;
+    private boolean mHasAudioFocus;
+    private boolean mPauseByFocus;
 
     public MusicPlayer(Context context, MusicApp app) {
         mCacheServer = new HttpProxyCacheServer(
                 context.getApplicationContext());
         mCallbacks = new ArrayList<>();
+        mAudioManager = (AudioManager) context
+                .getSystemService(Context.AUDIO_SERVICE);
+        mHasAudioFocus = false;
+        mPauseByFocus = false;
         mApp = app;
     }
 
@@ -42,6 +51,49 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
             callback.onSongChanged(mCurSong);
         }
     }
+
+    private boolean requestAudioFocus() {
+        return mAudioManager.requestAudioFocus(mFocusListener, AudioManager.STREAM_MUSIC,
+                AudioManager.AUDIOFOCUS_GAIN) == AudioManager.AUDIOFOCUS_REQUEST_GRANTED;
+    }
+
+    private void abandonAudioFocus() {
+        mAudioManager.abandonAudioFocus(mFocusListener);
+    }
+
+    private AudioManager.OnAudioFocusChangeListener mFocusListener = focusChange -> {
+        if (!hasService() || !hasPrepare()) {
+            return;
+        }
+        switch (focusChange) {
+            case AudioManager.AUDIOFOCUS_GAIN:
+                if (hasPrepare() && !isPlaying() && mPauseByFocus) {
+                    togglePause();
+                    mPauseByFocus = false;
+                }
+                mHasAudioFocus = true;
+                break;
+            case AudioManager.AUDIOFOCUS_LOSS:
+                if (hasPrepare() && isPlaying()) {
+                    togglePause();
+                }
+                mHasAudioFocus = false;
+                abandonAudioFocus();
+                break;
+            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                if (hasPrepare() && isPlaying()) {
+                    togglePause();
+                    mPauseByFocus = true;
+                }
+                mHasAudioFocus = false;
+                break;
+            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                mHasAudioFocus = false;
+                break;
+            default:
+                break;
+        }
+    };
 
     public void setHistoryTable(HistoryTable historyTable) {
         mHistoryTable = historyTable;
@@ -154,6 +206,9 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
     @Override
     public void onPrepared(MediaPlayer player) {
         mService.serPrepared(true);
+        if (!mHasAudioFocus && !requestAudioFocus()) {
+            return;
+        }
         player.start();
         for (StatusCallback callback : mCallbacks) {
             if (callback != null) {
@@ -168,6 +223,9 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
 
     public void start() {
         if (mService == null) {
+            return;
+        }
+        if (!mHasAudioFocus && !requestAudioFocus()) {
             return;
         }
         mService.start();
