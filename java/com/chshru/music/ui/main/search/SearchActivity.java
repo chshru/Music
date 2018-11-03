@@ -14,6 +14,7 @@ import com.chshru.music.ui.main.list.ListData;
 import com.chshru.music.ui.main.search.SearchResultAdapter.OnItemClickListener;
 import com.chshru.music.ui.view.ActionSearchView;
 import com.chshru.music.ui.view.ActionSearchView.OnTextChangeListener;
+import com.chshru.music.ui.view.RotateLoading;
 import com.chshru.music.util.QQMusicApi;
 import com.chshru.music.util.QueryHandler;
 import com.chshru.music.util.QueryHandler.OnFinishRunnable;
@@ -37,6 +38,7 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
     private LinearLayoutManager mLayoutManager;
     private String mQueryString;
     private OnScrollListener mOnScrollListener;
+    private RotateLoading mLoading;
 
     @Override
     protected int getLayoutId() {
