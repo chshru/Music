@@ -50,73 +50,65 @@ public class LocalTab extends BaseTab {
     }
 
     @Override
-    public void initChild(Context context, View root) {
-        scanner = new SongScanner(context);
+    public void initChild(View root) {
+        scanner = new SongScanner(mContext);
         scanner.setCallback(mHandler, mFreshRunnable);
-        initLocalList(context, root);
-        initHistoryList(context, root);
-        initMyLoveList(context, root);
+        initLocalList(root);
+        initHistoryList(root);
+        initMyLoveList(root);
     }
 
-    private void initMyLoveList(Context context, View root) {
+    private void initMyLoveList(View root) {
         View myLove = root.findViewById(R.id.list_my_love);
         app = (MusicApp) mCallback.getApplication();
         List<Song> loveList = app.getListData().getList(ListData.P_LOVE);
-        mLoveList = new MyLoveList(context, myLove, loveList);
+        mLoveList = new MyLoveList(mContext, myLove, loveList);
         mLoveList.freshCount();
         if (loveList.size() == 0) {
             scanner.setLoveList(loveList);
             scanner.startLoveScan(app.getLoveTable());
         }
         myLove.setOnClickListener(view -> {
-            Intent intent = new Intent(context, ListActivity.class);
+            Intent intent = new Intent(mContext, ListActivity.class);
             intent.putExtra(STARY_TYPE, ListData.P_LOVE);
             intent.putExtra(STARY_TITLE, R.string.my_love);
-            context.startActivity(intent);
+            mContext.startActivity(intent);
         });
     }
 
-    private void initHistoryList(Context context, View root) {
+    private void initHistoryList(View root) {
         View history = root.findViewById(R.id.list_history);
         app = (MusicApp) mCallback.getApplication();
         List<Song> historyList = app.getListData().getList(ListData.P_HISTORY);
-        mHistory = new HistoryList(context, history, historyList);
+        mHistory = new HistoryList(mContext, history, historyList);
         mHistory.freshCount();
         if (historyList.size() == 0) {
             scanner.setHistoryList(historyList);
             scanner.startHistoryScan(app.getHistoryTable());
         }
         history.setOnClickListener(view -> {
-            List<Song> listHis = app.getListData().getList(ListData.P_HISTORY);
-            for (Song song : listHis) {
-                if (song.playing) {
-                    if (!song.equals(app.getPlayer().getCurSong())) {
-                        song.playing = false;
-                    }
-                }
-            }
-            Intent intent = new Intent(context, ListActivity.class);
+            Intent intent = new Intent(mContext, ListActivity.class);
             intent.putExtra(STARY_TYPE, ListData.P_HISTORY);
             intent.putExtra(STARY_TITLE, R.string.history);
-            context.startActivity(intent);
+            mContext.startActivity(intent);
         });
     }
 
-    private void initLocalList(Context context, View root) {
+    private void initLocalList(View root) {
         View localSong = root.findViewById(R.id.list_local_song);
         app = (MusicApp) mCallback.getApplication();
         List<Song> localList = app.getListData().getList(ListData.P_LOCAL);
-        mLocalSong = new LocalSongList(context, localSong, localList);
+        mLocalSong = new LocalSongList(mContext, localSong, localList);
         mLocalSong.freshCount();
         if (localList.size() == 0) {
             scanner.setLocalList(localList);
             scanner.startLocalScan();
         }
         localSong.setOnClickListener(view -> {
-            Intent intent = new Intent(context, ListActivity.class);
+            Intent intent = new Intent(mContext, ListActivity.class);
             intent.putExtra(STARY_TYPE, ListData.P_LOCAL);
             intent.putExtra(STARY_TITLE, R.string.local_song);
-            context.startActivity(intent);
+            mContext.startActivity(intent);
         });
     }
 

@@ -82,17 +82,19 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int pos) {
         Holder h = (Holder) holder;
-        h.itemView.setOnClickListener(v -> {
-            if (mClickListener != null) {
-                mClickListener.onItemClick(v);
-            }
-        });
-        h.itemView.setOnLongClickListener(v -> {
-            if (mClickListener != null) {
-                mClickListener.OnItemLongClick(v);
-            }
-            return true;
-        });
+        if (!h.itemView.hasOnClickListeners()) {
+            h.itemView.setOnClickListener(v -> {
+                if (mClickListener != null) {
+                    mClickListener.onItemClick(v);
+                }
+            });
+            h.itemView.setOnLongClickListener(v -> {
+                if (mClickListener != null) {
+                    mClickListener.OnItemLongClick(v);
+                }
+                return true;
+            });
+        }
         Song song = mSong.get(pos);
         h.name.setText(song.title);
         h.artist.setText(song.artist);
@@ -149,7 +151,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
             if (mCacheServer != null) {
                 local = mCacheServer.getProxyUrl(str);
             }
-            if (local == null || (local != null && local.contains("http"))) {
+            if (local == null || local.contains("http")) {
                 if (local != null) {
                     link = local;
                 }

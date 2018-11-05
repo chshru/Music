@@ -26,8 +26,9 @@ public class OnlineTab extends BaseTab {
     protected void initialize() {
         mTitleTd = R.string.search_tab_title;
     }
+
     @Override
-    public void initChild(Context context, View root) {
+    public void initChild(View root) {
     }
 
 }

@@ -22,7 +22,6 @@ public class ListActivity extends ActivityBase implements StatusCallback {
     private RecyclerView mRecycler;
     private SearchResultAdapter mAdapter;
     private MusicApp mApp;
-    private int mCurPos;
     private int mStartType;
 
     @Override
@@ -40,7 +39,6 @@ public class ListActivity extends ActivityBase implements StatusCallback {
 
     @Override
     protected void initialize() {
-        mCurPos = -1;
         mStartType = getIntent().getIntExtra(LocalTab.STARY_TYPE, -1);
         if (mStartType == -1) {
             return;
@@ -55,12 +53,10 @@ public class ListActivity extends ActivityBase implements StatusCallback {
         for (Song song : list) {
             if (song.equals(mApp.getPlayer().getCurSong())) {
                 song.playing = true;
-                mCurPos = list.indexOf(song);
             } else if (song.playing) {
                 song.playing = false;
             }
         }
-
         mAdapter = new SearchResultAdapter(list, getMainLooper());
         mRecycler = findViewById(R.id.list_recycler);
         mRecycler.setLayoutManager(new LinearLayoutManager(this));

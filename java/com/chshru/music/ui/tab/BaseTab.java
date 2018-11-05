@@ -15,6 +15,7 @@ public abstract class BaseTab {
     protected int mTitleTd;
     protected StatusCallback mCallback;
     protected Context mContext;
+    private View mView;
 
     public BaseTab(StatusCallback callback, int resId) {
         mCallback = callback;
@@ -33,8 +34,19 @@ public abstract class BaseTab {
         return mTitleTd;
     }
 
+    public void setView(View view) {
+        mView = view;
+    }
+
+    public boolean hasInit() {
+        return mView != null;
+    }
+
+    public View getView() {
+        return mView;
+    }
 
     protected abstract void initialize();
 
-    public abstract void initChild(Context context, View root);
+    public abstract void initChild(View root);
 }

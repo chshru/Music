@@ -36,19 +36,22 @@ public class TabAdapter extends PagerAdapter {
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup parent, int p) {
-        View child = View.inflate(
-                mContext,
-                mPage[p].getResId(),
-                null
-        );
-        parent.addView(child);
-        mPage[p].initChild(mContext, child);
-        return child;
+        if (!mPage[p].hasInit()) {
+            View child = View.inflate(
+                    mContext,
+                    mPage[p].getResId(),
+                    null
+            );
+            mPage[p].setView(child);
+            mPage[p].initChild(child);
+        }
+        parent.addView(mPage[p].getView());
+        return mPage[p].getView();
     }
 
     @Override
     public void destroyItem(@NonNull ViewGroup parent, int pos, @NonNull Object obj) {
-        parent.removeView((View) obj);
+        parent.removeView(mPage[pos].getView());
     }
 
     @Override
