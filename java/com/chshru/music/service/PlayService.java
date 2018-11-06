@@ -27,4 +27,8 @@ public interface PlayService {
     void setPreparedListener(MediaPlayer.OnPreparedListener listener);
 
     void serPrepared(boolean b);
+
+    int getDuration();
+
+    int getCurDuration();
 }

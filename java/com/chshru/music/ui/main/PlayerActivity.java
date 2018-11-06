@@ -2,18 +2,22 @@ package com.chshru.music.ui.main;
 
 
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.chshru.music.R;
@@ -48,6 +52,7 @@ public class PlayerActivity extends Activity implements StatusCallback {
     private List<Song> mLoveList;
     private boolean mCurIsLove;
     private LoveTable mLoveTable;
+    private SeekBar mSeekBar;
 
     private int[] mRandPic = {
             R.drawable.music_album_1,
@@ -97,6 +102,7 @@ public class PlayerActivity extends Activity implements StatusCallback {
         mTitle = findViewById(R.id.tv_title);
         mArtist = findViewById(R.id.tv_artist);
         mLove = findViewById(R.id.iv_love);
+        mSeekBar = findViewById(R.id.progressSb);
         mLove.setOnClickListener(view -> onLoveClick());
         mPause.setOnClickListener(view -> togglePlayer(true));
         mApp = (MusicApp) getApplication();
@@ -142,6 +148,7 @@ public class PlayerActivity extends Activity implements StatusCallback {
     @Override
     protected void onPause() {
         super.onPause();
+        mHandler.removeMessages(MSG_FRESH_SEEKBAR);
         mPlayer.rmCallback(this);
     }
 
@@ -159,9 +166,27 @@ public class PlayerActivity extends Activity implements StatusCallback {
         mPlayer.togglePause();
     }
 
+    private static final int MSG_FRESH_SEEKBAR = 1;
+
+    @SuppressLint("HandlerLeak")
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == MSG_FRESH_SEEKBAR) {
+                mSeekBar.setMax(mPlayer.getDuration());
+                mSeekBar.setProgress(mPlayer.getCurDuration());
+                sendEmptyMessageDelayed(MSG_FRESH_SEEKBAR, 500);
+            }
+        }
+    };
+
     private void updateUI(boolean b) {
         Song song = mPlayer.getCurSong();
         if (song != null && b) {
+            mHandler.removeMessages(MSG_FRESH_SEEKBAR);
+            mSeekBar.setMax(mPlayer.getDuration());
+            mSeekBar.setProgress(mPlayer.getCurDuration());
+            mHandler.sendEmptyMessage(MSG_FRESH_SEEKBAR);
             Bitmap bitmap = song.albumBitmap;
             if (bitmap == null) {
                 int rand = (int) (Math.random() * 8);
@@ -184,7 +209,7 @@ public class PlayerActivity extends Activity implements StatusCallback {
             }
         }
         if (mPlayer.isPlaying()) {
-
+            mHandler.sendEmptyMessage(MSG_FRESH_SEEKBAR);
             if (!mAnimator.isStarted()) {
                 mAnimator.start();
             }
@@ -195,6 +220,7 @@ public class PlayerActivity extends Activity implements StatusCallback {
                 mPause.play();
             }
         } else {
+            mHandler.removeMessages(MSG_FRESH_SEEKBAR);
             if (mAnimator.isRunning()) {
                 mAnimator.pause();
             }

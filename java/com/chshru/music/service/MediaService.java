@@ -86,6 +86,20 @@ public class MediaService extends Service {
         mHasPrepare = prepared;
     }
 
+    private int getDuration() {
+        if (hasPrepare()) {
+            return mPlayer.getDuration();
+        }
+        return 0;
+    }
+
+    private int getCurDuration() {
+        if (hasPrepare()) {
+            return mPlayer.getCurrentPosition();
+        }
+        return 0;
+    }
+
     private void setPreparedListener(MediaPlayer.OnPreparedListener listener) {
         mPlayer.setOnPreparedListener(listener);
     }
@@ -146,6 +160,16 @@ public class MediaService extends Service {
         @Override
         public void serPrepared(boolean b) {
             mService.get().setPrepared(b);
+        }
+
+        @Override
+        public int getDuration() {
+            return mService.get().getDuration();
+        }
+
+        @Override
+        public int getCurDuration() {
+            return mService.get().getCurDuration();
         }
 
 

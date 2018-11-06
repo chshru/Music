@@ -3,7 +3,6 @@ package com.chshru.music.service;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.view.View;
 
 import com.chshru.music.base.MusicApp;
 import com.chshru.music.ui.main.list.ListData;
@@ -255,6 +254,20 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
             return;
         }
         mService.pause();
+    }
+
+    public int getDuration() {
+        if (mService == null) {
+            return 0;
+        }
+        return mService.getDuration();
+    }
+
+    public int getCurDuration() {
+        if (mService == null) {
+            return 0;
+        }
+        return mService.getCurDuration();
     }
 
     public boolean hasPrepare() {
