@@ -103,6 +103,7 @@ public class PlayerActivity extends Activity implements StatusCallback {
         mArtist = findViewById(R.id.tv_artist);
         mLove = findViewById(R.id.iv_love);
         mSeekBar = findViewById(R.id.progressSb);
+        mSeekBar.setOnSeekBarChangeListener(mSeekBarListener);
         mLove.setOnClickListener(view -> onLoveClick());
         mPause.setOnClickListener(view -> togglePlayer(true));
         mApp = (MusicApp) getApplication();
@@ -115,6 +116,51 @@ public class PlayerActivity extends Activity implements StatusCallback {
                 view -> mPlayer.next());
         createAnimator();
     }
+
+    private SeekBar.OnSeekBarChangeListener mSeekBarListener = new SeekBar.OnSeekBarChangeListener() {
+
+        private boolean mPlaying;
+        private int mProgress;
+
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            if (!mPlayer.hasPrepare()) {
+                return;
+            }
+            if (!fromUser) {
+                return;
+            }
+            seekBar.setProgress(progress);
+            mProgress = progress;
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+            if (!mPlayer.hasPrepare()) {
+                return;
+            }
+            mProgress = -1;
+            mHandler.removeMessages(MSG_FRESH_SEEKBAR);
+            mPlaying = mPlayer.isPlaying();
+            if (mPlaying) {
+                mPlayer.togglePause();
+            }
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+            if (!mPlayer.hasPrepare()) {
+                return;
+            }
+            if (mProgress != -1) {
+                mPlayer.seekTo(mProgress);
+            }
+            if (mPlaying && !mPlayer.isPlaying()) {
+                mPlayer.togglePause();
+            }
+            mHandler.sendEmptyMessage(MSG_FRESH_SEEKBAR);
+        }
+    };
 
     private void onLoveClick() {
         Song song = mPlayer.getCurSong();

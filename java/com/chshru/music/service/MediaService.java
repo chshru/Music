@@ -104,6 +104,12 @@ public class MediaService extends Service {
         mPlayer.setOnPreparedListener(listener);
     }
 
+    private void seekTo(int p) {
+        if (hasPrepare()) {
+            mPlayer.seekTo(p);
+        }
+    }
+
     private class PlayBinder extends Binder implements PlayService {
 
         private SoftReference<MediaService> mService;
@@ -172,8 +178,11 @@ public class MediaService extends Service {
             return mService.get().getCurDuration();
         }
 
+        @Override
+        public void seekTo(int p) {
+            mService.get().seekTo(p);
+        }
 
     }
-
 
 }

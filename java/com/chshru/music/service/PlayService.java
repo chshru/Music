@@ -31,4 +31,6 @@ public interface PlayService {
     int getDuration();
 
     int getCurDuration();
+
+    void seekTo(int p);
 }

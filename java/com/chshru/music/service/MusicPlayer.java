@@ -177,6 +177,12 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
 
     private MediaPlayer.OnCompletionListener mOnComplete = mp -> toggleNextSong(1);
 
+    public void seekTo(int p) {
+        if (mService.hasPrepare()) {
+            mService.seekTo(p);
+        }
+    }
+
     private void toggleNextSong(int d) {
         int listPos = mApp.getListData().getPos();
         if (mCurSong == null || listPos >= ListData.P_SEARCH) {
