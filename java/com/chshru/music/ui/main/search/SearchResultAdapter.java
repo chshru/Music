@@ -42,6 +42,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
         mSong = list;
         mHandler = new Handler(main);
         mCacheQueue = new LinkedList<>(list);
+        resetSongTimes(mCacheQueue);
         mThread = new LoadThread();
         mThread.start();
     }
@@ -53,9 +54,16 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
     public void addAll(List<Song> list) {
         mSong.addAll(list);
         mCacheQueue.addAll(list);
+        resetSongTimes(mCacheQueue);
         if (mThread != null && !mThread.isAlive()) {
             mThread = new LoadThread();
             mThread.start();
+        }
+    }
+
+    private void resetSongTimes(Queue<Song> list) {
+        for (Song song : list) {
+            song.loadTimes = 0;
         }
     }
 
@@ -132,6 +140,9 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
                 if (song.albumBitmap != null) {
                     continue;
                 }
+                if (song.loadTimes >= Song.MAX_LOAD_TIMES) {
+                    continue;
+                }
                 try {
                     if (song.album != null && song.album.length() > 15) {
                         song.albumBitmap = BitmapFactory.decodeFile(song.album);
@@ -140,6 +151,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+                    song.loadTimes++;
                     mCacheQueue.offer(song);
                 }
             }
