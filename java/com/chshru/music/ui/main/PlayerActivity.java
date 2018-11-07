@@ -71,7 +71,14 @@ public class PlayerActivity extends Activity implements StatusCallback {
         super.onCreate(savedInstanceState);
         transParentStatusBar();
         setContentView(R.layout.activity_player);
+        overridePendingTransition(R.xml.bottom_in_ani, 0);
         initialize();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(0, R.xml.bottom_out_ani);
     }
 
     private void transParentStatusBar() {
