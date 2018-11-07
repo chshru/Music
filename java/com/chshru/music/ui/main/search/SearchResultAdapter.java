@@ -17,7 +17,6 @@ import com.chshru.music.util.Song;
 import com.danikula.videocache.HttpProxyCacheServer;
 
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -87,25 +86,33 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
         return new Holder(v);
     }
 
+    private View.OnClickListener mOnClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (mClickListener != null) {
+                mClickListener.onItemClick(v);
+            }
+        }
+    };
+
+    private View.OnLongClickListener mOnLongClick = new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+            if (mClickListener != null) {
+                mClickListener.OnItemLongClick(v);
+            }
+            return true;
+        }
+    };
+
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int pos) {
         Holder h = (Holder) holder;
         if (!h.itemView.hasOnClickListeners()) {
-            h.itemView.setOnClickListener(v -> {
-                if (mClickListener != null) {
-                    mClickListener.onItemClick(v);
-                }
-            });
-            h.itemView.setOnLongClickListener(v -> {
-                if (mClickListener != null) {
-                    mClickListener.OnItemLongClick(v);
-                }
-                return true;
-            });
+            h.itemView.setOnClickListener(mOnClick);
+            h.itemView.setOnLongClickListener(mOnLongClick);
         }
         Song song = mSong.get(pos);
-        h.name.setText(song.title);
-        h.artist.setText(song.artist);
         if (song.albumBitmap != null) {
             h.album.setImageBitmap(song.albumBitmap);
         } else {
@@ -114,8 +121,20 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
 
         if (song.playing) {
             h.playing.setVisibility(View.VISIBLE);
+            h.name.setText(song.title);
+            h.name.setTextColor(0xff05b962);
+            h.artist.setText(song.artist);
+            h.artist.setTextColor(0xff05b962);
+            h.num.setText(String.valueOf(pos + 1));
+            h.num.setTextColor(0xff05b962);
         } else {
             h.playing.setVisibility(View.INVISIBLE);
+            h.name.setText(song.title);
+            h.name.setTextColor(0xff000000);
+            h.artist.setText(song.artist);
+            h.artist.setTextColor(0xff9e9e9e);
+            h.num.setText(String.valueOf(pos + 1));
+            h.num.setTextColor(0xff9e9e9e);
         }
     }
 
@@ -205,6 +224,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
         public TextView artist;
         public AlbumImage album;
         public View playing;
+        public TextView num;
 
         public Holder(View view) {
             super(view);
@@ -212,6 +232,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
             artist = view.findViewById(R.id.tv_artist);
             album = view.findViewById(R.id.iv_cover);
             playing = view.findViewById(R.id.v_playing);
+            num = view.findViewById(R.id.tv_num);
         }
     }
 }
