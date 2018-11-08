@@ -6,6 +6,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.chshru.music.R;
 import com.chshru.music.service.StatusCallback;
 import com.chshru.music.ui.view.PlayPauseButton;
@@ -54,7 +55,8 @@ public class BottomLayout {
         if (song != null) {
             mTitle.setText(song.title);
             mArtist.setText(song.artist);
-            mAlbum.setImageBitmap(song.albumBitmap);
+            Glide.with(mCallback.getApplicationContext())
+                    .load(song.album).into(mAlbum);
         }
         if (playing && !mPause.isPlaying()) {
             mPause.play();

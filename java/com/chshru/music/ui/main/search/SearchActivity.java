@@ -20,7 +20,6 @@ import com.chshru.music.util.QueryHandler.OnFinishRunnable;
 import com.chshru.music.util.Song;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -60,21 +59,12 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
         mSearch = findViewById(R.id.sv_search_aty);
         mSearch.setOnQueryTextListener(mSearchListener);
         mRecycler = findViewById(R.id.search_aty_recycler);
-        List<Song> list = new ArrayList<>();
-        mAdapter = new SearchResultAdapter(list, getMainLooper());
-        mAdapter.setCacheServer(app.getServer());
+        mAdapter = new SearchResultAdapter(new ArrayList<>());
         mAdapter.setOnItemClickListener(mItemClickListener);
         mLayoutManager = new LinearLayoutManager(this);
         mRecycler.setLayoutManager(mLayoutManager);
         mRecycler.setAdapter(mAdapter);
         mRecycler.setHasFixedSize(true);
-        RecyclerView.RecycledViewPool pool = mRecycler.getRecycledViewPool();
-        pool.setMaxRecycledViews(0, 60);
-        for (int index = 0; index < 60; index++) {
-            pool.putRecycledView(mAdapter.createViewHolder(mRecycler, 0));
-        }
-
-        mAdapter.notifyDataSetChanged();
         mHandler = new QueryHandler(getMainLooper(), mRunnable);
         mTopLoading = findViewById(R.id.search_loading);
         mBottomLoading = findViewById(R.id.more_loading);
@@ -94,7 +84,7 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
         for (int i = 0; i < mAdapter.getItemCount(); i++) {
             mAdapter.get(i).playing = mAdapter.get(i).equals(song);
         }
-        mAdapter.notifyDataDelayed(200);
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -219,7 +209,6 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
         @Override
         public boolean onQueryTextSubmit(String queryText) {
             mSearch.clearFocus();
-            mAdapter.stopLoad();
             mOnScrollListener.init();
             onQuerySubmit(queryText);
             return true;
@@ -228,7 +217,6 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
         @Override
         public boolean onQueryTextChange(String newText) {
             if (mAdapter.getItemCount() != 0) {
-                mAdapter.stopLoad();
                 mAdapter.clear();
                 mAdapter.notifyDataSetChanged();
             }

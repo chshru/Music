@@ -15,11 +15,13 @@ public class LocalMusicApi {
                 Uri.parse(URI_ALBUM + "/" + id),
                 projection, null, null, null);
         String album_art = null;
-        if (cursor.getCount() > 0 && cursor.getColumnCount() > 0) {
+        if (cursor != null && cursor.getCount() > 0 && cursor.getColumnCount() > 0) {
             cursor.moveToNext();
             album_art = cursor.getString(0);
         }
-        cursor.close();
+        if (cursor != null) {
+            cursor.close();
+        }
         return album_art;
     }
 

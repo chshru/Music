@@ -48,24 +48,12 @@ public class QQMusicApi {
     final static private String ALBUM_URL_LEFT = "https://y.gtimg.cn/music/photo_new/T002R300x300M000";
     final static private String ALBUM_URL_RIGHT = ".jpg";
 
-    public static String buildAlbumUrl(String url) {
+    private static String buildAlbumUrl(String url) {
         StringBuilder sb = new StringBuilder();
         sb.append(ALBUM_URL_LEFT);
         sb.append(url);
         sb.append(ALBUM_URL_RIGHT);
         return sb.toString();
-    }
-
-
-    public static String getFirstFromResult(String result) {
-        JSONObject obj = JSON.parseObject(result);
-        String ans = obj
-                .getJSONObject("data")
-                .getJSONObject("song")
-                .getJSONArray("list")
-                .getJSONObject(0)
-                .getString("songmid");
-        return ans;
     }
 
 
@@ -82,8 +70,8 @@ public class QQMusicApi {
             Song m = new Song(
                     j.getInteger("songid"),
                     Song.TYPE_NET,
-                    j.getString("albummid"),
-                    j.getString("songmid"),
+                    buildAlbumUrl(j.getString("albummid")),
+                    buildSongUrl(j.getString("songmid")),
                     j.getString("songname"),
                     j.getJSONArray("singer").getJSONObject(0).getString("name"),
                     null

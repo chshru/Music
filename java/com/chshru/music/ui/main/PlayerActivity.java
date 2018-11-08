@@ -4,13 +4,13 @@ package com.chshru.music.ui.main;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -20,6 +20,11 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.chshru.music.R;
 import com.chshru.music.base.MusicApp;
 import com.chshru.music.service.MusicPlayer;
@@ -233,6 +238,26 @@ public class PlayerActivity extends Activity implements StatusCallback {
         }
     };
 
+    private RequestListener<Drawable> mLoadListener = new RequestListener<Drawable>() {
+        @Override
+        public boolean onLoadFailed(@Nullable GlideException e, Object model,
+                                    Target<Drawable> target, boolean isFirstResource) {
+            return false;
+        }
+
+        @Override
+        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target,
+                                       DataSource dataSource, boolean isFirstResource) {
+            mAlbumPic.setImageDrawable(resource);
+            Drawable bg = ImageUtil.createBgFromBitmap(
+                    ((BitmapDrawable) resource).getBitmap()
+                    , 12, PlayerActivity.this
+            );
+            ImageUtil.startChangeAnimation(mPlayingBg, bg);
+            return true;
+        }
+    };
+
     private void updateUI(boolean b) {
         Song song = mPlayer.getCurSong();
         if (song != null && b) {
@@ -240,15 +265,12 @@ public class PlayerActivity extends Activity implements StatusCallback {
             mSeekBar.setMax(mPlayer.getDuration());
             mSeekBar.setProgress(mPlayer.getCurDuration());
             mHandler.sendEmptyMessage(MSG_FRESH_SEEKBAR);
-            Bitmap bitmap = song.albumBitmap;
-            if (bitmap == null) {
+            if (song.album != null) {
+                Glide.with(this).load(song.album).listener(mLoadListener).into(mAlbumPic);
+            } else {
                 int rand = (int) (Math.random() * 8);
-                bitmap = BitmapFactory.decodeResource(
-                        getResources(), mRandPic[rand]);
+                Glide.with(this).load(mRandPic[rand]).listener(mLoadListener).into(mAlbumPic);
             }
-            mAlbumPic.setImageBitmap(bitmap);
-            Drawable bg = ImageUtil.createBgFromBitmap(bitmap, 12, this);
-            ImageUtil.startChangeAnimation(mPlayingBg, bg);
         }
         if (song != null) {
             mTitle.setText(song.title);

@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Context;
 
 import com.chshru.music.service.MusicPlayer;
-import com.chshru.music.service.StatusCallback;
 import com.chshru.music.ui.main.list.ListData;
 import com.chshru.music.util.HistoryTable;
 import com.chshru.music.util.LoveTable;

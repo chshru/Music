@@ -15,14 +15,7 @@ public abstract class ActivityBase extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
-        //transParentStatusBar(this);
         initialize();
-    }
-
-    private void transParentStatusBar(Activity aty) {
-        aty.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        aty.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        aty.getWindow().setStatusBarColor(Color.TRANSPARENT);
     }
 
     protected abstract int getLayoutId();

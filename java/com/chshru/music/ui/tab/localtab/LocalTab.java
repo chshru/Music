@@ -1,7 +1,5 @@
 package com.chshru.music.ui.tab.localtab;
 
-
-import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.os.Handler;
@@ -16,7 +14,6 @@ import com.chshru.music.util.Song;
 import com.chshru.music.util.SongScanner;
 
 import java.util.List;
-
 
 /**
  * Created by abc on 18-10-25.

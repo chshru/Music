@@ -1,6 +1,5 @@
 package com.chshru.music.util;
 
-import android.graphics.Bitmap;
 
 /**
  * Created by abc on 18-10-22.
@@ -20,13 +19,11 @@ public class Song {
         this.link = link;
         this.album = album;
         playing = false;
-        loadTimes = 0;
     }
 
     public Song(Song song) {
         if (song != null) {
             this.id = song.id;
-            this.albumBitmap = song.albumBitmap;
             this.type = song.type;
             this.mid = song.mid;
             this.title = song.title;
@@ -35,14 +32,12 @@ public class Song {
             this.album = song.album;
             this.playing = song.playing;
             this.time = song.time;
-            loadTimes = 0;
         }
     }
 
     public void copyFrom(Song song) {
         if (song != null) {
             this.id = song.id;
-            this.albumBitmap = song.albumBitmap;
             this.type = song.type;
             this.mid = song.mid;
             this.title = song.title;
@@ -51,14 +46,10 @@ public class Song {
             this.album = song.album;
             this.playing = song.playing;
             this.time = song.time;
-            loadTimes = 0;
         }
     }
 
     public boolean playing;
-    public Bitmap albumBitmap;
-    public int loadTimes;
-
 
     public int id; //数据库id
     public static String _id = "id";

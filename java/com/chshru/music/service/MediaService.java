@@ -41,9 +41,7 @@ public class MediaService extends Service {
     }
 
     private void prepare(String url) {
-        if (hasPrepare()) {
-            mPlayer.reset();
-        }
+        mPlayer.reset();
         try {
             mHasPrepare = false;
             mPlayer.setDataSource(url);

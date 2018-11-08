@@ -50,25 +50,15 @@ public class ListActivity extends ActivityBase implements StatusCallback {
             titleTv.setText(title);
         }
         List<Song> list = mApp.getListData().getList(mStartType);
+        Song curSong = mApp.getPlayer().getCurSong();
         for (Song song : list) {
-            if (song.equals(mApp.getPlayer().getCurSong())) {
-                song.playing = true;
-            } else if (song.playing) {
-                song.playing = false;
-            }
+            song.playing = song.equals(curSong);
         }
-        mAdapter = new SearchResultAdapter(list, getMainLooper());
-        mAdapter.setCacheServer(mApp.getServer());
-        mAdapter.startLoad();
+        mAdapter = new SearchResultAdapter(list);
         mRecycler = findViewById(R.id.list_recycler);
         mRecycler.setLayoutManager(new LinearLayoutManager(this));
         mRecycler.setAdapter(mAdapter);
         mRecycler.setHasFixedSize(true);
-        RecyclerView.RecycledViewPool pool = mRecycler.getRecycledViewPool();
-        pool.setMaxRecycledViews(0, 20);
-        for (int index = 0; index < 20; index++) {
-            pool.putRecycledView(mAdapter.createViewHolder(mRecycler, 0));
-        }
         findViewById(R.id.back).setOnClickListener(view -> finish());
         mAdapter.setOnItemClickListener(mItemClick);
     }
@@ -93,7 +83,7 @@ public class ListActivity extends ActivityBase implements StatusCallback {
         for (int i = 0; i < mAdapter.getItemCount(); i++) {
             mAdapter.get(i).playing = mAdapter.get(i).equals(song);
         }
-        mAdapter.notifyDataDelayed(200);
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.chshru.music.ui.tab.onlinetab;
 
-import android.content.Context;
 import android.view.View;
 
 import com.chshru.music.R;
