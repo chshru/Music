@@ -104,10 +104,14 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
     }
 
     public void prepare(Song song) {
+        prepare(song, false);
+    }
+
+    private void prepare(Song song, boolean same) {
         if (mService == null) {
             return;
         }
-        if (mCurSong != null && mCurSong.equals(song)) {
+        if (mCurSong != null && mCurSong.equals(song) && !same) {
             return;
         }
         if (mCurSong != null) {
@@ -155,7 +159,7 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
         return mService != null;
     }
 
-    private MediaPlayer.OnCompletionListener mOnComplete = mp -> toggleNextSong(1);
+    private MediaPlayer.OnCompletionListener mOnComplete = mp -> toggleNextSong(0);
 
     public void seekTo(int p) {
         if (mService.hasPrepare()) {
@@ -182,13 +186,33 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
         }
         if (songPos == -1) songPos = 0;
         int tot = mCurSongList.size();
-        if (d > 0) {
-            songPos = (songPos + 1) % tot;
+        int mode = mApp.getListData().getCurMode();
+        switch (mode) {
+            case ListData.PLAY_LIST:
+                if (d >= 0) {
+                    songPos = (songPos + 1) % tot;
+                } else {
+                    songPos = songPos - 1 >= 0 ? songPos - 1 : tot - 1;
+                }
+                break;
+            case ListData.PLAY_ONE:
+                if (d > 0) {
+                    songPos = (songPos + 1) % tot;
+                } else if (d < 0) {
+                    songPos = songPos - 1 >= 0 ? songPos - 1 : tot - 1;
+                }
+                break;
+            case ListData.PLAY_RAND:
+                if (tot > 1) {
+                    int tempPos;
+                    do {
+                        tempPos = (int) (Math.random() * tot);
+                    } while (tempPos == songPos);
+                    songPos = tempPos;
+                }
+                break;
         }
-        if (d < 0) {
-            songPos = songPos - 1 >= 0 ? songPos - 1 : tot - 1;
-        }
-        prepare(mCurSongList.get(songPos));
+        prepare(mCurSongList.get(songPos), true);
     }
 
     @Override

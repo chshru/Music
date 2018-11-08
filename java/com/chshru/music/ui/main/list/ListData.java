@@ -8,6 +8,9 @@ import java.util.List;
 
 public class ListData {
 
+    public static final int PLAY_ONE = 1;
+    public static final int PLAY_LIST = 0;
+    public static final int PLAY_RAND = 2;
 
     public static final int P_LOCAL = 0;
     public static final int P_HISTORY = 1;
@@ -15,14 +18,23 @@ public class ListData {
     public static final int P_SEARCH = 3;
 
     private List<List<Song>> mList;
-    private String mTitle;
     private int mPos;
+    private int mCurMode;
 
     public ListData() {
+        mPos = mCurMode = 0;
         mList = new ArrayList<>();
         mList.add(new ArrayList<>());
         mList.add(new ArrayList<>());
         mList.add(new ArrayList<>());
+    }
+
+    public void setCurMode(int curMode) {
+        mCurMode = curMode;
+    }
+
+    public int getCurMode() {
+        return mCurMode;
     }
 
     public void setPos(int pos) {
@@ -31,14 +43,6 @@ public class ListData {
 
     public int getPos() {
         return mPos;
-    }
-
-    public void setTitle(String title) {
-        mTitle = title;
-    }
-
-    public String getTitle() {
-        return mTitle;
     }
 
     public void addAll(List<Song> list, int p) {
