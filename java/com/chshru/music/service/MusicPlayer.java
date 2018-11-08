@@ -113,12 +113,10 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
         if (mCurSong != null) {
             mCurSong.playing = false;
         }
-        String url = song.link;
-        if (url == null) {
-            url = song.mid;
+        String local = song.link;
+        if (local == null) {
+            local = mApp.getServer().getProxyUrl(song.mid);
         }
-
-        String local = mApp.getServer().getProxyUrl(url);
         mService.setPreparedListener(this);
         mService.setCompletionListener(mOnComplete);
         mService.prepare(local);
