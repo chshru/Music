@@ -28,7 +28,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.main.search.SearchActivity" />
-        <activity android:name=".ui.main.list.ListActivity" />
+        <activity
+            android:name=".ui.main.list.ListActivity"
+            android:theme="@style/PlayerTheme" />
         <activity
             android:name=".ui.main.PlayerActivity"
             android:theme="@style/PlayerTheme" />

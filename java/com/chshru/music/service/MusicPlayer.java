@@ -9,8 +9,6 @@ import com.chshru.music.ui.main.list.ListData;
 import com.chshru.music.util.HistoryTable;
 import com.chshru.music.util.QQMusicApi;
 import com.chshru.music.util.Song;
-import com.danikula.videocache.CacheListener;
-import com.danikula.videocache.HttpProxyCacheServer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +19,7 @@ import java.util.List;
 
 public class MusicPlayer implements MediaPlayer.OnPreparedListener {
 
-    private HttpProxyCacheServer mCacheServer;
     private PlayService mService;
-    private CacheListener mCacheListener;
     private Song mCurSong;
     private HistoryTable mHistoryTable;
     private List<StatusCallback> mCallbacks;
@@ -34,8 +30,6 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
     private boolean mPauseByFocus;
 
     public MusicPlayer(Context context, MusicApp app) {
-        mCacheServer = new HttpProxyCacheServer(
-                context.getApplicationContext());
         mCallbacks = new ArrayList<>();
         mAudioManager = (AudioManager) context
                 .getSystemService(Context.AUDIO_SERVICE);
@@ -98,10 +92,6 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
         mHistoryTable = historyTable;
     }
 
-    public void addCacheListener(CacheListener listener) {
-        mCacheListener = listener;
-    }
-
     public void rmCallback(StatusCallback callback) {
         mCallbacks.remove(callback);
     }
@@ -127,7 +117,7 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
         String local, url;
         if (song.type == Song.TYPE_NET || song.link == null) {
             url = QQMusicApi.buildSongUrl(song.mid);
-            local = mCacheServer.getProxyUrl(url);
+            local = mApp.getServer().getProxyUrl(url);
         } else {
             url = song.link;
             local = url;
@@ -159,16 +149,11 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
             history.add(0, tempSong);
         }
 
-        if (mCacheListener != null) {
-            mCacheServer.registerCacheListener(mCacheListener, url);
-        }
-
         for (StatusCallback callback : mCallbacks) {
             if (callback != null) {
                 callback.onSongChanged(mCurSong);
             }
         }
-
     }
 
     public boolean hasService() {

@@ -26,14 +26,14 @@ public class ListActivity extends ActivityBase implements StatusCallback {
 
     @Override
     protected int getLayoutId() {
-        overridePendingTransition(0, 0);
+        overridePendingTransition(R.xml.slide_in_right, 0);
         return R.layout.activity_list;
     }
 
     @Override
     public void finish() {
         super.finish();
-        overridePendingTransition(0, 0);
+        overridePendingTransition(0, R.xml.slide_out_right);
     }
 
 
@@ -58,9 +58,17 @@ public class ListActivity extends ActivityBase implements StatusCallback {
             }
         }
         mAdapter = new SearchResultAdapter(list, getMainLooper());
+        mAdapter.setCacheServer(mApp.getServer());
+        mAdapter.startLoad();
         mRecycler = findViewById(R.id.list_recycler);
         mRecycler.setLayoutManager(new LinearLayoutManager(this));
         mRecycler.setAdapter(mAdapter);
+        mRecycler.setHasFixedSize(true);
+        RecyclerView.RecycledViewPool pool = mRecycler.getRecycledViewPool();
+        pool.setMaxRecycledViews(0, 20);
+        for (int index = 0; index < 20; index++) {
+            pool.putRecycledView(mAdapter.createViewHolder(mRecycler, 0));
+        }
         findViewById(R.id.back).setOnClickListener(view -> finish());
         mAdapter.setOnItemClickListener(mItemClick);
     }

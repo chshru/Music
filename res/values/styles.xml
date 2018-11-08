@@ -20,10 +20,6 @@
     </style>
 
     <style name="PlayerTheme" parent="AppTheme">
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="lollipop">
-            @android:color/transparent
-        </item>
         <item name="android:windowIsTranslucent">true</item>
     </style>
 

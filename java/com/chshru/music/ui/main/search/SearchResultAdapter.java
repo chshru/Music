@@ -36,28 +36,40 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
     private OnItemClickListener mClickListener;
     private LoadThread mThread;
     private Handler mHandler;
+    private ItemRunnable mItemRunnable;
 
     public SearchResultAdapter(List<Song> list, Looper main) {
         mSong = list;
         mHandler = new Handler(main);
         mCacheQueue = new LinkedList<>(list);
-        resetSongTimes(mCacheQueue);
         mThread = new LoadThread();
-        mThread.start();
+        mItemRunnable = new ItemRunnable();
     }
 
     public void setCacheServer(HttpProxyCacheServer cacheServer) {
         mCacheServer = cacheServer;
     }
 
+    public void startLoad() {
+//        if (mThread != null && !mThread.hasRun()) {
+//            mThread.start();
+//        } else if (mThread != null && !mThread.isAlive()) {
+//            mThread = new LoadThread();
+//            mThread.start();
+//        }
+    }
+
     public void addAll(List<Song> list) {
         mSong.addAll(list);
+        notifyDataSetChanged();
         mCacheQueue.addAll(list);
         resetSongTimes(mCacheQueue);
-        if (mThread != null && !mThread.isAlive()) {
-            mThread = new LoadThread();
-            mThread.start();
-        }
+//        if (mThread != null && !mThread.hasRun()) {
+//            mThread.start();
+//        } else if (mThread != null && !mThread.isAlive()) {
+//            mThread = new LoadThread();
+//            mThread.start();
+//        }
     }
 
     private void resetSongTimes(Queue<Song> list) {
@@ -83,7 +95,10 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_search_song, parent, false);
-        return new Holder(v);
+        final Holder holder = new Holder(v);
+        v.setOnClickListener(mOnClick);
+        v.setOnLongClickListener(mOnLongClick);
+        return holder;
     }
 
     private View.OnClickListener mOnClick = new View.OnClickListener() {
@@ -108,16 +123,16 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int pos) {
         Holder h = (Holder) holder;
-        if (!h.itemView.hasOnClickListeners()) {
-            h.itemView.setOnClickListener(mOnClick);
-            h.itemView.setOnLongClickListener(mOnLongClick);
-        }
         Song song = mSong.get(pos);
-        if (song.albumBitmap != null) {
-            h.album.setImageBitmap(song.albumBitmap);
-        } else {
-            h.album.setImageResource(R.drawable.default_album_cover);
+        if (song.id == -1) {
+            mSong.remove(pos);
+            return;
         }
+//        if (song.albumBitmap != null) {
+//            h.album.setImageBitmap(song.albumBitmap);
+//        } else {
+//            h.album.setImageResource(R.drawable.default_album_cover);
+//        }
 
         if (song.playing) {
             h.playing.setVisibility(View.VISIBLE);
@@ -151,15 +166,31 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
 
     private class LoadThread extends Thread {
 
+        private boolean hasRun;
+
+        public LoadThread() {
+            super();
+            hasRun = false;
+        }
+
+        @Override
+        public synchronized void start() {
+            super.start();
+            hasRun = false;
+        }
+
+        public boolean hasRun() {
+            return hasRun;
+        }
+
         @Override
         public void run() {
+            hasRun = true;
             while (mCacheQueue.peek() != null) {
-
                 Song song = mCacheQueue.poll();
-                if (song.albumBitmap != null) {
-                    continue;
-                }
-                if (song.loadTimes >= Song.MAX_LOAD_TIMES) {
+                if (song.albumBitmap != null
+                        || song.id == -1
+                        || song.loadTimes >= Song.MAX_LOAD_TIMES) {
                     continue;
                 }
                 try {
@@ -169,11 +200,15 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
                         solveNetUrl(QQMusicApi.buildAlbumUrl(song.album), song);
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    System.out.println("failed load : " + song.title);
                     song.loadTimes++;
                     mCacheQueue.offer(song);
                 }
+                int pos = mSong.indexOf(song);
+                mItemRunnable.setPos(pos);
+                mHandler.post(mItemRunnable);
             }
+            mHandler.post(mFreshRunnable);
         }
 
         private void solveNetUrl(String str, Song song) throws Exception {
@@ -193,15 +228,27 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
                 if (conn.getResponseCode() == 200) {
                     InputStream inputStream = conn.getInputStream();
                     song.albumBitmap = BitmapFactory.decodeStream(inputStream);
-                    mHandler.post(mFreshRunnable);
                 } else {
                     mCacheQueue.offer(song);
                 }
             } else {
                 local = local.replace("file://", "");
                 song.albumBitmap = BitmapFactory.decodeFile(local);
-                mHandler.post(mFreshRunnable);
             }
+        }
+    }
+
+    private class ItemRunnable implements Runnable {
+
+        private int pos;
+
+        public void setPos(int pos) {
+            this.pos = pos;
+        }
+
+        @Override
+        public void run() {
+
         }
     }
 
@@ -234,5 +281,6 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
             playing = view.findViewById(R.id.v_playing);
             num = view.findViewById(R.id.tv_num);
         }
+
     }
 }

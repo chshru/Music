@@ -8,6 +8,7 @@ import com.chshru.music.service.StatusCallback;
 import com.chshru.music.ui.main.list.ListData;
 import com.chshru.music.util.HistoryTable;
 import com.chshru.music.util.LoveTable;
+import com.danikula.videocache.HttpProxyCacheServer;
 
 /**
  * Created by abc on 18-10-22.
@@ -20,6 +21,7 @@ public class MusicApp extends Application {
     private boolean mHasInit;
     private ListData mListData;
     private LoveTable mLoveTable;
+    private HttpProxyCacheServer mCacheServer;
 
     @Override
     public void onCreate() {
@@ -27,14 +29,25 @@ public class MusicApp extends Application {
         mHasInit = false;
     }
 
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        mCacheServer.shutdown();
+    }
+
     public void init() {
         Context context = getApplicationContext();
+        mCacheServer = new HttpProxyCacheServer(context);
         mPlayer = new MusicPlayer(context, this);
         mHistoryTable = new HistoryTable(context);
         mLoveTable = new LoveTable(context);
         mPlayer.setHistoryTable(mHistoryTable);
         mListData = new ListData();
         mHasInit = true;
+    }
+
+    public HttpProxyCacheServer getServer() {
+        return mCacheServer;
     }
 
     public LoveTable getLoveTable() {
