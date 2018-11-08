@@ -1,6 +1,7 @@
 package com.chshru.music.ui.main.search;
 
 
+import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -31,7 +32,7 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
     private ActionSearchView mSearch;
     private RecyclerView mRecycler;
     private SearchResultAdapter mAdapter;
-    private QueryHandler mHandler;
+    private QueryHandler mQueryHandler;
     private MusicApp app;
     private int mQueriedPos;
     private LinearLayoutManager mLayoutManager;
@@ -39,6 +40,7 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
     private OnScrollListener mOnScrollListener;
     private RotateLoading mTopLoading;
     private RotateLoading mBottomLoading;
+    private Handler mHandler;
 
     @Override
     protected int getLayoutId() {
@@ -65,7 +67,7 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
         mRecycler.setLayoutManager(mLayoutManager);
         mRecycler.setAdapter(mAdapter);
         mRecycler.setHasFixedSize(true);
-        mHandler = new QueryHandler(getMainLooper(), mRunnable);
+        mQueryHandler = new QueryHandler(getMainLooper(), mRunnable);
         mTopLoading = findViewById(R.id.search_loading);
         mBottomLoading = findViewById(R.id.more_loading);
         int color = getResources().getColor(R.color.colorPrimary);
@@ -77,6 +79,7 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
         });
         mOnScrollListener = new OnScrollListener();
         mRecycler.addOnScrollListener(mOnScrollListener);
+        mHandler = new Handler();
     }
 
     @Override
@@ -84,7 +87,7 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
         for (int i = 0; i < mAdapter.getItemCount(); i++) {
             mAdapter.get(i).playing = mAdapter.get(i).equals(song);
         }
-        mAdapter.notifyDataSetChanged();
+        mHandler.postDelayed(() -> mAdapter.notifyDataSetChanged(), 300);
     }
 
     @Override
@@ -165,14 +168,14 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
         if (!mTopLoading.isStart()) {
             mTopLoading.start();
         }
-        new Thread(() -> QQMusicApi.query(mQueriedPos, 60, mQueryString, mHandler)).start();
+        new Thread(() -> QQMusicApi.query(mQueriedPos, 60, mQueryString, mQueryHandler)).start();
     }
 
     private void onQueryMore() {
         if (!mBottomLoading.isStart()) {
             mBottomLoading.start();
         }
-        new Thread(() -> QQMusicApi.query(mQueriedPos, 60, mQueryString, mHandler)).start();
+        new Thread(() -> QQMusicApi.query(mQueriedPos, 60, mQueryString, mQueryHandler)).start();
     }
 
     private void onQueryComplete(String result) {

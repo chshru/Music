@@ -165,8 +165,11 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
 
     private void toggleNextSong(int d) {
         int listPos = mApp.getListData().getPos();
-        if (mCurSong == null || listPos >= ListData.P_SEARCH) {
+        if (mCurSong == null) {
             return;
+        }
+        if (listPos == ListData.P_SEARCH) {
+            listPos = ListData.P_HISTORY;
         }
         mCurSongList = mApp.getListData().getList(listPos);
         if (mCurSongList.size() == 0) return;

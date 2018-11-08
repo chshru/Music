@@ -282,6 +282,7 @@ public class PlayerActivity extends Activity implements StatusCallback {
                 mCurIsLove = false;
                 mLove.setImageResource(R.drawable.icon_favorite_white);
             }
+            mAnimator.end();
         }
         if (mPlayer.isPlaying()) {
             mHandler.sendEmptyMessage(MSG_FRESH_SEEKBAR);

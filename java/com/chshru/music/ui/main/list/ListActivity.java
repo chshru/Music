@@ -5,6 +5,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
+import android.os.Handler;
 
 import com.chshru.music.R;
 import com.chshru.music.base.ActivityBase;
@@ -23,6 +24,7 @@ public class ListActivity extends ActivityBase implements StatusCallback {
     private SearchResultAdapter mAdapter;
     private MusicApp mApp;
     private int mStartType;
+    private Handler mHandler;
 
     @Override
     protected int getLayoutId() {
@@ -61,6 +63,7 @@ public class ListActivity extends ActivityBase implements StatusCallback {
         mRecycler.setHasFixedSize(true);
         findViewById(R.id.back).setOnClickListener(view -> finish());
         mAdapter.setOnItemClickListener(mItemClick);
+        mHandler = new Handler();
     }
 
     @Override
@@ -83,7 +86,7 @@ public class ListActivity extends ActivityBase implements StatusCallback {
         for (int i = 0; i < mAdapter.getItemCount(); i++) {
             mAdapter.get(i).playing = mAdapter.get(i).equals(song);
         }
-        mAdapter.notifyDataSetChanged();
+        mHandler.postDelayed(() -> mAdapter.notifyDataSetChanged(), 300);
     }
 
     @Override
