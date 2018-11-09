@@ -91,6 +91,7 @@ public class HomeActivity extends ActivityBase implements StatusCallback, Bottom
                 initBottomBar();
                 initializeParams();
                 initializePages();
+                mPlayer.addCallback(this);
             } else {
                 showFailDialog();
             }

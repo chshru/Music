@@ -58,8 +58,9 @@ public class PlayerActivity extends Activity implements StatusCallback {
     private boolean mCurIsLove;
     private LoveTable mLoveTable;
     private SeekBar mSeekBar;
+    private ImageButton mRepeat;
 
-    private int[] mRandPic = {
+    private int[] RAND_PIC = {
             R.drawable.music_album_1,
             R.drawable.music_album_2,
             R.drawable.music_album_3,
@@ -69,6 +70,12 @@ public class PlayerActivity extends Activity implements StatusCallback {
             R.drawable.music_album_7,
             R.drawable.music_album_8,
             R.drawable.music_album_9,
+    };
+
+    private int[] REPEAT_PIC = {
+            R.drawable.icon_repeat_all,
+            R.drawable.icon_repeat_one,
+            R.drawable.icon_repeat_rand,
     };
 
     @Override
@@ -114,6 +121,7 @@ public class PlayerActivity extends Activity implements StatusCallback {
         mTitle = findViewById(R.id.tv_title);
         mArtist = findViewById(R.id.tv_artist);
         mLove = findViewById(R.id.iv_love);
+        mRepeat = findViewById(R.id.iv_repeat);
         mSeekBar = findViewById(R.id.progressSb);
         mSeekBar.setOnSeekBarChangeListener(mSeekBarListener);
         mLove.setOnClickListener(view -> onLoveClick());
@@ -122,11 +130,20 @@ public class PlayerActivity extends Activity implements StatusCallback {
         mLoveTable = mApp.getLoveTable();
         mLoveList = mApp.getListData().getList(ListData.P_LOVE);
         mPlayer = mApp.getPlayer();
+        mRepeat.setImageResource(REPEAT_PIC[mApp.getListData().getCurMode()]);
+        mRepeat.setOnClickListener(view -> onRepeatClick());
         findViewById(R.id.prevPlayIv).setOnClickListener(
                 view -> mPlayer.prev());
         findViewById(R.id.nextvPlayIv).setOnClickListener(
                 view -> mPlayer.next());
         createAnimator();
+    }
+
+    private void onRepeatClick() {
+        int curMode = mApp.getListData().getCurMode();
+        curMode = (curMode + 1) % ListData.MODE_COUNT;
+        mApp.getListData().setCurMode(curMode);
+        mRepeat.setImageResource(REPEAT_PIC[curMode]);
     }
 
     private SeekBar.OnSeekBarChangeListener mSeekBarListener = new SeekBar.OnSeekBarChangeListener() {
@@ -269,7 +286,7 @@ public class PlayerActivity extends Activity implements StatusCallback {
                 Glide.with(this).load(song.album).listener(mLoadListener).into(mAlbumPic);
             } else {
                 int rand = (int) (Math.random() * 8);
-                Glide.with(this).load(mRandPic[rand]).listener(mLoadListener).into(mAlbumPic);
+                Glide.with(this).load(RAND_PIC[rand]).listener(mLoadListener).into(mAlbumPic);
             }
             mAnimator.end();
         }

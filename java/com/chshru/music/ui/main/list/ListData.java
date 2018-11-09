@@ -8,9 +8,10 @@ import java.util.List;
 
 public class ListData {
 
-    public static final int PLAY_ONE = 1;
     public static final int PLAY_LIST = 0;
+    public static final int PLAY_ONE = 1;
     public static final int PLAY_RAND = 2;
+    public static final int MODE_COUNT = 3;
 
     public static final int P_LOCAL = 0;
     public static final int P_HISTORY = 1;
