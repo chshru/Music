@@ -271,6 +271,7 @@ public class PlayerActivity extends Activity implements StatusCallback {
                 int rand = (int) (Math.random() * 8);
                 Glide.with(this).load(mRandPic[rand]).listener(mLoadListener).into(mAlbumPic);
             }
+            mAnimator.end();
         }
         if (song != null) {
             mTitle.setText(song.title);
@@ -282,7 +283,6 @@ public class PlayerActivity extends Activity implements StatusCallback {
                 mCurIsLove = false;
                 mLove.setImageResource(R.drawable.icon_favorite_white);
             }
-            mAnimator.end();
         }
         if (mPlayer.isPlaying()) {
             mHandler.sendEmptyMessage(MSG_FRESH_SEEKBAR);
