@@ -1,13 +1,9 @@
 package com.chshru.music.ui.main;
 
-import android.Manifest;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -31,12 +27,6 @@ import com.chshru.music.util.Song;
 
 public class HomeActivity extends ActivityBase implements StatusCallback, BottomLayout.BottomController {
 
-    private final String[] PM = {
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-    };
-    private final int PM_CODE = 233333;
-
     private MusicPlayer mPlayer;
     private Intent mIntent;
     private BottomLayout mBottomLayout;
@@ -51,57 +41,10 @@ public class HomeActivity extends ActivityBase implements StatusCallback, Bottom
 
     @Override
     protected void initialize() {
-        if (checkPrimission()) {
-            initBottomBar();
-            initializeParams();
-            initializePages();
-        } else {
-            requestPermission();
-        }
+        initBottomBar();
+        initializeParams();
+        initializePages();
     }
-
-    private void requestPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requestPermissions(PM, PM_CODE);
-        }
-    }
-
-    private boolean checkPrimission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            for (String aPM : PM) {
-                if (checkSelfPermission(aPM) != PackageManager.PERMISSION_GRANTED) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int rCode, @NonNull String[] pre, @NonNull int[] result) {
-        if (rCode == PM_CODE) {
-            boolean flag = true;
-            for (int aResult : result) {
-                if (aResult != PackageManager.PERMISSION_GRANTED) {
-                    flag = false;
-                    break;
-                }
-            }
-            if (flag) {
-                initBottomBar();
-                initializeParams();
-                initializePages();
-                mPlayer.addCallback(this);
-            } else {
-                showFailDialog();
-            }
-        }
-    }
-
-    private void showFailDialog() {
-        System.out.println("chenshanru failed haha");
-    }
-
 
     private void initializePages() {
         BaseTab page1 = new LocalTab(this, R.layout.page_one_local);
