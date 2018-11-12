@@ -6,7 +6,6 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:textColorSecondary">@color/main_white</item>
     </style>
 
     <style name="TabBarText">
@@ -17,6 +16,11 @@
         <item name="searchHintIcon">@null</item>
         <item name="searchIcon">@null</item>
         <item name="commitIcon">@drawable/icon_search_white</item>
+        <item name="android:textColorSecondary">@color/main_white</item>
+    </style>
+
+    <style name="SearchTheme" parent="AppTheme">
+        <item name="android:textColorSecondary">@color/main_white</item>
     </style>
 
     <style name="PlayerTheme" parent="AppTheme">

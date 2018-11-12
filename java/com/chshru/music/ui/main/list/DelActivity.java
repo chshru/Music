@@ -1,72 +1,79 @@
 package com.chshru.music.ui.main.list;
 
-
-import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.TextView;
-import android.os.Handler;
 
 import com.chshru.music.R;
 import com.chshru.music.base.ActivityBase;
 import com.chshru.music.base.MusicApp;
 import com.chshru.music.service.StatusCallback;
-import com.chshru.music.ui.main.search.SongListAdapter;
-import com.chshru.music.ui.main.search.SongListAdapter.OnItemClickListener;
 import com.chshru.music.ui.tab.localtab.LocalTab;
 import com.chshru.music.util.Song;
+import com.chshru.music.ui.main.list.DelAdapter.OnItemClickListener;
 
 import java.util.List;
 
-import static com.chshru.music.ui.tab.localtab.LocalTab.STARY_TYPE;
-
-public class ListActivity extends ActivityBase implements StatusCallback {
+public class DelActivity extends ActivityBase implements StatusCallback {
 
     private RecyclerView mRecycler;
-    private SongListAdapter mAdapter;
+    private DelAdapter mAdapter;
     private MusicApp mApp;
     private int mStartType;
+    private List<Song> mSong;
     private Handler mHandler;
 
     @Override
     protected int getLayoutId() {
-        overridePendingTransition(R.xml.slide_in_right, 0);
-        return R.layout.activity_list;
+        overridePendingTransition(0, 0);
+        return R.layout.activity_remove;
     }
 
     @Override
     public void finish() {
         super.finish();
-        overridePendingTransition(0, R.xml.slide_out_right);
+        overridePendingTransition(0, 0);
     }
 
 
     @Override
     protected void initialize() {
-        mStartType = getIntent().getIntExtra(STARY_TYPE, -1);
+        mHandler = new Handler();
+        mStartType = getIntent().getIntExtra(LocalTab.STARY_TYPE, -1);
         if (mStartType == -1) {
             return;
         }
         mApp = (MusicApp) getApplication();
-        int title = getIntent().getIntExtra(LocalTab.STARY_TITLE, -1);
-        if (title != -1) {
-            TextView titleTv = findViewById(R.id.list_title);
-            titleTv.setText(title);
-        }
-        List<Song> list = mApp.getListData().getList(mStartType);
+        mSong = mApp.getListData().getList(mStartType);
         Song curSong = mApp.getPlayer().getCurSong();
-        for (Song song : list) {
+        for (Song song : mSong) {
             song.playing = song.equals(curSong);
         }
-        mAdapter = new SongListAdapter(list);
-        mRecycler = findViewById(R.id.list_recycler);
+        mAdapter = new DelAdapter(mSong);
+        mRecycler = findViewById(R.id.del_recycler);
         mRecycler.setLayoutManager(new LinearLayoutManager(this));
         mRecycler.setAdapter(mAdapter);
         mRecycler.setHasFixedSize(true);
         findViewById(R.id.back).setOnClickListener(view -> finish());
+        findViewById(R.id.delete).setOnClickListener(view -> onDeleteClick());
         mAdapter.setOnItemClickListener(mItemClick);
-        mHandler = new Handler();
+    }
+
+    private void onDeleteClick() {
+        List<Song> del = mAdapter.getSelected();
+        for (Song song : del) {
+            if (!song.playing) {
+                continue;
+            }
+            for (Song s : mSong) {
+                if (song.equals(s)) {
+                    mSong.remove(s);
+                    break;
+                }
+            }
+        }
+        finish();
     }
 
     @Override
@@ -81,15 +88,16 @@ public class ListActivity extends ActivityBase implements StatusCallback {
         mApp.getPlayer().rmCallback(this);
     }
 
+    private Runnable mFreshRun = new Runnable() {
+        @Override
+        public void run() {
+            mAdapter.notifyDataSetChanged();
+        }
+    };
+
     @Override
     public void onSongChanged(Song song) {
-        if (mAdapter == null) {
-            return;
-        }
-        for (int i = 0; i < mAdapter.getItemCount(); i++) {
-            mAdapter.get(i).playing = mAdapter.get(i).equals(song);
-        }
-        mHandler.postDelayed(() -> mAdapter.notifyDataSetChanged(), 300);
+
     }
 
     @Override
@@ -100,19 +108,11 @@ public class ListActivity extends ActivityBase implements StatusCallback {
     private OnItemClickListener mItemClick = new OnItemClickListener() {
         @Override
         public void onItemClick(View v) {
-            mApp.getListData().setPos(mStartType);
             int pos = mRecycler.getChildAdapterPosition(v);
-            Song song = mAdapter.get(pos);
-            mApp.getPlayer().prepare(song);
-        }
-
-        @Override
-        public void OnItemLongClick(View v) {
-            if (mStartType != ListData.P_LOCAL) {
-                Intent intent = new Intent(ListActivity.this, DelActivity.class);
-                intent.putExtra(STARY_TYPE, mStartType);
-                startActivity(intent);
-            }
+            if (mSong.get(pos).playing) return;
+            mAdapter.getSelected().get(pos).playing = !mAdapter.isCheck(pos);
+            mHandler.postDelayed(mFreshRun, 300);
         }
     };
+
 }

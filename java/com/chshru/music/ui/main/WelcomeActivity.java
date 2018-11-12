@@ -37,8 +37,8 @@ public class WelcomeActivity extends ActivityBase {
             MusicApp app = (MusicApp) getApplication();
             if (!app.hasInitialized()) {
                 app.init();
+                scanSongs(app);
             }
-            scanSongs(app);
             startActivity(new Intent(this, HomeActivity.class));
             finish();
         } else {
@@ -86,8 +86,8 @@ public class WelcomeActivity extends ActivityBase {
                 MusicApp app = (MusicApp) getApplication();
                 if (!app.hasInitialized()) {
                     app.init();
+                    scanSongs(app);
                 }
-                scanSongs(app);
                 startActivity(new Intent(this, HomeActivity.class));
                 finish();
             } else {

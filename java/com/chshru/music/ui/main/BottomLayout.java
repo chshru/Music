@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.chshru.music.R;
 import com.chshru.music.service.StatusCallback;
 import com.chshru.music.ui.view.PlayPauseButton;
@@ -51,12 +52,19 @@ public class BottomLayout {
                 view -> mController.onNextClick());
     }
 
+    private RequestOptions options = new RequestOptions()
+            .placeholder(R.drawable.default_album_cover)
+            .error(R.drawable.default_album_cover);
+
     public void freshLayout(boolean playing, Song song) {
         if (song != null) {
             mTitle.setText(song.title);
             mArtist.setText(song.artist);
-            Glide.with(mCallback.getApplicationContext())
-                    .load(song.album).into(mAlbum);
+            Glide.with(mCallback
+                    .getApplicationContext())
+                    .load(song.album)
+                    .apply(options)
+                    .into(mAlbum);
         }
         if (playing && !mPause.isPlaying()) {
             mPause.play();

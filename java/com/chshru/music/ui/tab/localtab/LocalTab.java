@@ -61,10 +61,6 @@ public class LocalTab extends BaseTab {
         List<Song> loveList = app.getListData().getList(ListData.P_LOVE);
         mLoveList = new MyLoveList(mContext, myLove, loveList);
         mLoveList.freshCount();
-        if (loveList.size() == 0) {
-            scanner.setLoveList(loveList);
-            scanner.startLoveScan(app.getLoveTable());
-        }
         myLove.setOnClickListener(view -> {
             Intent intent = new Intent(mContext, ListActivity.class);
             intent.putExtra(STARY_TYPE, ListData.P_LOVE);
@@ -79,10 +75,6 @@ public class LocalTab extends BaseTab {
         List<Song> historyList = app.getListData().getList(ListData.P_HISTORY);
         mHistory = new HistoryList(mContext, history, historyList);
         mHistory.freshCount();
-        if (historyList.size() == 0) {
-            scanner.setHistoryList(historyList);
-            scanner.startHistoryScan(app.getHistoryTable());
-        }
         history.setOnClickListener(view -> {
             Intent intent = new Intent(mContext, ListActivity.class);
             intent.putExtra(STARY_TYPE, ListData.P_HISTORY);
@@ -97,10 +89,6 @@ public class LocalTab extends BaseTab {
         List<Song> localList = app.getListData().getList(ListData.P_LOCAL);
         mLocalSong = new LocalSongList(mContext, localSong, localList);
         mLocalSong.freshCount();
-        if (localList.size() == 0) {
-            scanner.setLocalList(localList);
-            scanner.startLocalScan();
-        }
         localSong.setOnClickListener(view -> {
             Intent intent = new Intent(mContext, ListActivity.class);
             intent.putExtra(STARY_TYPE, ListData.P_LOCAL);

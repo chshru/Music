@@ -28,7 +28,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.main.search.SearchActivity" />
+        <activity
+            android:name=".ui.main.search.SearchActivity"
+            android:theme="@style/SearchTheme" />
         <activity android:name=".ui.main.HomeActivity" />
         <activity
             android:name=".ui.main.list.ListActivity"
@@ -36,6 +38,7 @@
         <activity
             android:name=".ui.main.PlayerActivity"
             android:theme="@style/PlayerTheme" />
+        <activity android:name=".ui.main.list.DelActivity" />
 
         <service android:name=".service.MediaService" />
     </application>

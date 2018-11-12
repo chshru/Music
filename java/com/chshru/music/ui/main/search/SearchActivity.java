@@ -11,7 +11,7 @@ import com.chshru.music.base.ActivityBase;
 import com.chshru.music.base.MusicApp;
 import com.chshru.music.service.StatusCallback;
 import com.chshru.music.ui.main.list.ListData;
-import com.chshru.music.ui.main.search.SearchResultAdapter.OnItemClickListener;
+import com.chshru.music.ui.main.search.SongListAdapter.OnItemClickListener;
 import com.chshru.music.ui.view.ActionSearchView;
 import com.chshru.music.ui.view.ActionSearchView.OnTextChangeListener;
 import com.chshru.music.ui.view.RotateLoading;
@@ -31,7 +31,7 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
 
     private ActionSearchView mSearch;
     private RecyclerView mRecycler;
-    private SearchResultAdapter mAdapter;
+    private SongListAdapter mAdapter;
     private QueryHandler mQueryHandler;
     private MusicApp app;
     private int mQueriedPos;
@@ -61,7 +61,7 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
         mSearch = findViewById(R.id.sv_search_aty);
         mSearch.setOnQueryTextListener(mSearchListener);
         mRecycler = findViewById(R.id.search_aty_recycler);
-        mAdapter = new SearchResultAdapter(new ArrayList<>());
+        mAdapter = new SongListAdapter(new ArrayList<>());
         mAdapter.setOnItemClickListener(mItemClickListener);
         mLayoutManager = new LinearLayoutManager(this);
         mRecycler.setLayoutManager(mLayoutManager);
