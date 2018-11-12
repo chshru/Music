@@ -143,6 +143,7 @@ public class PlayerActivity extends Activity implements StatusCallback {
         int curMode = mApp.getListData().getCurMode();
         curMode = (curMode + 1) % ListData.MODE_COUNT;
         mApp.getListData().setCurMode(curMode);
+        mApp.getDataManager().setMode(curMode);
         mRepeat.setImageResource(REPEAT_PIC[curMode]);
     }
 

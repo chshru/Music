@@ -27,6 +27,7 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
     private AudioManager mAudioManager;
     private boolean mHasAudioFocus;
     private boolean mPauseByFocus;
+    private boolean mIsFirst;
 
     public MusicPlayer(Context context, MusicApp app) {
         mCallbacks = new ArrayList<>();
@@ -34,6 +35,7 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
                 .getSystemService(Context.AUDIO_SERVICE);
         mHasAudioFocus = false;
         mPauseByFocus = false;
+        mIsFirst = true;
         mApp = app;
     }
 
@@ -108,6 +110,10 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
     }
 
     private void prepare(Song song, boolean same) {
+        if (song == null) {
+            mIsFirst = false;
+            return;
+        }
         if (mService == null) {
             return;
         }
@@ -126,9 +132,12 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
         mService.prepare(local);
 
         mCurSong = new Song(song);
+        mApp.getDataManager().setSong(mCurSong);
         mCurSong.type = Song.TYPE_LOCAL;
         mCurSong.time = String.valueOf(System.currentTimeMillis());
-        if (mApp.getListData().getPos() != ListData.P_HISTORY) {
+        int table = mApp.getListData().getPos();
+        mApp.getDataManager().setPlayTable(table);
+        if (table != ListData.P_HISTORY) {
             List<Song> history = mApp.getListData().getList(ListData.P_HISTORY);
             Song tempSong = null;
             for (Song s : history) {
@@ -222,7 +231,16 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
         if (!mHasAudioFocus && !requestAudioFocus()) {
             return;
         }
-        player.start();
+        if (mIsFirst) {
+            int dur = mApp.getDataManager().getCurDuration();
+            if (dur < 0 || dur > player.getDuration()) {
+                dur = 0;
+            }
+            player.seekTo(dur);
+            mIsFirst = false;
+        } else {
+            player.start();
+        }
         for (StatusCallback callback : mCallbacks) {
             if (callback != null) {
                 callback.togglePlayer(false);

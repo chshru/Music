@@ -9,6 +9,8 @@ import android.support.annotation.NonNull;
 import com.chshru.music.R;
 import com.chshru.music.base.ActivityBase;
 import com.chshru.music.base.MusicApp;
+import com.chshru.music.ui.main.list.ListData;
+import com.chshru.music.util.SongScanner;
 
 /**
  * Created by abc on 18-11-12.
@@ -21,6 +23,7 @@ public class WelcomeActivity extends ActivityBase {
             Manifest.permission.READ_EXTERNAL_STORAGE,
     };
     private final int PM_CODE = 233333;
+    private SongScanner mScanner;
 
     @Override
     protected int getLayoutId() {
@@ -29,16 +32,27 @@ public class WelcomeActivity extends ActivityBase {
 
     @Override
     protected void initialize() {
+        mScanner = new SongScanner(getApplicationContext());
         if (checkPrimission()) {
             MusicApp app = (MusicApp) getApplication();
             if (!app.hasInitialized()) {
                 app.init();
             }
+            scanSongs(app);
             startActivity(new Intent(this, HomeActivity.class));
             finish();
         } else {
             requestPermission();
         }
+    }
+
+    private void scanSongs(MusicApp app) {
+        mScanner.setHistoryList(app.getListData().getList(ListData.P_HISTORY));
+        mScanner.setLocalList(app.getListData().getList(ListData.P_LOCAL));
+        mScanner.setLoveList(app.getListData().getList(ListData.P_LOVE));
+        mScanner.startLocalScan();
+        mScanner.startHistoryScan(app.getHistoryTable());
+        mScanner.startLoveScan(app.getLoveTable());
     }
 
     private void requestPermission() {
@@ -73,6 +87,7 @@ public class WelcomeActivity extends ActivityBase {
                 if (!app.hasInitialized()) {
                     app.init();
                 }
+                scanSongs(app);
                 startActivity(new Intent(this, HomeActivity.class));
                 finish();
             } else {

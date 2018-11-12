@@ -61,7 +61,10 @@ public class SongScanner {
                 mLoveList.add(song);
             } while (cursor.moveToNext());
         }
-        mHandler.post(mRunnable);
+        cursor.close();
+        if (mHandler != null && mRunnable != null) {
+            mHandler.post(mRunnable);
+        }
     }
 
     public void startHistoryScan(HistoryTable table) {
@@ -82,8 +85,11 @@ public class SongScanner {
                 mHistoryList.add(song);
             } while (cursor.moveToNext());
         }
+        cursor.close();
         Collections.sort(mHistoryList, cmpByTime);
-        mHandler.post(mRunnable);
+        if (mHandler != null && mRunnable != null) {
+            mHandler.post(mRunnable);
+        }
     }
 
     public void startLocalScan() {
@@ -120,7 +126,7 @@ public class SongScanner {
             if (cursor != null) {
                 cursor.close();
             }
-            if (mHandler != null) {
+            if (mHandler != null && mRunnable != null) {
                 mHandler.post(mRunnable);
             }
         }).start();

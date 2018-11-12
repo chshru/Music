@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import com.chshru.music.R;
 import com.chshru.music.base.ActivityBase;
 import com.chshru.music.base.MusicApp;
+import com.chshru.music.manager.DataManager;
 import com.chshru.music.service.StatusCallback;
 import com.chshru.music.ui.main.search.SearchActivity;
 import com.chshru.music.ui.tab.localtab.LocalTab;
@@ -30,6 +31,7 @@ public class HomeActivity extends ActivityBase implements StatusCallback, Bottom
     private MusicPlayer mPlayer;
     private Intent mIntent;
     private BottomLayout mBottomLayout;
+    private DataManager mData;
 
     private HistoryTable mHistoryTable;
     private BaseTab[] mTabs;
@@ -63,6 +65,7 @@ public class HomeActivity extends ActivityBase implements StatusCallback, Bottom
         if (!app.hasInitialized()) app.init();
         mHistoryTable = app.getHistoryTable();
         mPlayer = app.getPlayer();
+        mData = app.getDataManager();
         startService(mIntent);
     }
 
@@ -91,6 +94,7 @@ public class HomeActivity extends ActivityBase implements StatusCallback, Bottom
         @Override
         public void onServiceConnected(ComponentName name, IBinder binder) {
             mPlayer.setService((PlayService) binder);
+            mPlayer.prepare(mData.getSong());
             unbindService(conn);
         }
 

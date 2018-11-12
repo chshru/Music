@@ -3,6 +3,7 @@ package com.chshru.music.base;
 import android.app.Application;
 import android.content.Context;
 
+import com.chshru.music.manager.DataManager;
 import com.chshru.music.service.MusicPlayer;
 import com.chshru.music.ui.main.list.ListData;
 import com.chshru.music.util.HistoryTable;
@@ -21,6 +22,7 @@ public class MusicApp extends Application {
     private ListData mListData;
     private LoveTable mLoveTable;
     private HttpProxyCacheServer mCacheServer;
+    private DataManager mDataManager;
 
     @Override
     public void onCreate() {
@@ -42,7 +44,12 @@ public class MusicApp extends Application {
         mLoveTable = new LoveTable(context);
         mPlayer.setHistoryTable(mHistoryTable);
         mListData = new ListData();
+        mDataManager = new DataManager(context, mListData);
         mHasInit = true;
+    }
+
+    public DataManager getDataManager() {
+        return mDataManager;
     }
 
     public HttpProxyCacheServer getServer() {
