@@ -54,12 +54,12 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/civ_cover"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginStart="30dp"
-            android:layout_marginLeft="30dp"
+            android:layout_marginTop="-10dp"
             android:layout_marginEnd="30dp"
-            android:layout_marginRight="30dp"
+            android:layout_marginBottom="-10dp"
             android:layout_weight="1"
             android:elevation="10dp"
             android:src="@drawable/default_album_cover"
@@ -182,8 +182,8 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:src="@drawable/icon_repeat_all"
                     android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/icon_repeat_all"
                     tools:ignore="ContentDescription" />
 
                 <View

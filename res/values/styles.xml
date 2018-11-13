@@ -25,6 +25,7 @@
 
     <style name="PlayerTheme" parent="AppTheme">
         <item name="android:windowIsTranslucent">true</item>
+        <item name="android:textColorSecondary">@color/main_white</item>
     </style>
 
     <style name="WelcomeTheme" parent="android:Theme.Translucent.NoTitleBar.Fullscreen">
