@@ -34,6 +34,9 @@ public class DataManager {
 
     public void setPlayTable(int p) {
         mData.edit().putInt(PLAY_TABLE, p).apply();
+        if (p >= ListData.P_SEARCH) {
+            mData.edit().putInt(PLAY_TABLE, ListData.P_HISTORY).apply();
+        }
     }
 
     public void setSong(Song song) {
@@ -78,6 +81,9 @@ public class DataManager {
         int table = getPlayTable();
         if (id == -1 || table == -1) {
             return null;
+        }
+        if (table >= ListData.P_SEARCH) {
+            table = ListData.P_HISTORY;
         }
         mListData.setPos(table);
         mListData.setCurMode(getMode());

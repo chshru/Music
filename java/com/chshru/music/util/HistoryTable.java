@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by abc on 18-10-22.
  */
 
-public class HistoryTable extends SQLiteOpenHelper {
+public class HistoryTable extends SQLiteOpenHelper implements BaseTable{
 
     private static final String DB_NAME = "data.db";
     private static final int DB_VERSION = 1;
@@ -48,6 +48,7 @@ public class HistoryTable extends SQLiteOpenHelper {
 
     }
 
+    @Override
     public void insert(Song song) {
         SQLiteDatabase db = getReadableDatabase();
         ContentValues values = new ContentValues();
@@ -63,6 +64,7 @@ public class HistoryTable extends SQLiteOpenHelper {
         db.insert(TABLE_NAME, null, values);
     }
 
+    @Override
     public void update(Song song) {
         SQLiteDatabase db = getReadableDatabase();
         ContentValues values = new ContentValues();
@@ -72,6 +74,7 @@ public class HistoryTable extends SQLiteOpenHelper {
         db.update(TABLE_NAME, values, sql, args);
     }
 
+    @Override
     public void delete(Song song) {
         SQLiteDatabase db = getReadableDatabase();
         String sql = Song._id + "=?";
@@ -79,7 +82,7 @@ public class HistoryTable extends SQLiteOpenHelper {
         db.delete(TABLE_NAME, sql, args);
     }
 
-
+    @Override
     public Cursor query() {
         SQLiteDatabase db = getReadableDatabase();
         String[] columns = {

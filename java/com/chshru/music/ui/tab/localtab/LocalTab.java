@@ -29,7 +29,6 @@ public class LocalTab extends BaseTab {
     private MyLoveList mLoveList;
     private Handler mHandler;
     private MusicApp app;
-    private SongScanner scanner;
 
     public LocalTab(StatusCallback callback, int resId) {
         super(callback, resId);
@@ -48,11 +47,10 @@ public class LocalTab extends BaseTab {
 
     @Override
     public void initChild(View root) {
-        scanner = new SongScanner(mContext);
-        scanner.setCallback(mHandler, mFreshRunnable);
         initLocalList(root);
         initHistoryList(root);
         initMyLoveList(root);
+        mHandler.postDelayed(mFreshRunnable, 2000);
     }
 
     private void initMyLoveList(View root) {
