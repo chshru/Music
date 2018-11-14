@@ -7,6 +7,7 @@ import android.media.MediaPlayer;
 import com.chshru.music.base.MusicApp;
 import com.chshru.music.ui.main.list.ListData;
 import com.chshru.music.util.HistoryTable;
+import com.chshru.music.util.QQMusicApi;
 import com.chshru.music.util.Song;
 
 import java.util.ArrayList;
@@ -125,7 +126,7 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
         }
         String local = song.link;
         if (local == null) {
-            local = mApp.getServer().getProxyUrl(song.mid);
+            local = mApp.getServer().getProxyUrl(QQMusicApi.buildSongUrl(song.mid));
         }
         mService.setPreparedListener(this);
         mService.setCompletionListener(mOnComplete);

@@ -33,7 +33,7 @@ public class QQMusicApi {
     }
 
 
-    private static final String SONG_URL_LEFT = "http://ws.stream.qqmusic.qq.com/C100";
+    private static final String SONG_URL_LEFT = "http://isure.stream.qqmusic.qq.com/C100";
     private static final String SONG_URL_RIGHT = ".m4a?fromtag=0&guid=126548448";
 
     public static String buildSongUrl(String url) {
@@ -71,7 +71,7 @@ public class QQMusicApi {
                     j.getInteger("songid"),
                     Song.TYPE_NET,
                     buildAlbumUrl(j.getString("albummid")),
-                    buildSongUrl(j.getString("songmid")),
+                    j.getString("songmid"),
                     j.getString("songname"),
                     j.getJSONArray("singer").getJSONObject(0).getString("name"),
                     null
