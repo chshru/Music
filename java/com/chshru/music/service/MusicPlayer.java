@@ -3,6 +3,7 @@ package com.chshru.music.service;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Handler;
 
 import com.chshru.music.base.MusicApp;
 import com.chshru.music.ui.main.list.ListData;
@@ -29,6 +30,7 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
     private boolean mHasAudioFocus;
     private boolean mPauseByFocus;
     private boolean mIsFirst;
+    private Handler mHandler;
 
     public MusicPlayer(Context context, MusicApp app) {
         mCallbacks = new ArrayList<>();
@@ -38,6 +40,7 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
         mPauseByFocus = false;
         mIsFirst = true;
         mApp = app;
+        mHandler = new Handler();
     }
 
     public void addCallback(StatusCallback callback) {
@@ -110,24 +113,7 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
         prepare(song, false);
     }
 
-    private void prepare(Song song, boolean same) {
-        if (song == null) {
-            mIsFirst = false;
-            return;
-        }
-        if (mService == null) {
-            return;
-        }
-        if (mCurSong != null && mCurSong.equals(song) && !same) {
-            return;
-        }
-        if (mCurSong != null) {
-            mCurSong.playing = false;
-        }
-        String local = song.link;
-        if (local == null) {
-            local = mApp.getServer().getProxyUrl(QQMusicApi.buildSongUrl(song.mid));
-        }
+    private void prepareImpl(String local, Song song) {
         mService.setPreparedListener(this);
         mService.setCompletionListener(mOnComplete);
         mService.prepare(local);
@@ -162,6 +148,47 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
             if (callback != null) {
                 callback.onSongChanged(mCurSong);
             }
+        }
+    }
+
+    private void prepare(Song song, boolean same) {
+        if (song == null) {
+            mIsFirst = false;
+            return;
+        }
+        if (mService == null) {
+            return;
+        }
+        if (mCurSong != null && mCurSong.equals(song) && !same) {
+            return;
+        }
+        if (mCurSong != null) {
+            mCurSong.playing = false;
+        }
+        String local = song.link;
+        if (local == null) {
+            new GetUrlThread(song.mid, song).start();
+        } else {
+            prepareImpl(local, song);
+        }
+
+    }
+
+    private class GetUrlThread extends Thread {
+        private String url;
+        private Song song;
+
+        GetUrlThread(String url, Song song) {
+            super();
+            this.url = url;
+            this.song = song;
+        }
+
+        @Override
+        public void run() {
+            String result = QQMusicApi.buildSongUrl(url);
+            String local = mApp.getServer().getProxyUrl(result, false);
+            mHandler.post(() -> prepareImpl(local, song));
         }
     }
 
