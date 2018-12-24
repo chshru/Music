@@ -89,7 +89,7 @@ public class SongListAdapter extends RecyclerView.Adapter {
             h.playing.setVisibility(View.VISIBLE);
             h.name.setText(song.title);
             h.name.setTextColor(0xff05b962);
-            h.artist.setText(song.artist);
+            h.artist.setText(String.format("%s - %s", song.artist, song.albumName));
             h.artist.setTextColor(0xff05b962);
             h.num.setText(String.valueOf(pos + 1));
             h.num.setTextColor(0xff05b962);
@@ -97,7 +97,7 @@ public class SongListAdapter extends RecyclerView.Adapter {
             h.playing.setVisibility(View.INVISIBLE);
             h.name.setText(song.title);
             h.name.setTextColor(0xff000000);
-            h.artist.setText(song.artist);
+            h.artist.setText(String.format("%s - %s", song.artist, song.albumName));
             h.artist.setTextColor(0xff9e9e9e);
             h.num.setText(String.valueOf(pos + 1));
             h.num.setTextColor(0xff9e9e9e);

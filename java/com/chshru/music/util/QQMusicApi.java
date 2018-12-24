@@ -101,6 +101,7 @@ public class QQMusicApi {
                     j.getInteger("songid"),
                     Song.TYPE_NET,
                     buildAlbumUrl(j.getString("albummid")),
+                    j.getString("albumname"),
                     j.getString("songmid"),
                     j.getString("songname"),
                     j.getJSONArray("singer").getJSONObject(0).getString("name"),

@@ -127,7 +127,7 @@
 
                 <ImageButton
                     android:id="@+id/prevPlayIv"
-                    android:layout_width="30dp"
+                    android:layout_width="0dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
                     android:layout_weight="1"
@@ -168,9 +168,8 @@
 
                 <ImageButton
                     android:id="@+id/nextvPlayIv"
-                    android:layout_width="30dp"
+                    android:layout_width="0dp"
                     android:layout_height="30dp"
-                    android:layout_gravity="center"
                     android:layout_weight="1"
                     android:background="?android:attr/selectableItemBackgroundBorderless"
                     android:scaleType="center"
@@ -180,7 +179,7 @@
                 <ImageButton
                     android:id="@+id/iv_repeat"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="30dp"
                     android:layout_weight="1"
                     android:background="?android:attr/selectableItemBackgroundBorderless"
                     android:src="@drawable/icon_repeat_all"

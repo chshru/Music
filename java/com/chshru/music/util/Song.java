@@ -8,17 +8,20 @@ package com.chshru.music.util;
 public class Song {
     public static final int TYPE_LOCAL = 0;
     public static final int TYPE_NET = 1;
-    public static final int MAX_LOAD_TIMES = 3;
 
-    public Song(int id, int type, String album, String mid, String title, String artist, String link) {
+    public Song(int id, int type, String album, String albumName, String mid, String title, String artist, String link) {
         this.id = id;
         this.type = type;
         this.mid = mid;
+        this.albumName = albumName;
         this.title = title;
         this.artist = artist;
         this.link = link;
         this.album = album;
         playing = false;
+        if (albumName == null || albumName.isEmpty()) {
+            this.albumName = "unknown";
+        }
     }
 
     public Song(Song song) {
@@ -32,6 +35,7 @@ public class Song {
             this.album = song.album;
             this.playing = song.playing;
             this.time = song.time;
+            this.albumName = song.albumName;
         }
     }
 
@@ -46,6 +50,7 @@ public class Song {
             this.album = song.album;
             this.playing = song.playing;
             this.time = song.time;
+            this.albumName = song.albumName;
         }
     }
 
@@ -61,6 +66,10 @@ public class Song {
 
     public String album;
     public static String _album = "album";
+
+
+    public String albumName;
+    public static String _albumName = "albumName";
 
 
     public String mid; //网络songid

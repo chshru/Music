@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by abc on 18-10-22.
  */
 
-public class HistoryTable extends SQLiteOpenHelper implements BaseTable{
+public class HistoryTable extends SQLiteOpenHelper implements BaseTable {
 
     private static final String DB_NAME = "data.db";
     private static final int DB_VERSION = 1;
@@ -25,7 +25,8 @@ public class HistoryTable extends SQLiteOpenHelper implements BaseTable{
                     .append("id integer primary key,")
                     .append("type integer,")
                     .append("album text,")
-                    .append("mid integer,")
+                    .append("albumName text,")
+                    .append("mid text,")
                     .append("title text,")
                     .append("artist text,")
                     .append("link text,")
@@ -55,6 +56,7 @@ public class HistoryTable extends SQLiteOpenHelper implements BaseTable{
         values.put(Song._id, song.id);
         values.put(Song._type, song.type);
         values.put(Song._album, song.album);
+        values.put(Song._albumName, song.albumName);
         values.put(Song._mid, song.mid);
         values.put(Song._title, song.title);
         values.put(Song._artist, song.artist);
@@ -89,6 +91,7 @@ public class HistoryTable extends SQLiteOpenHelper implements BaseTable{
                 Song._id,
                 Song._type,
                 Song._album,
+                Song._albumName,
                 Song._mid,
                 Song._title,
                 Song._artist,

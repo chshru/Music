@@ -59,7 +59,7 @@ public class BottomLayout {
     public void freshLayout(boolean playing, Song song) {
         if (song != null) {
             mTitle.setText(song.title);
-            mArtist.setText(song.artist);
+            mArtist.setText(String.format("%s - %s", song.artist, song.albumName));
             Glide.with(mCallback
                     .getApplicationContext())
                     .load(song.album)

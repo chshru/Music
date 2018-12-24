@@ -25,6 +25,7 @@ public class LoveTable extends SQLiteOpenHelper implements BaseTable {
                     .append("id integer primary key,")
                     .append("type integer,")
                     .append("album text,")
+                    .append("albumName text,")
                     .append("mid integer,")
                     .append("title text,")
                     .append("artist text,")
@@ -55,6 +56,7 @@ public class LoveTable extends SQLiteOpenHelper implements BaseTable {
         values.put(Song._id, song.id);
         values.put(Song._type, song.type);
         values.put(Song._album, song.album);
+        values.put(Song._albumName, song.albumName);
         values.put(Song._mid, song.mid);
         values.put(Song._title, song.title);
         values.put(Song._artist, song.artist);
@@ -89,6 +91,7 @@ public class LoveTable extends SQLiteOpenHelper implements BaseTable {
                 Song._id,
                 Song._type,
                 Song._album,
+                Song._albumName,
                 Song._mid,
                 Song._title,
                 Song._artist,

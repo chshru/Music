@@ -14,7 +14,9 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
+import android.view.animation.ScaleAnimation;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -208,10 +210,18 @@ public class PlayerActivity extends Activity implements StatusCallback {
                 }
             }
         } else {
+            ScaleAnimation sa = new ScaleAnimation(
+                    1f, 1.3f, 1f, 1.3f,
+                    Animation.RELATIVE_TO_SELF, 0.5f,
+                    Animation.RELATIVE_TO_SELF, 0.5f
+            );
+            sa.setDuration(300);
+            mLove.setAnimation(null);
             mCurIsLove = true;
             mLoveTable.insert(song);
             mLove.setImageResource(R.drawable.icon_favorite_red);
             mLoveList.add(song);
+            mLove.startAnimation(sa);
         }
     }
 
@@ -325,8 +335,9 @@ public class PlayerActivity extends Activity implements StatusCallback {
     }
 
     private void createAnimator() {
-        mAnimator = ObjectAnimator.ofFloat(mAlbumPic, "rotation", 0F, 360F);
+        mAnimator = ObjectAnimator.ofFloat(mAlbumPic, "rotation", 0f, 360f);
         mAnimator.setDuration(20 * 1000);
+        mAnimator.setCurrentPlayTime(mPlayer.getCurDuration() % (20 * 1000));
         mAnimator.setRepeatCount(-1);
         mAnimator.setRepeatMode(ObjectAnimator.RESTART);
         mAnimator.setInterpolator(new LinearInterpolator());

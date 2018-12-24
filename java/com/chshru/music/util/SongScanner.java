@@ -51,12 +51,13 @@ public class SongScanner {
                 int id = cursor.getInt(0);
                 int type = cursor.getInt(1);
                 String album = cursor.getString(2);
-                String mid = cursor.getString(3);
-                String title = cursor.getString(4);
-                String artist = cursor.getString(5);
-                String link = cursor.getString(6);
-                String time = cursor.getString(7);
-                Song song = new Song(id, type, album, mid, title, artist, link);
+                String albumName = cursor.getString(3);
+                String mid = cursor.getString(4);
+                String title = cursor.getString(5);
+                String artist = cursor.getString(6);
+                String link = cursor.getString(7);
+                String time = cursor.getString(8);
+                Song song = new Song(id, type, album, albumName, mid, title, artist, link);
                 song.time = time;
                 mLoveList.add(song);
             } while (cursor.moveToNext());
@@ -75,12 +76,13 @@ public class SongScanner {
                 int id = cursor.getInt(0);
                 int type = cursor.getInt(1);
                 String album = cursor.getString(2);
-                String mid = cursor.getString(3);
-                String title = cursor.getString(4);
-                String artist = cursor.getString(5);
-                String link = cursor.getString(6);
-                String time = cursor.getString(7);
-                Song song = new Song(id, type, album, mid, title, artist, link);
+                String albumName = cursor.getString(3);
+                String mid = cursor.getString(4);
+                String title = cursor.getString(5);
+                String artist = cursor.getString(6);
+                String link = cursor.getString(7);
+                String time = cursor.getString(8);
+                Song song = new Song(id, type, album, albumName, mid, title, artist, link);
                 song.time = time;
                 mHistoryList.add(song);
             } while (cursor.moveToNext());
@@ -106,6 +108,7 @@ public class SongScanner {
                     String artist = cursor.getString(cursor.getColumnIndex(Media.ARTIST));
                     String link = cursor.getString(cursor.getColumnIndex(Media.DATA));
                     String album = cursor.getString(cursor.getColumnIndex(Media.ALBUM_ID));
+                    String albumName = cursor.getString(cursor.getColumnIndex(Media.ALBUM));
                     int duration = cursor.getInt(cursor.getColumnIndex(Media.DURATION));
                     int isMusic = cursor.getInt(cursor.getColumnIndex(Media.IS_MUSIC));
                     if (isMusic != 0 && duration > 60000) {
@@ -113,6 +116,7 @@ public class SongScanner {
                                 Integer.valueOf(id),
                                 Song.TYPE_LOCAL,
                                 LocalMusicApi.getAlbumArtFromId(album, mContext),
+                                albumName,
                                 null,
                                 title,
                                 artist,

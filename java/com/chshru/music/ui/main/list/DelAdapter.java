@@ -79,12 +79,12 @@ public class DelAdapter extends RecyclerView.Adapter {
         if (song.playing) {
             h.name.setText(song.title);
             h.name.setTextColor(0xff05b962);
-            h.artist.setText(song.artist);
+            h.artist.setText(String.format("%s - %s", song.artist, song.albumName));
             h.artist.setTextColor(0xff05b962);
         } else {
             h.name.setText(song.title);
             h.name.setTextColor(0xff000000);
-            h.artist.setText(song.artist);
+            h.artist.setText(String.format("%s - %s", song.artist, song.albumName));
             h.artist.setTextColor(0xff9e9e9e);
         }
         h.check.setChecked(mSelect.get(pos).playing);
