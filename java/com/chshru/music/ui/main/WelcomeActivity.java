@@ -20,6 +20,7 @@ public class WelcomeActivity extends ActivityBase {
     private final String[] PM = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.RECORD_AUDIO,
     };
     private SongScanner mScanner;
 

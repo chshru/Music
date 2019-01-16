@@ -11,7 +11,6 @@ import com.chshru.music.ui.main.list.ListActivity;
 import com.chshru.music.ui.main.list.ListData;
 import com.chshru.music.ui.tab.BaseTab;
 import com.chshru.music.util.Song;
-import com.chshru.music.util.SongScanner;
 
 import java.util.List;
 

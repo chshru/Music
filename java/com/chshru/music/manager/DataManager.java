@@ -20,7 +20,10 @@ public class DataManager {
     private static final String PLAY_DUR = "dur";
     private static final String PLAY_CURDUR = "curdur";
     private static final String PLAY_MODE = "mode";
+    private static final String PLAY_ALBUM_TYPE = "album_type";
 
+    public static final int PLAYING_ALBUM_PIC = 1;
+    public static final int PLAYING_ALBUM_VIS = 2;
 
     private SharedPreferences mData;
     private Context mContext;
@@ -37,6 +40,14 @@ public class DataManager {
         if (p >= ListData.P_SEARCH) {
             mData.edit().putInt(PLAY_TABLE, ListData.P_HISTORY).apply();
         }
+    }
+
+    public void setAlbumType(int type){
+        mData.edit().putInt(PLAY_ALBUM_TYPE, type).apply();
+    }
+
+    public int getAlbumType(){
+        return mData.getInt(PLAY_ALBUM_TYPE, PLAYING_ALBUM_PIC);
     }
 
     public void setSong(Song song) {

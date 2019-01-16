@@ -7,18 +7,26 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.audiofx.Equalizer;
+import android.media.audiofx.Visualizer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.util.DisplayMetrics;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -29,10 +37,12 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.chshru.music.R;
 import com.chshru.music.base.MusicApp;
+import com.chshru.music.manager.DataManager;
 import com.chshru.music.service.MusicPlayer;
 import com.chshru.music.service.StatusCallback;
 import com.chshru.music.ui.main.list.ListData;
 import com.chshru.music.ui.view.PlayPauseButton;
+import com.chshru.music.ui.view.VisualizerView;
 import com.chshru.music.util.ImageUtil;
 import com.chshru.music.util.LoveTable;
 import com.chshru.music.util.Song;
@@ -134,11 +144,20 @@ public class PlayerActivity extends Activity implements StatusCallback {
         mPlayer = mApp.getPlayer();
         mRepeat.setImageResource(REPEAT_PIC[mApp.getListData().getCurMode()]);
         mRepeat.setOnClickListener(view -> onRepeatClick());
-        findViewById(R.id.prevPlayIv).setOnClickListener(
-                view -> mPlayer.prev());
-        findViewById(R.id.nextvPlayIv).setOnClickListener(
-                view -> mPlayer.next());
+        findViewById(R.id.prevPlayIv).setOnClickListener(view -> mPlayer.prev());
+        findViewById(R.id.nextvPlayIv).setOnClickListener(view -> mPlayer.next());
+        mPlayingAlbumBox = findViewById(R.id.playing_album);
+        findViewById(R.id.playing_album).setOnTouchListener((v, event) -> {
+            v.performClick();
+            return onAlbumTouch(v, event);
+        });
         createAnimator();
+        int curPlayType = mApp.getDataManager().getAlbumType();
+        if (curPlayType == DataManager.PLAYING_ALBUM_VIS) {
+            initVisualizerAndEqualizer();
+            mPlayingAlbumBox.removeView(mAlbumPic);
+            mPlayingAlbumBox.addView(mVisualizerView);
+        }
     }
 
     private void onRepeatClick() {
@@ -236,6 +255,9 @@ public class PlayerActivity extends Activity implements StatusCallback {
         super.onPause();
         mHandler.removeMessages(MSG_FRESH_SEEKBAR);
         mPlayer.rmCallback(this);
+        if (isFinishing()) {
+            releaseVisualizerAndEqualizer();
+        }
     }
 
     @Override
@@ -276,7 +298,6 @@ public class PlayerActivity extends Activity implements StatusCallback {
         @Override
         public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target,
                                        DataSource dataSource, boolean isFirstResource) {
-            mAlbumPic.setImageDrawable(resource);
             Drawable bg = ImageUtil.createBgFromBitmap(
                     ((BitmapDrawable) resource).getBitmap()
                     , 12, PlayerActivity.this
@@ -294,10 +315,12 @@ public class PlayerActivity extends Activity implements StatusCallback {
             mSeekBar.setProgress(mPlayer.getCurDuration());
             mHandler.sendEmptyMessage(MSG_FRESH_SEEKBAR);
             if (song.album != null) {
-                Glide.with(this).load(song.album).listener(mLoadListener).into(mAlbumPic);
+                Glide.with(this).load(song.album).into(mAlbumPic);
+                Glide.with(this).load(song.album).listener(mLoadListener).into(mPlayingBg);
             } else {
                 int rand = (int) (Math.random() * 8);
-                Glide.with(this).load(RAND_PIC[rand]).listener(mLoadListener).into(mAlbumPic);
+                Glide.with(this).load(RAND_PIC[rand]).into(mAlbumPic);
+                Glide.with(this).load(RAND_PIC[rand]).listener(mLoadListener).into(mPlayingBg);
             }
             mAnimator.end();
         }
@@ -341,6 +364,111 @@ public class PlayerActivity extends Activity implements StatusCallback {
         mAnimator.setRepeatCount(-1);
         mAnimator.setRepeatMode(ObjectAnimator.RESTART);
         mAnimator.setInterpolator(new LinearInterpolator());
+    }
+
+
+    private long mLastDownTime;
+
+    private boolean onAlbumTouch(View v, MotionEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            if (System.currentTimeMillis() - mLastDownTime <= 200) {
+                switchPlayingAlbum();
+                mLastDownTime = 0;
+            }
+            mLastDownTime = System.currentTimeMillis();
+        }
+        return true;
+    }
+
+    private void switchPlayingAlbum() {
+        int curPlayType = mApp.getDataManager().getAlbumType();
+        if (curPlayType == DataManager.PLAYING_ALBUM_PIC) {
+            initVisualizerAndEqualizer();
+            mApp.getDataManager().setAlbumType(DataManager.PLAYING_ALBUM_VIS);
+            animRemoveAdd(mPlayingAlbumBox, mVisualizerView, mAlbumPic, null);
+        } else {
+            mApp.getDataManager().setAlbumType(DataManager.PLAYING_ALBUM_PIC);
+            animRemoveAdd(mPlayingAlbumBox, mAlbumPic, mVisualizerView, this::releaseVisualizerAndEqualizer);
+        }
+    }
+
+    private void animRemoveAdd(RelativeLayout father, View add, View remove, Runnable run) {
+        AlphaAnimation aa = new AlphaAnimation(1.0f, 0.0f);
+        aa.setDuration(500);
+        aa.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                father.removeView(remove);
+                if (run != null) {
+                    run.run();
+                }
+                AlphaAnimation aa1 = new AlphaAnimation(0.0f, 1.0f);
+                aa1.setDuration(300);
+                father.addView(add);
+                add.startAnimation(aa1);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        remove.startAnimation(aa);
+
+    }
+
+    private void releaseVisualizerAndEqualizer() {
+        if (mVisualizer != null) {
+            mVisualizer.release();
+        }
+        if (mEqualizer != null) {
+            mEqualizer.release();
+        }
+    }
+
+    private void initVisualizerAndEqualizer() {
+        mApp = (MusicApp) getApplication();
+        setupVisualizerFxAndUI();
+        setupEqualizerFxAndUI();
+        mVisualizer.setEnabled(true);
+    }
+
+    private RelativeLayout mPlayingAlbumBox;
+    private Visualizer mVisualizer;
+    private Equalizer mEqualizer;
+    private VisualizerView mVisualizerView;
+
+    private void setupEqualizerFxAndUI() {
+        mEqualizer = new Equalizer(0, mApp.getPlayer().getAudioSessionId());
+        mEqualizer.setEnabled(true);
+    }
+
+    boolean isViewShow = false;
+
+    private void setupVisualizerFxAndUI() {
+        DisplayMetrics display = getResources().getDisplayMetrics();
+        int height = Math.max(display.widthPixels, display.heightPixels);
+        mVisualizerView = new VisualizerView(this.getApplicationContext());
+        mVisualizerView.setLayoutParams(new ViewGroup.LayoutParams(-1, height / 5));
+        final int maxCR = Visualizer.getMaxCaptureRate();
+        mVisualizer = new Visualizer(mApp.getPlayer().getAudioSessionId());
+        mVisualizer.setCaptureSize(256);
+        mVisualizer.setDataCaptureListener(new Visualizer.OnDataCaptureListener() {
+            public void onWaveFormDataCapture(Visualizer visualizer,
+                                              byte[] bytes, int samplingRate) {
+                mVisualizerView.updateVisualizer(bytes);
+            }
+
+            public void onFftDataCapture(Visualizer visualizer,
+                                         byte[] fft, int samplingRate) {
+                mVisualizerView.updateVisualizer(fft);
+            }
+        }, maxCR / 2, false, true);
     }
 
 }

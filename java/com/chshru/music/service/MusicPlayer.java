@@ -276,6 +276,10 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
         }
     }
 
+    public int getAudioSessionId() {
+        return mService.getAudioSessionId();
+    }
+
     public Song getCurSong() {
         return mCurSong;
     }

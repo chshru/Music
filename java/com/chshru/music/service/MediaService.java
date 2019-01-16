@@ -108,6 +108,10 @@ public class MediaService extends Service {
         }
     }
 
+    private int getAudioSessionId() {
+        return mPlayer.getAudioSessionId();
+    }
+
     private class PlayBinder extends Binder implements PlayService {
 
         private SoftReference<MediaService> mService;
@@ -181,6 +185,9 @@ public class MediaService extends Service {
             mService.get().seekTo(p);
         }
 
+        @Override
+        public int getAudioSessionId() {
+            return mService.get().getAudioSessionId();
+        }
     }
-
 }

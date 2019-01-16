@@ -15,7 +15,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#3f000000" />
+        android:background="#7f000000" />
 
     <LinearLayout
         android:id="@+id/topContainer"
@@ -52,18 +52,28 @@
                 android:textSize="12sp" />
         </LinearLayout>
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/civ_cover"
+        <RelativeLayout
+            android:id="@+id/playing_album"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
+            android:layout_marginBottom="-10dp"
+            android:layout_marginEnd="30dp"
             android:layout_marginStart="30dp"
             android:layout_marginTop="-10dp"
-            android:layout_marginEnd="30dp"
-            android:layout_marginBottom="-10dp"
             android:layout_weight="1"
-            android:elevation="10dp"
-            android:src="@drawable/default_album_cover"
-            app:civ_border_color="@color/white" />
+            android:gravity="center"
+            android:elevation="10dp">
+
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/civ_cover"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/default_album_cover"
+                app:civ_border_color="@color/white"/>
+
+        </RelativeLayout>
+
 
         <LinearLayout
             android:id="@+id/detailView"
