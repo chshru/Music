@@ -12,7 +12,7 @@ import com.chshru.music.R;
  * Created by abc on 19-1-15.
  */
 
-public class VisualizerView extends View {
+public class AudioView extends View {
 
     private byte[] mBytes;
     private float[] mPoints;
@@ -22,7 +22,7 @@ public class VisualizerView extends View {
     private int mSpectrumNum = 48;
     private boolean mFirst = true;
 
-    public VisualizerView(Context context) {
+    public AudioView(Context context) {
         super(context);
         init();
     }

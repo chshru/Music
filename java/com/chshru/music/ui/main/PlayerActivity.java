@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.audiofx.Equalizer;
-import android.media.audiofx.Visualizer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -42,7 +41,8 @@ import com.chshru.music.service.MusicPlayer;
 import com.chshru.music.service.StatusCallback;
 import com.chshru.music.ui.main.list.ListData;
 import com.chshru.music.ui.view.PlayPauseButton;
-import com.chshru.music.ui.view.VisualizerView;
+import com.chshru.music.ui.view.visualizer.VisualizerView;
+import com.chshru.music.ui.view.visualizer.renderer.BarGraphRenderer;
 import com.chshru.music.util.ImageUtil;
 import com.chshru.music.util.LoveTable;
 import com.chshru.music.util.Song;
@@ -422,53 +422,70 @@ public class PlayerActivity extends Activity implements StatusCallback {
 
     }
 
+    ViewGroup.LayoutParams mVL;
+    private RelativeLayout mPlayingAlbumBox;
+    private Equalizer mEqualizer;
+
     private void releaseVisualizerAndEqualizer() {
-        if (mVisualizer != null) {
-            mVisualizer.release();
-        }
         if (mEqualizer != null) {
             mEqualizer.release();
+        }
+        if (mVisualizerView != null) {
+            mVisualizerView.release();
         }
     }
 
     private void initVisualizerAndEqualizer() {
         mApp = (MusicApp) getApplication();
-        setupVisualizerFxAndUI();
-        setupEqualizerFxAndUI();
-        mVisualizer.setEnabled(true);
+        //setupEqualizerFxAndUI();
+        mVisualizerView = new VisualizerView(this);
+        mVisualizerView.link(mApp.getPlayer().getAudioSessionId());
+        DisplayMetrics display = getResources().getDisplayMetrics();
+        int height = Math.max(display.widthPixels, display.heightPixels);
+        mVL = new ViewGroup.LayoutParams(-1, height / 5);
+        mVisualizerView.setLayoutParams(mVL);
+        mVisualizerView.addRenderer(new BarGraphRenderer());
     }
-
-    private RelativeLayout mPlayingAlbumBox;
-    private Visualizer mVisualizer;
-    private Equalizer mEqualizer;
-    private VisualizerView mVisualizerView;
 
     private void setupEqualizerFxAndUI() {
         mEqualizer = new Equalizer(0, mApp.getPlayer().getAudioSessionId());
         mEqualizer.setEnabled(true);
     }
 
-    boolean isViewShow = false;
+    private VisualizerView mVisualizerView;
 
-    private void setupVisualizerFxAndUI() {
-        DisplayMetrics display = getResources().getDisplayMetrics();
-        int height = Math.max(display.widthPixels, display.heightPixels);
-        mVisualizerView = new VisualizerView(this.getApplicationContext());
-        mVisualizerView.setLayoutParams(new ViewGroup.LayoutParams(-1, height / 5));
-        final int maxCR = Visualizer.getMaxCaptureRate();
-        mVisualizer = new Visualizer(mApp.getPlayer().getAudioSessionId());
-        mVisualizer.setCaptureSize(256);
-        mVisualizer.setDataCaptureListener(new Visualizer.OnDataCaptureListener() {
-            public void onWaveFormDataCapture(Visualizer visualizer,
-                                              byte[] bytes, int samplingRate) {
-                mVisualizerView.updateVisualizer(bytes);
-            }
 
-            public void onFftDataCapture(Visualizer visualizer,
-                                         byte[] fft, int samplingRate) {
-                mVisualizerView.updateVisualizer(fft);
-            }
-        }, maxCR / 2, false, true);
-    }
+//    private void addCircleBarRenderer() {
+//        Paint paint = new Paint();
+//        paint.setStrokeWidth(8f);
+//        paint.setAntiAlias(true);
+//        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.LIGHTEN));
+//        paint.setColor(Color.argb(255, 222, 92, 143));
+//        CircleBarRenderer circleBarRenderer = new CircleBarRenderer(paint, 32, true);
+//        mVisualizerView.addRenderer(circleBarRenderer);
+//    }
+//
+//    private void addCircleRenderer() {
+//        Paint paint = new Paint();
+//        paint.setStrokeWidth(3f);
+//        paint.setAntiAlias(true);
+//        paint.setColor(Color.argb(255, 222, 92, 143));
+//        CircleRenderer circleRenderer = new CircleRenderer(paint, true);
+//        mVisualizerView.addRenderer(circleRenderer);
+//    }
+//
+//    private void addLineRenderer() {
+//        Paint linePaint = new Paint();
+//        linePaint.setStrokeWidth(1f);
+//        linePaint.setAntiAlias(true);
+//        linePaint.setColor(Color.argb(88, 0, 128, 255));
+//
+//        Paint lineFlashPaint = new Paint();
+//        lineFlashPaint.setStrokeWidth(5f);
+//        lineFlashPaint.setAntiAlias(true);
+//        lineFlashPaint.setColor(Color.argb(188, 255, 255, 255));
+//        LineRenderer lineRenderer = new LineRenderer(linePaint, lineFlashPaint, true);
+//        mVisualizerView.addRenderer(lineRenderer);
+//    }
 
 }
