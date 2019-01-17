@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -43,6 +42,9 @@ import com.chshru.music.ui.main.list.ListData;
 import com.chshru.music.ui.view.PlayPauseButton;
 import com.chshru.music.ui.view.visualizer.VisualizerView;
 import com.chshru.music.ui.view.visualizer.renderer.BarGraphRenderer;
+import com.chshru.music.ui.view.visualizer.renderer.CircleBarRenderer;
+import com.chshru.music.ui.view.visualizer.renderer.CircleRenderer;
+import com.chshru.music.ui.view.visualizer.renderer.LineRenderer;
 import com.chshru.music.util.ImageUtil;
 import com.chshru.music.util.LoveTable;
 import com.chshru.music.util.Song;
@@ -346,6 +348,12 @@ public class PlayerActivity extends Activity implements StatusCallback {
             if (!mPause.isPlaying()) {
                 mPause.play();
             }
+            if (mVisualizerView != null && !mVisualizerView.hasRenders()) {
+                mVisualizerView.addRenderer(mBarGraphRenderer);
+                mVisualizerView.addRenderer(mCircleBarRenderer);
+                mVisualizerView.addRenderer(mCircleRenderer);
+                mVisualizerView.addRenderer(mLineRenderer);
+            }
         } else {
             mHandler.removeMessages(MSG_FRESH_SEEKBAR);
             if (mAnimator.isRunning()) {
@@ -353,6 +361,9 @@ public class PlayerActivity extends Activity implements StatusCallback {
             }
             if (mPause.isPlaying()) {
                 mPause.pause();
+            }
+            if (mVisualizerView != null && mVisualizerView.hasRenders()) {
+                mVisualizerView.clearRenderers();
             }
         }
     }
@@ -425,6 +436,12 @@ public class PlayerActivity extends Activity implements StatusCallback {
     ViewGroup.LayoutParams mVL;
     private RelativeLayout mPlayingAlbumBox;
     private Equalizer mEqualizer;
+    private VisualizerView mVisualizerView;
+
+    private BarGraphRenderer mBarGraphRenderer;
+    private CircleBarRenderer mCircleBarRenderer;
+    private CircleRenderer mCircleRenderer;
+    private LineRenderer mLineRenderer;
 
     private void releaseVisualizerAndEqualizer() {
         if (mEqualizer != null) {
@@ -439,53 +456,31 @@ public class PlayerActivity extends Activity implements StatusCallback {
         mApp = (MusicApp) getApplication();
         //setupEqualizerFxAndUI();
         mVisualizerView = new VisualizerView(this);
-        mVisualizerView.link(mApp.getPlayer().getAudioSessionId());
-        DisplayMetrics display = getResources().getDisplayMetrics();
-        int height = Math.max(display.widthPixels, display.heightPixels);
-        mVL = new ViewGroup.LayoutParams(-1, height / 5);
+        mVisualizerView.create(mApp.getPlayer().getAudioSessionId());
+        mVL = new ViewGroup.LayoutParams(-1, -1);
         mVisualizerView.setLayoutParams(mVL);
-        mVisualizerView.addRenderer(new BarGraphRenderer());
+        if (mBarGraphRenderer == null) {
+            mBarGraphRenderer = new BarGraphRenderer();
+        }
+        if (mCircleBarRenderer == null) {
+            mCircleBarRenderer = new CircleBarRenderer();
+        }
+        if (mCircleRenderer == null) {
+            mCircleRenderer = new CircleRenderer();
+        }
+        if (mLineRenderer == null) {
+            mLineRenderer = new LineRenderer();
+        }
+        if (mVisualizerView != null && !mVisualizerView.hasRenders()) {
+            mVisualizerView.addRenderer(mBarGraphRenderer);
+            mVisualizerView.addRenderer(mCircleBarRenderer);
+            mVisualizerView.addRenderer(mCircleRenderer);
+            mVisualizerView.addRenderer(mLineRenderer);
+        }
     }
 
     private void setupEqualizerFxAndUI() {
         mEqualizer = new Equalizer(0, mApp.getPlayer().getAudioSessionId());
         mEqualizer.setEnabled(true);
     }
-
-    private VisualizerView mVisualizerView;
-
-
-//    private void addCircleBarRenderer() {
-//        Paint paint = new Paint();
-//        paint.setStrokeWidth(8f);
-//        paint.setAntiAlias(true);
-//        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.LIGHTEN));
-//        paint.setColor(Color.argb(255, 222, 92, 143));
-//        CircleBarRenderer circleBarRenderer = new CircleBarRenderer(paint, 32, true);
-//        mVisualizerView.addRenderer(circleBarRenderer);
-//    }
-//
-//    private void addCircleRenderer() {
-//        Paint paint = new Paint();
-//        paint.setStrokeWidth(3f);
-//        paint.setAntiAlias(true);
-//        paint.setColor(Color.argb(255, 222, 92, 143));
-//        CircleRenderer circleRenderer = new CircleRenderer(paint, true);
-//        mVisualizerView.addRenderer(circleRenderer);
-//    }
-//
-//    private void addLineRenderer() {
-//        Paint linePaint = new Paint();
-//        linePaint.setStrokeWidth(1f);
-//        linePaint.setAntiAlias(true);
-//        linePaint.setColor(Color.argb(88, 0, 128, 255));
-//
-//        Paint lineFlashPaint = new Paint();
-//        lineFlashPaint.setStrokeWidth(5f);
-//        lineFlashPaint.setAntiAlias(true);
-//        lineFlashPaint.setColor(Color.argb(188, 255, 255, 255));
-//        LineRenderer lineRenderer = new LineRenderer(linePaint, lineFlashPaint, true);
-//        mVisualizerView.addRenderer(lineRenderer);
-//    }
-
 }

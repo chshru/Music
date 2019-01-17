@@ -47,9 +47,13 @@ public class VisualizerView extends View {
         mMatrix = new Matrix();
     }
 
-    public void link(int session) {
+    public boolean hasRenders() {
+        return !mRenderers.isEmpty();
+    }
+
+    public void create(int session) {
         mVisualizer = new Visualizer(session);
-        mVisualizer.setCaptureSize(256);
+        mVisualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[0]);
 
         Visualizer.OnDataCaptureListener captureListener = new Visualizer.OnDataCaptureListener() {
             @Override

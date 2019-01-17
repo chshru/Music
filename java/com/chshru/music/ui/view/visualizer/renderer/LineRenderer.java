@@ -12,11 +12,6 @@ public class LineRenderer extends Renderer {
     private boolean mCycleColor;
     private float amplitude = 0;
 
-
-    public LineRenderer(Paint paint, Paint flashPaint) {
-        this(paint, flashPaint, false);
-    }
-
     public LineRenderer(Paint paint,
                         Paint flashPaint,
                         boolean cycleColor) {
@@ -24,6 +19,20 @@ public class LineRenderer extends Renderer {
         mPaint = paint;
         mFlashPaint = flashPaint;
         mCycleColor = cycleColor;
+    }
+
+    public LineRenderer() {
+        super();
+        mPaint = new Paint();
+        mPaint.setStrokeWidth(1f);
+        mPaint.setAntiAlias(true);
+        mPaint.setColor(Color.argb(88, 0, 128, 255));
+
+        mFlashPaint = new Paint();
+        mFlashPaint.setStrokeWidth(5f);
+        mFlashPaint.setAntiAlias(true);
+        mFlashPaint.setColor(Color.argb(188, 255, 255, 255));
+        mCycleColor = true;
     }
 
     @Override

@@ -10,8 +10,13 @@ public class CircleRenderer extends Renderer {
     private Paint mPaint;
     private boolean mCycleColor;
 
-    public CircleRenderer(Paint paint) {
-        this(paint, false);
+    public CircleRenderer() {
+        super();
+        mPaint = new Paint();
+        mPaint.setStrokeWidth(3f);
+        mPaint.setAntiAlias(true);
+        mPaint.setColor(Color.argb(255, 222, 92, 143));
+        mCycleColor = true;
     }
 
     public CircleRenderer(Paint paint, boolean cycleColor) {

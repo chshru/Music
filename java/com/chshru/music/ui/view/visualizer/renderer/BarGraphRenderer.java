@@ -36,7 +36,7 @@ public class BarGraphRenderer extends Renderer {
 
         mPaint.setStrokeWidth((rect.width() - 70) / mLines);
         final int baseX = rect.width() / mLines;
-        final int height = rect.height();
+        final int height = rect.height() * 2 / 3;
 
         for (int i = 0; i < mLines; i++) {
             if (model[i] < 0) {

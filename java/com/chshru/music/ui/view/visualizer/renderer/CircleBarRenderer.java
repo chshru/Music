@@ -3,6 +3,8 @@ package com.chshru.music.ui.view.visualizer.renderer;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 
 
@@ -11,9 +13,16 @@ public class CircleBarRenderer extends Renderer {
     private Paint mPaint;
     private boolean mCycleColor;
 
+    public CircleBarRenderer() {
+        super();
 
-    public CircleBarRenderer(Paint paint, int divisions) {
-        this(paint, divisions, false);
+        mPaint = new Paint();
+        mPaint.setStrokeWidth(8f);
+        mPaint.setAntiAlias(true);
+        mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.LIGHTEN));
+        mPaint.setColor(Color.argb(255, 222, 92, 143));
+        mDivisions = 32;
+        mCycleColor = true;
     }
 
     public CircleBarRenderer(Paint paint, int divisions, boolean cycleColor) {
