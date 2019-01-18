@@ -1,12 +1,14 @@
 package com.chshru.music.service;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Handler;
 
 import com.chshru.music.base.MusicApp;
 import com.chshru.music.ui.main.list.ListData;
+import com.chshru.music.util.Cache;
 import com.chshru.music.util.HistoryTable;
 import com.chshru.music.util.QQMusicApi;
 import com.chshru.music.util.Song;
@@ -167,7 +169,27 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
         }
         String local = song.link;
         if (local == null) {
-            new GetUrlThread(song.mid, song).start();
+            Cursor cursor = mApp.getCacheTable().query();
+            cursor.moveToFirst();
+            String cacheUrl = null;
+            if (cursor.getCount() > 0) {
+                do {
+                    int id = cursor.getInt(0);
+                    if (id == song.id) {
+                        cacheUrl = cursor.getString(2);
+                        break;
+                    }
+                } while (cursor.moveToNext());
+            }
+            if (cacheUrl != null) {
+                if (mApp.getServer().isCached(cacheUrl)) {
+                    local = mApp.getServer().getProxyUrl(cacheUrl);
+                    prepareImpl(local, song);
+                }
+            }
+            if (local == null) {
+                new GetUrlThread(song.mid, song).start();
+            }
         } else {
             prepareImpl(local, song);
         }
@@ -187,7 +209,10 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
         @Override
         public void run() {
             String result = QQMusicApi.buildSongUrl(url);
-            String local = mApp.getServer().getProxyUrl(result, false);
+            String local = mApp.getServer().getProxyUrl(result);
+            long date = System.currentTimeMillis();
+            Cache cache = new Cache(song.id, song.mid, result, String.valueOf(date));
+            mApp.getCacheTable().insert(cache);
             mHandler.post(() -> prepareImpl(local, song));
         }
     }

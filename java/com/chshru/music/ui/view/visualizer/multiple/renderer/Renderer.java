@@ -1,4 +1,4 @@
-package com.chshru.music.ui.view.visualizer.renderer;
+package com.chshru.music.ui.view.visualizer.multiple.renderer;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;

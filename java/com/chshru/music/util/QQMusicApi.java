@@ -28,7 +28,6 @@ public class QQMusicApi {
                 .append("p=").append(page).append("&")
                 .append("n=").append(num).append("&")
                 .append("w=").append(word);
-        System.out.println("chenshanru url = " + sb.toString());
         return sb.toString();
     }
 

@@ -17,7 +17,7 @@ public class LoveTable extends SQLiteOpenHelper implements BaseTable {
     private static final String TABLE_NAME = "love";
 
 
-    public static final String CREATE_MUSIC_TABLE =
+    public static final String CREATE_LOVE_TABLE =
             new StringBuilder()
                     .append("create table ")
                     .append(TABLE_NAME)
@@ -40,8 +40,9 @@ public class LoveTable extends SQLiteOpenHelper implements BaseTable {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(LoveTable.CREATE_MUSIC_TABLE);
-        db.execSQL(HistoryTable.CREATE_MUSIC_TABLE);
+        db.execSQL(LoveTable.CREATE_LOVE_TABLE);
+        db.execSQL(HistoryTable.CREATE_HISTORY_TABLE);
+        db.execSQL(CacheTable.CREATE_CACHE_TABLE);
     }
 
     @Override

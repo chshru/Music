@@ -41,10 +41,12 @@ import com.chshru.music.service.StatusCallback;
 import com.chshru.music.ui.main.list.ListData;
 import com.chshru.music.ui.view.PlayPauseButton;
 import com.chshru.music.ui.view.visualizer.VisualizerView;
-import com.chshru.music.ui.view.visualizer.renderer.BarGraphRenderer;
-import com.chshru.music.ui.view.visualizer.renderer.CircleBarRenderer;
-import com.chshru.music.ui.view.visualizer.renderer.CircleRenderer;
-import com.chshru.music.ui.view.visualizer.renderer.LineRenderer;
+import com.chshru.music.ui.view.visualizer.multiple.MultipleVisualizerView;
+import com.chshru.music.ui.view.visualizer.multiple.renderer.BarGraphRenderer;
+import com.chshru.music.ui.view.visualizer.multiple.renderer.CircleBarRenderer;
+import com.chshru.music.ui.view.visualizer.multiple.renderer.CircleRenderer;
+import com.chshru.music.ui.view.visualizer.multiple.renderer.LineRenderer;
+import com.chshru.music.ui.view.visualizer.simple.SimpleVisualizerView;
 import com.chshru.music.util.ImageUtil;
 import com.chshru.music.util.LoveTable;
 import com.chshru.music.util.Song;
@@ -454,8 +456,8 @@ public class PlayerActivity extends Activity implements StatusCallback {
 
     private void initVisualizerAndEqualizer() {
         mApp = (MusicApp) getApplication();
-        //setupEqualizerFxAndUI();
-        mVisualizerView = new VisualizerView(this);
+        setupEqualizerFxAndUI();
+        mVisualizerView = new MultipleVisualizerView(this);
         mVisualizerView.create(mApp.getPlayer().getAudioSessionId());
         mVL = new ViewGroup.LayoutParams(-1, -1);
         mVisualizerView.setLayoutParams(mVL);

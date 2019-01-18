@@ -6,6 +6,7 @@ import android.content.Context;
 import com.chshru.music.manager.DataManager;
 import com.chshru.music.service.MusicPlayer;
 import com.chshru.music.ui.main.list.ListData;
+import com.chshru.music.util.CacheTable;
 import com.chshru.music.util.HistoryTable;
 import com.chshru.music.util.LoveTable;
 import com.danikula.videocache.HttpProxyCacheServer;
@@ -21,6 +22,7 @@ public class MusicApp extends Application {
     private boolean mHasInit;
     private ListData mListData;
     private LoveTable mLoveTable;
+    private CacheTable mCacheTable;
     private HttpProxyCacheServer mCacheServer;
     private DataManager mDataManager;
 
@@ -42,6 +44,7 @@ public class MusicApp extends Application {
         mPlayer = new MusicPlayer(context, this);
         mHistoryTable = new HistoryTable(context);
         mLoveTable = new LoveTable(context);
+        mCacheTable = new CacheTable(context);
         mPlayer.setHistoryTable(mHistoryTable);
         mListData = new ListData();
         mDataManager = new DataManager(context, mListData);
@@ -58,6 +61,10 @@ public class MusicApp extends Application {
 
     public LoveTable getLoveTable() {
         return mLoveTable;
+    }
+
+    public CacheTable getCacheTable() {
+        return mCacheTable;
     }
 
     public boolean hasInitialized() {
