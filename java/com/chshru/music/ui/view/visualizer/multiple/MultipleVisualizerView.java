@@ -28,6 +28,7 @@ public class MultipleVisualizerView extends VisualizerView {
     private Set<Renderer> mRenderers;
     private Paint mFlashPaint;
     private Paint mFadePaint;
+    private boolean mHasRelease;
 
     public MultipleVisualizerView(Context context) {
         super(context);
@@ -45,6 +46,7 @@ public class MultipleVisualizerView extends VisualizerView {
         mFadePaint.setXfermode(new PorterDuffXfermode(Mode.MULTIPLY));
         mRenderers = new HashSet<>();
         mMatrix = new Matrix();
+        mHasRelease = true;
     }
 
     public boolean hasRenders() {
@@ -54,6 +56,7 @@ public class MultipleVisualizerView extends VisualizerView {
     @Override
     public void create(int session) {
         mVisualizer = new Visualizer(session);
+        mHasRelease = false;
         mVisualizer.setCaptureSize(256);
         Visualizer.OnDataCaptureListener captureListener = new Visualizer.OnDataCaptureListener() {
             @Override
@@ -74,18 +77,29 @@ public class MultipleVisualizerView extends VisualizerView {
     }
 
     public void addRenderer(Renderer renderer) {
+        if (mVisualizer != null && !mHasRelease) {
+            if (!mVisualizer.getEnabled()) {
+                mVisualizer.setEnabled(true);
+            }
+        }
         if (renderer != null) {
             mRenderers.add(renderer);
         }
     }
 
     public void clearRenderers() {
+        if (mVisualizer != null && !mHasRelease) {
+            if (mVisualizer.getEnabled()) {
+                mVisualizer.setEnabled(false);
+            }
+        }
         mRenderers.clear();
     }
 
     @Override
     public void release() {
         mVisualizer.release();
+        mHasRelease = true;
     }
 
     public void updateVisualizer(byte[] bytes) {

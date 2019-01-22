@@ -446,6 +446,7 @@ public class PlayerActivity extends Activity implements StatusCallback {
             mEqualizer.release();
         }
         if (mVisualizerView != null) {
+            mVisualizerView.clearRenderers();
             mVisualizerView.release();
         }
     }

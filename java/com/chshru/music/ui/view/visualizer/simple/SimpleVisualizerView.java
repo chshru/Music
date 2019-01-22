@@ -24,20 +24,30 @@ public class SimpleVisualizerView extends VisualizerView {
     private int mSpectrumNum = 48;
 
     private Visualizer mVisualizer;
+    private boolean mHasRelease;
 
     public SimpleVisualizerView(Context context) {
         super(context);
+        mHasRelease = true;
         initialize();
     }
 
     @Override
     public void addRenderer(Renderer renderer) {
-        mVisualizer.setEnabled(true);
+        if (mVisualizer != null && !mHasRelease) {
+            if (!mVisualizer.getEnabled()) {
+                mVisualizer.setEnabled(true);
+            }
+        }
     }
 
     @Override
     public void clearRenderers() {
-        mVisualizer.setEnabled(false);
+        if (mVisualizer != null && !mHasRelease) {
+            if (mVisualizer.getEnabled()) {
+                mVisualizer.setEnabled(false);
+            }
+        }
     }
 
     @Override
@@ -55,12 +65,14 @@ public class SimpleVisualizerView extends VisualizerView {
     public void release() {
         if (mVisualizer != null) {
             mVisualizer.release();
+            mHasRelease = true;
         }
     }
 
     @Override
     public void create(int session) {
         mVisualizer = new Visualizer(session);
+        mHasRelease = false;
         mVisualizer.setCaptureSize(256);
         Visualizer.OnDataCaptureListener captureListener = new Visualizer.OnDataCaptureListener() {
             @Override

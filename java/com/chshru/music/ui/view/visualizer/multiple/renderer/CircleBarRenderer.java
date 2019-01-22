@@ -21,7 +21,7 @@ public class CircleBarRenderer extends Renderer {
         mPaint.setAntiAlias(true);
         mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.LIGHTEN));
         mPaint.setColor(Color.argb(255, 222, 92, 143));
-        mDivisions = 32;
+        mDivisions = 16;
         mCycleColor = true;
     }
 
