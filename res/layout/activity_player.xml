@@ -129,8 +129,9 @@
                 <ImageButton
                     android:id="@+id/iv_love"
                     android:layout_width="0dp"
-                    android:layout_height="30dp"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
+                    android:scaleType="centerInside"
                     android:background="?android:attr/selectableItemBackgroundBorderless"
                     android:src="@drawable/icon_favorite_white"
                     tools:ignore="ContentDescription" />
@@ -138,11 +139,11 @@
                 <ImageButton
                     android:id="@+id/prevPlayIv"
                     android:layout_width="0dp"
-                    android:layout_height="30dp"
+                    android:layout_height="40dp"
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:background="?android:attr/selectableItemBackgroundBorderless"
-                    android:scaleType="center"
+                    android:scaleType="centerInside"
                     android:src="@drawable/icon_skip_previous"
                     tools:ignore="ContentDescription" />
 
@@ -179,18 +180,19 @@
                 <ImageButton
                     android:id="@+id/nextvPlayIv"
                     android:layout_width="0dp"
-                    android:layout_height="30dp"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
                     android:background="?android:attr/selectableItemBackgroundBorderless"
-                    android:scaleType="center"
+                    android:scaleType="centerInside"
                     android:src="@drawable/icon_skip_next"
                     tools:ignore="ContentDescription" />
 
                 <ImageButton
                     android:id="@+id/iv_repeat"
                     android:layout_width="0dp"
-                    android:layout_height="30dp"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
+                    android:scaleType="centerInside"
                     android:background="?android:attr/selectableItemBackgroundBorderless"
                     android:src="@drawable/icon_repeat_all"
                     tools:ignore="ContentDescription" />
