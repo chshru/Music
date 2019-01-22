@@ -1,4 +1,4 @@
-package com.chshru.music.util;
+package com.chshru.music.data.model;
 
 
 /**

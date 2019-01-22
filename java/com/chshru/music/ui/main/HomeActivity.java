@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import com.chshru.music.R;
 import com.chshru.music.base.ActivityBase;
 import com.chshru.music.base.MusicApp;
-import com.chshru.music.manager.DataManager;
+import com.chshru.music.data.manager.PrefHelper;
 import com.chshru.music.service.StatusCallback;
 import com.chshru.music.ui.main.search.SearchActivity;
 import com.chshru.music.ui.tab.localtab.LocalTab;
@@ -22,8 +22,7 @@ import com.chshru.music.ui.tab.TabAdapter;
 import com.chshru.music.service.MediaService;
 import com.chshru.music.service.MusicPlayer;
 import com.chshru.music.service.PlayService;
-import com.chshru.music.util.HistoryTable;
-import com.chshru.music.util.Song;
+import com.chshru.music.data.model.Song;
 
 
 public class HomeActivity extends ActivityBase implements StatusCallback, BottomLayout.BottomController {
@@ -31,9 +30,8 @@ public class HomeActivity extends ActivityBase implements StatusCallback, Bottom
     private MusicPlayer mPlayer;
     private Intent mIntent;
     private BottomLayout mBottomLayout;
-    private DataManager mData;
+    private PrefHelper mData;
 
-    private HistoryTable mHistoryTable;
     private BaseTab[] mTabs;
 
     @Override
@@ -63,9 +61,8 @@ public class HomeActivity extends ActivityBase implements StatusCallback, Bottom
         mIntent = new Intent(this, MediaService.class);
         MusicApp app = (MusicApp) getApplication();
         if (!app.hasInitialized()) app.init();
-        mHistoryTable = app.getHistoryTable();
         mPlayer = app.getPlayer();
-        mData = app.getDataManager();
+        mData = app.getPrefHelper();
         startService(mIntent);
     }
 

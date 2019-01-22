@@ -15,7 +15,7 @@ import com.chshru.music.service.StatusCallback;
 import com.chshru.music.ui.main.search.SongListAdapter;
 import com.chshru.music.ui.main.search.SongListAdapter.OnItemClickListener;
 import com.chshru.music.ui.tab.localtab.LocalTab;
-import com.chshru.music.util.Song;
+import com.chshru.music.data.model.Song;
 
 import java.util.List;
 

@@ -5,6 +5,9 @@ import android.database.Cursor;
 import android.os.Handler;
 import android.provider.MediaStore.Audio.Media;
 
+import com.chshru.music.data.model.Song;
+import com.chshru.music.data.sql.DataHelper;
+
 import java.text.Collator;
 import java.util.Arrays;
 import java.util.Collections;
@@ -43,8 +46,8 @@ public class SongScanner {
         mRunnable = runnable;
     }
 
-    public void startLoveScan(LoveTable table) {
-        Cursor cursor = table.query();
+    public void startLoveScan(DataHelper.LoveHelper helper) {
+        Cursor cursor = helper.query();
         cursor.moveToFirst();
         if (cursor.getCount() != 0) {
             do {
@@ -68,8 +71,8 @@ public class SongScanner {
         }
     }
 
-    public void startHistoryScan(HistoryTable table) {
-        Cursor cursor = table.query();
+    public void startHistoryScan(DataHelper.HistoryHelper helper) {
+        Cursor cursor = helper.query();
         cursor.moveToFirst();
         if (cursor.getCount() != 0) {
             do {

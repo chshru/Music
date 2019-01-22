@@ -11,7 +11,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.chshru.music.R;
 import com.chshru.music.service.StatusCallback;
 import com.chshru.music.ui.view.PlayPauseButton;
-import com.chshru.music.util.Song;
+import com.chshru.music.data.model.Song;
 
 /**
  * Created by abc on 18-10-25.

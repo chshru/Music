@@ -35,7 +35,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.chshru.music.R;
 import com.chshru.music.base.MusicApp;
-import com.chshru.music.manager.DataManager;
+import com.chshru.music.data.manager.PrefHelper;
 import com.chshru.music.service.MusicPlayer;
 import com.chshru.music.service.StatusCallback;
 import com.chshru.music.ui.main.list.ListData;
@@ -46,10 +46,8 @@ import com.chshru.music.ui.view.visualizer.multiple.renderer.BarGraphRenderer;
 import com.chshru.music.ui.view.visualizer.multiple.renderer.CircleBarRenderer;
 import com.chshru.music.ui.view.visualizer.multiple.renderer.CircleRenderer;
 import com.chshru.music.ui.view.visualizer.multiple.renderer.LineRenderer;
-import com.chshru.music.ui.view.visualizer.simple.SimpleVisualizerView;
 import com.chshru.music.util.ImageUtil;
-import com.chshru.music.util.LoveTable;
-import com.chshru.music.util.Song;
+import com.chshru.music.data.model.Song;
 
 import java.util.List;
 
@@ -72,7 +70,6 @@ public class PlayerActivity extends Activity implements StatusCallback {
     private ImageButton mLove;
     private List<Song> mLoveList;
     private boolean mCurIsLove;
-    private LoveTable mLoveTable;
     private SeekBar mSeekBar;
     private ImageButton mRepeat;
 
@@ -143,7 +140,6 @@ public class PlayerActivity extends Activity implements StatusCallback {
         mLove.setOnClickListener(view -> onLoveClick());
         mPause.setOnClickListener(view -> togglePlayer(true));
         mApp = (MusicApp) getApplication();
-        mLoveTable = mApp.getLoveTable();
         mLoveList = mApp.getListData().getList(ListData.P_LOVE);
         mPlayer = mApp.getPlayer();
         mRepeat.setImageResource(REPEAT_PIC[mApp.getListData().getCurMode()]);
@@ -156,8 +152,8 @@ public class PlayerActivity extends Activity implements StatusCallback {
             return onAlbumTouch(v, event);
         });
         createAnimator();
-        int curPlayType = mApp.getDataManager().getAlbumType();
-        if (curPlayType == DataManager.PLAYING_ALBUM_VIS) {
+        int curPlayType = mApp.getPrefHelper().getAlbumType();
+        if (curPlayType == PrefHelper.PLAYING_ALBUM_VIS) {
             initVisualizerAndEqualizer();
             mPlayingAlbumBox.removeView(mAlbumPic);
             mPlayingAlbumBox.addView(mVisualizerView);
@@ -168,7 +164,7 @@ public class PlayerActivity extends Activity implements StatusCallback {
         int curMode = mApp.getListData().getCurMode();
         curMode = (curMode + 1) % ListData.MODE_COUNT;
         mApp.getListData().setCurMode(curMode);
-        mApp.getDataManager().setMode(curMode);
+        mApp.getPrefHelper().setMode(curMode);
         mRepeat.setImageResource(REPEAT_PIC[curMode]);
     }
 
@@ -224,7 +220,7 @@ public class PlayerActivity extends Activity implements StatusCallback {
         }
         if (mCurIsLove) {
             mCurIsLove = false;
-            mLoveTable.delete(song);
+            mApp.getHelper().getLove().delete(song);
             mLove.setImageResource(R.drawable.icon_favorite_white);
             for (Song s : mLoveList) {
                 if (s.equals(song)) {
@@ -241,7 +237,7 @@ public class PlayerActivity extends Activity implements StatusCallback {
             sa.setDuration(300);
             mLove.setAnimation(null);
             mCurIsLove = true;
-            mLoveTable.insert(song);
+            mApp.getHelper().getLove().insert(song);
             mLove.setImageResource(R.drawable.icon_favorite_red);
             mLoveList.add(song);
             mLove.startAnimation(sa);
@@ -394,13 +390,13 @@ public class PlayerActivity extends Activity implements StatusCallback {
     }
 
     private void switchPlayingAlbum() {
-        int curPlayType = mApp.getDataManager().getAlbumType();
-        if (curPlayType == DataManager.PLAYING_ALBUM_PIC) {
+        int curPlayType = mApp.getPrefHelper().getAlbumType();
+        if (curPlayType == PrefHelper.PLAYING_ALBUM_PIC) {
             initVisualizerAndEqualizer();
-            mApp.getDataManager().setAlbumType(DataManager.PLAYING_ALBUM_VIS);
+            mApp.getPrefHelper().setAlbumType(PrefHelper.PLAYING_ALBUM_VIS);
             animRemoveAdd(mPlayingAlbumBox, mVisualizerView, mAlbumPic, null);
         } else {
-            mApp.getDataManager().setAlbumType(DataManager.PLAYING_ALBUM_PIC);
+            mApp.getPrefHelper().setAlbumType(PrefHelper.PLAYING_ALBUM_PIC);
             animRemoveAdd(mPlayingAlbumBox, mAlbumPic, mVisualizerView, this::releaseVisualizerAndEqualizer);
         }
     }

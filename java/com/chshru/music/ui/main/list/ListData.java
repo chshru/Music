@@ -1,7 +1,7 @@
 package com.chshru.music.ui.main.list;
 
 
-import com.chshru.music.util.Song;
+import com.chshru.music.data.model.Song;
 
 import java.util.ArrayList;
 import java.util.List;

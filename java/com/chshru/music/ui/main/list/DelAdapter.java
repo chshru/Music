@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.chshru.music.R;
-import com.chshru.music.util.Song;
+import com.chshru.music.data.model.Song;
 
 import java.util.LinkedList;
 import java.util.List;

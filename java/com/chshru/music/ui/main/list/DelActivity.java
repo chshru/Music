@@ -10,8 +10,8 @@ import com.chshru.music.base.ActivityBase;
 import com.chshru.music.base.MusicApp;
 import com.chshru.music.service.StatusCallback;
 import com.chshru.music.ui.tab.localtab.LocalTab;
-import com.chshru.music.util.BaseTable;
-import com.chshru.music.util.Song;
+import com.chshru.music.data.sql.SongHelper;
+import com.chshru.music.data.model.Song;
 import com.chshru.music.ui.main.list.DelAdapter.OnItemClickListener;
 
 import java.util.List;
@@ -24,7 +24,7 @@ public class DelActivity extends ActivityBase implements StatusCallback {
     private int mStartType;
     private List<Song> mSong;
     private Handler mHandler;
-    private BaseTable mTable;
+    private SongHelper mHelper;
 
     @Override
     protected int getLayoutId() {
@@ -47,9 +47,9 @@ public class DelActivity extends ActivityBase implements StatusCallback {
         if (mStartType == -1) {
             return;
         } else if (mStartType == ListData.P_HISTORY) {
-            mTable = mApp.getHistoryTable();
+            mHelper = mApp.getHelper().getHistory();
         } else if (mStartType == ListData.P_LOVE) {
-            mTable = mApp.getLoveTable();
+            mHelper = mApp.getHelper().getLove();
         }
 
         mSong = mApp.getListData().getList(mStartType);
@@ -76,8 +76,8 @@ public class DelActivity extends ActivityBase implements StatusCallback {
             for (Song s : mSong) {
                 if (song.equals(s)) {
                     mSong.remove(s);
-                    if (mTable != null) {
-                        mTable.delete(s);
+                    if (mHelper != null) {
+                        mHelper.delete(s);
                     }
                     break;
                 }

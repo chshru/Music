@@ -18,7 +18,7 @@ import com.chshru.music.ui.view.RotateLoading;
 import com.chshru.music.util.QQMusicApi;
 import com.chshru.music.util.QueryHandler;
 import com.chshru.music.util.QueryHandler.OnFinishRunnable;
-import com.chshru.music.util.Song;
+import com.chshru.music.data.model.Song;
 
 import java.util.ArrayList;
 import java.util.List;

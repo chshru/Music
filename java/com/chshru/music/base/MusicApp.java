@@ -3,12 +3,10 @@ package com.chshru.music.base;
 import android.app.Application;
 import android.content.Context;
 
-import com.chshru.music.manager.DataManager;
+import com.chshru.music.data.manager.PrefHelper;
 import com.chshru.music.service.MusicPlayer;
 import com.chshru.music.ui.main.list.ListData;
-import com.chshru.music.util.CacheTable;
-import com.chshru.music.util.HistoryTable;
-import com.chshru.music.util.LoveTable;
+import com.chshru.music.data.sql.DataHelper;
 import com.danikula.videocache.HttpProxyCacheServer;
 
 /**
@@ -18,13 +16,11 @@ import com.danikula.videocache.HttpProxyCacheServer;
 public class MusicApp extends Application {
 
     private MusicPlayer mPlayer;
-    private HistoryTable mHistoryTable;
+    private DataHelper mHelper;
     private boolean mHasInit;
     private ListData mListData;
-    private LoveTable mLoveTable;
-    private CacheTable mCacheTable;
     private HttpProxyCacheServer mCacheServer;
-    private DataManager mDataManager;
+    private PrefHelper mPrefHelper;
 
     @Override
     public void onCreate() {
@@ -42,29 +38,22 @@ public class MusicApp extends Application {
         Context context = getApplicationContext();
         mCacheServer = new HttpProxyCacheServer(context);
         mPlayer = new MusicPlayer(context, this);
-        mHistoryTable = new HistoryTable(context);
-        mLoveTable = new LoveTable(context);
-        mCacheTable = new CacheTable(context);
-        mPlayer.setHistoryTable(mHistoryTable);
+        mHelper = new DataHelper(context);
         mListData = new ListData();
-        mDataManager = new DataManager(context, mListData);
+        mPrefHelper = new PrefHelper(context, mListData);
         mHasInit = true;
     }
 
-    public DataManager getDataManager() {
-        return mDataManager;
+    public DataHelper getHelper() {
+        return mHelper;
+    }
+
+    public PrefHelper getPrefHelper() {
+        return mPrefHelper;
     }
 
     public HttpProxyCacheServer getServer() {
         return mCacheServer;
-    }
-
-    public LoveTable getLoveTable() {
-        return mLoveTable;
-    }
-
-    public CacheTable getCacheTable() {
-        return mCacheTable;
     }
 
     public boolean hasInitialized() {
@@ -73,10 +62,6 @@ public class MusicApp extends Application {
 
     public MusicPlayer getPlayer() {
         return mPlayer;
-    }
-
-    public HistoryTable getHistoryTable() {
-        return mHistoryTable;
     }
 
     public ListData getListData() {

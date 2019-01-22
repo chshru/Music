@@ -1,4 +1,4 @@
-package com.chshru.music.util;
+package com.chshru.music.data.model;
 
 /**
  * Created by abc on 19-1-18.
@@ -12,17 +12,17 @@ public class Cache {
         this.date = date;
     }
 
-    int id;
+    public int id;
     public static final String _id = "id";
 
 
-    String mid;
+    public String mid;
     public static final String _mid = "mid";
 
-    String url;
+    public String url;
     public static final String _url = "url";
 
-    String date;
+    public String date;
     public static final String _date = "date";
 
 }

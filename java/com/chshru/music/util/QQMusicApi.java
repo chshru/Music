@@ -3,6 +3,7 @@ package com.chshru.music.util;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.chshru.music.data.model.Song;
 
 
 import java.io.BufferedReader;

@@ -1,10 +1,10 @@
-package com.chshru.music.manager;
+package com.chshru.music.data.manager;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.chshru.music.ui.main.list.ListData;
-import com.chshru.music.util.Song;
+import com.chshru.music.data.model.Song;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import java.util.List;
  * Created by abc on 18-10-23.
  */
 
-public class DataManager {
+public class PrefHelper {
 
     private static final String NAME = "data";
     private static final String PLAY_TABLE = "table";
@@ -29,7 +29,7 @@ public class DataManager {
     private Context mContext;
     private ListData mListData;
 
-    public DataManager(Context context, ListData listData) {
+    public PrefHelper(Context context, ListData listData) {
         mListData = listData;
         mContext = context;
         mData = mContext.getSharedPreferences(NAME, Context.MODE_PRIVATE);

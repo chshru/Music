@@ -1,12 +1,14 @@
-package com.chshru.music.util;
+package com.chshru.music.data.sql;
 
 import android.database.Cursor;
+
+import com.chshru.music.data.model.Song;
 
 /**
  * Created by abc on 18-11-13.
  */
 
-public interface BaseTable {
+public interface SongHelper {
 
     void insert(Song song);
 

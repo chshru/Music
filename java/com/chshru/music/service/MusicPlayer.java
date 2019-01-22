@@ -8,10 +8,9 @@ import android.os.Handler;
 
 import com.chshru.music.base.MusicApp;
 import com.chshru.music.ui.main.list.ListData;
-import com.chshru.music.util.Cache;
-import com.chshru.music.util.HistoryTable;
+import com.chshru.music.data.model.Cache;
 import com.chshru.music.util.QQMusicApi;
-import com.chshru.music.util.Song;
+import com.chshru.music.data.model.Song;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +23,6 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
 
     private PlayService mService;
     private Song mCurSong;
-    private HistoryTable mHistoryTable;
     private List<StatusCallback> mCallbacks;
     private MusicApp mApp;
     private List<Song> mCurSongList;
@@ -95,10 +93,6 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
         }
     };
 
-    public void setHistoryTable(HistoryTable historyTable) {
-        mHistoryTable = historyTable;
-    }
-
     public void rmCallback(StatusCallback callback) {
         mCallbacks.remove(callback);
     }
@@ -121,11 +115,11 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
         mService.prepare(local);
 
         mCurSong = new Song(song);
-        mApp.getDataManager().setSong(mCurSong);
+        mApp.getPrefHelper().setSong(mCurSong);
         mCurSong.type = Song.TYPE_LOCAL;
         mCurSong.time = String.valueOf(System.currentTimeMillis());
         int table = mApp.getListData().getPos();
-        mApp.getDataManager().setPlayTable(table);
+        mApp.getPrefHelper().setPlayTable(table);
         if (table != ListData.P_HISTORY) {
             List<Song> history = mApp.getListData().getList(ListData.P_HISTORY);
             Song tempSong = null;
@@ -138,10 +132,10 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
             }
             if (tempSong != null) {
                 tempSong.copyFrom(mCurSong);
-                mHistoryTable.update(mCurSong);
+                mApp.getHelper().getHistory().update(mCurSong);
             } else {
                 tempSong = new Song(mCurSong);
-                mHistoryTable.insert(mCurSong);
+                mApp.getHelper().getHistory().insert(mCurSong);
             }
             history.add(0, tempSong);
         }
@@ -169,7 +163,7 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
         }
         String local = song.link;
         if (local == null) {
-            Cursor cursor = mApp.getCacheTable().query();
+            Cursor cursor = mApp.getHelper().getCache().query();
             cursor.moveToFirst();
             String cacheUrl = null;
             if (cursor.getCount() > 0) {
@@ -212,7 +206,7 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
             String local = mApp.getServer().getProxyUrl(result);
             long date = System.currentTimeMillis();
             Cache cache = new Cache(song.id, song.mid, result, String.valueOf(date));
-            mApp.getCacheTable().insert(cache);
+            mApp.getHelper().getCache().insert(cache);
             mHandler.post(() -> prepareImpl(local, song));
         }
     }
@@ -285,7 +279,7 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
             return;
         }
         if (mIsFirst) {
-            int dur = mApp.getDataManager().getCurDuration();
+            int dur = mApp.getPrefHelper().getCurDuration();
             if (dur < 0 || dur > player.getDuration()) {
                 dur = 0;
             }

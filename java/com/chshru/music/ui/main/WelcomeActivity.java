@@ -45,8 +45,8 @@ public class WelcomeActivity extends ActivityBase {
             mScanner.setLocalList(app.getListData().getList(ListData.P_LOCAL));
             mScanner.startLocalScan();
         }
-        mScanner.startHistoryScan(app.getHistoryTable());
-        mScanner.startLoveScan(app.getLoveTable());
+        mScanner.startHistoryScan(app.getHelper().getHistory());
+        mScanner.startLoveScan(app.getHelper().getLove());
     }
 
     private void startActivityWithPm(boolean pm) {

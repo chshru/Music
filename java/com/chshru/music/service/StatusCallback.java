@@ -4,7 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Looper;
 
-import com.chshru.music.util.Song;
+import com.chshru.music.data.model.Song;
 
 /**
  * Created by abc on 18-10-25.
