@@ -26,8 +26,9 @@ public class ListActivity extends ActivityBase implements StatusCallback {
     private RecyclerView mRecycler;
     private SongListAdapter mAdapter;
     private MusicApp mApp;
-    private int mStartType;
+    private String mStartType;
     private Handler mHandler;
+    private String mStartTypeOnline;
 
     @Override
     protected int getLayoutId() {
@@ -44,8 +45,8 @@ public class ListActivity extends ActivityBase implements StatusCallback {
 
     @Override
     protected void initialize() {
-        mStartType = getIntent().getIntExtra(STARY_TYPE, -1);
-        if (mStartType == -1) {
+        mStartType = getIntent().getStringExtra(STARY_TYPE);
+        if (mStartType == null || mStartType.isEmpty()) {
             return;
         }
         mApp = (MusicApp) getApplication();
@@ -55,6 +56,7 @@ public class ListActivity extends ActivityBase implements StatusCallback {
             titleTv.setText(title);
         }
         List<Song> list = mApp.getListData().getList(mStartType);
+
         Song curSong = mApp.getPlayer().getCurSong();
         for (Song song : list) {
             song.playing = song.equals(curSong);
@@ -108,7 +110,7 @@ public class ListActivity extends ActivityBase implements StatusCallback {
 
         @Override
         public void OnItemLongClick(View v) {
-            if (mStartType != ListData.P_LOCAL) {
+            if (!mStartType.equals(ListData.P_LOCAL)) {
                 Intent intent = new Intent(ListActivity.this, DelActivity.class);
                 intent.putExtra(STARY_TYPE, mStartType);
                 startActivity(intent);

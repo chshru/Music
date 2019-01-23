@@ -118,9 +118,9 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
         mApp.getPrefHelper().setSong(mCurSong);
         mCurSong.type = Song.TYPE_LOCAL;
         mCurSong.time = String.valueOf(System.currentTimeMillis());
-        int table = mApp.getListData().getPos();
+        String table = mApp.getListData().getPos();
         mApp.getPrefHelper().setPlayTable(table);
-        if (table != ListData.P_HISTORY) {
+        if (!table.equals(ListData.P_HISTORY)) {
             List<Song> history = mApp.getListData().getList(ListData.P_HISTORY);
             Song tempSong = null;
             for (Song s : history) {
@@ -224,11 +224,11 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
     }
 
     private void toggleNextSong(int d) {
-        int listPos = mApp.getListData().getPos();
+        String listPos = mApp.getListData().getPos();
         if (mCurSong == null) {
             return;
         }
-        if (listPos == ListData.P_SEARCH) {
+        if (listPos.equals(ListData.P_SEARCH)) {
             listPos = ListData.P_HISTORY;
             mApp.getListData().setPos(ListData.P_HISTORY);
         }
