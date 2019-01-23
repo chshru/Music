@@ -203,11 +203,16 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
         @Override
         public void run() {
             String result = QQMusicApi.buildSongUrl(url);
-            String local = mApp.getServer().getProxyUrl(result);
-            long date = System.currentTimeMillis();
-            Cache cache = new Cache(song.id, song.mid, result, String.valueOf(date));
-            mApp.getHelper().getCache().insert(cache);
-            mHandler.post(() -> prepareImpl(local, song));
+            if (result.equals(QQMusicApi.SONG_GET_KEY_ERROR)) {
+                mCurSong = new Song(song);
+                mHandler.post(() -> toggleNextSong(1));
+            } else {
+                String local = mApp.getServer().getProxyUrl(result);
+                long date = System.currentTimeMillis();
+                Cache cache = new Cache(song.id, song.mid, result, String.valueOf(date));
+                mApp.getHelper().getCache().insert(cache);
+                mHandler.post(() -> prepareImpl(local, song));
+            }
         }
     }
 

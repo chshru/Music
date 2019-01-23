@@ -24,6 +24,7 @@ import com.chshru.music.data.model.Song;
 import com.chshru.music.util.ListQueryHandler;
 import com.chshru.music.util.QQMusicApi;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,10 +45,12 @@ public class LocalTab extends BaseTab {
     private AlertDialog mAddListDialog;
     private EditText mSongListIdInput;
     private LinearLayout mOnlinePart;
+    private List<CardView> mOnlineCard;
 
     public LocalTab(StatusCallback callback, int resId) {
         super(callback, resId);
         mHandler = new Handler(mCallback.getMainLooper());
+        mOnlineCard = new ArrayList<>();
         mListQueryHandler = new ListQueryHandler(mCallback.getMainLooper(), mListQueryListener);
     }
 
@@ -87,16 +90,21 @@ public class LocalTab extends BaseTab {
     }
 
     private void initOnlineLists() {
-        mOnlinePart.removeAllViews();
+        for (CardView card : mOnlineCard) {
+            mOnlinePart.removeView(card);
+        }
         List<OnlineList> listList = app.getListData().getOnlineList();
         for (OnlineList list : listList) {
             View view = View.inflate((Context) mCallback, R.layout.item_online_list, null);
+            LinearLayout root = view.findViewById(R.id.online_list_root);
             CardView listCard = view.findViewById(R.id.online_list);
             ImageView listLogo = listCard.findViewById(R.id.iv_icon);
             TextView listName = listCard.findViewById(R.id.tv_name);
             Glide.with((Context) mCallback).load(list.logo).into(listLogo);
             listName.setText(list.name);
-            mOnlinePart.addView(view);
+            root.removeView(listCard);
+            mOnlinePart.addView(listCard);
+            mOnlineCard.add(listCard);
             listCard.setOnClickListener(v -> {
                 Intent intent = new Intent(mContext, ListActivity.class);
                 intent.putExtra(STARY_TYPE, list.id);
@@ -110,7 +118,8 @@ public class LocalTab extends BaseTab {
         mOnlinePart = root.findViewById(R.id.local_tab_online_part);
         createAddListDailog();
         mHandler.postDelayed(mFreshRunnable, 2000);
-        root.findViewById(R.id.add_list).setOnClickListener(v -> mAddListDialog.show());
+        root.findViewById(R.id.add_list).setOnClickListener(
+                v -> mHandler.postDelayed(() -> mAddListDialog.show(), 100));
     }
 
     private void createAddListDailog() {
