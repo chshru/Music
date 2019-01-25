@@ -126,7 +126,7 @@ public class LocalTab extends BaseTab {
             listCard.setOnClickListener(v -> {
                 Intent intent = new Intent(mContext, ListActivity.class);
                 intent.putExtra(STARY_TYPE, list.id);
-                intent.putExtra(STARY_TITLE, R.string.history);
+                intent.putExtra(STARY_TITLE, list.name);
                 mContext.startActivity(intent);
             });
         }
@@ -149,7 +149,8 @@ public class LocalTab extends BaseTab {
         myLove.setOnClickListener(view -> {
             Intent intent = new Intent(mContext, ListActivity.class);
             intent.putExtra(STARY_TYPE, ListData.P_LOVE);
-            intent.putExtra(STARY_TITLE, R.string.my_love);
+            intent.putExtra(STARY_TITLE,
+                    mContext.getResources().getString(R.string.my_love));
             mContext.startActivity(intent);
         });
     }
@@ -163,7 +164,8 @@ public class LocalTab extends BaseTab {
         history.setOnClickListener(view -> {
             Intent intent = new Intent(mContext, ListActivity.class);
             intent.putExtra(STARY_TYPE, ListData.P_HISTORY);
-            intent.putExtra(STARY_TITLE, R.string.history);
+            intent.putExtra(STARY_TITLE,
+                    mContext.getResources().getString(R.string.history));
             mContext.startActivity(intent);
         });
     }
@@ -177,7 +179,8 @@ public class LocalTab extends BaseTab {
         localSong.setOnClickListener(view -> {
             Intent intent = new Intent(mContext, ListActivity.class);
             intent.putExtra(STARY_TYPE, ListData.P_LOCAL);
-            intent.putExtra(STARY_TITLE, R.string.local_song);
+            intent.putExtra(STARY_TITLE,
+                    mContext.getResources().getString(R.string.local_song));
             mContext.startActivity(intent);
         });
     }

@@ -50,11 +50,10 @@ public class ListActivity extends ActivityBase implements StatusCallback {
             return;
         }
         mApp = (MusicApp) getApplication();
-        int title = getIntent().getIntExtra(LocalTab.STARY_TITLE, -1);
-        if (title != -1) {
-            TextView titleTv = findViewById(R.id.list_title);
-            titleTv.setText(title);
-        }
+        String title = getIntent().getStringExtra(LocalTab.STARY_TITLE);
+        TextView titleTv = findViewById(R.id.list_title);
+        titleTv.setText(title);
+
         List<Song> list = mApp.getListData().getList(mStartType);
 
         Song curSong = mApp.getPlayer().getCurSong();
