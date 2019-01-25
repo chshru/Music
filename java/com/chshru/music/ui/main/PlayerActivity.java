@@ -57,7 +57,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by abc on 18-11-1.
  */
 
-public class PlayerActivity extends Activity implements StatusCallback {
+public class PlayerActivity extends Activity implements StatusCallback, MusicPlayer.OnSongChangeListener {
 
     private CircleImageView mAlbumPic;
     private ImageView mPlayingBg;
@@ -144,8 +144,14 @@ public class PlayerActivity extends Activity implements StatusCallback {
         mPlayer = mApp.getPlayer();
         mRepeat.setImageResource(REPEAT_PIC[mApp.getListData().getCurMode()]);
         mRepeat.setOnClickListener(view -> onRepeatClick());
-        findViewById(R.id.prevPlayIv).setOnClickListener(view -> mPlayer.prev());
-        findViewById(R.id.nextvPlayIv).setOnClickListener(view -> mPlayer.next());
+        findViewById(R.id.prevPlayIv).setOnClickListener(v -> {
+            toogleVisualizer(true);
+            mPlayer.prev();
+        });
+        findViewById(R.id.nextvPlayIv).setOnClickListener(v -> {
+            toogleVisualizer(true);
+            mPlayer.next();
+        });
         mPlayingAlbumBox = findViewById(R.id.playing_album);
         findViewById(R.id.playing_album).setOnTouchListener((v, event) -> {
             v.performClick();
@@ -261,6 +267,11 @@ public class PlayerActivity extends Activity implements StatusCallback {
     }
 
     @Override
+    public void beforeChange(int d) {
+        toogleVisualizer(true);
+    }
+
+    @Override
     public void onSongChanged(Song song) {
         updateUI(true);
     }
@@ -346,12 +357,6 @@ public class PlayerActivity extends Activity implements StatusCallback {
             if (!mPause.isPlaying()) {
                 mPause.play();
             }
-            if (mVisualizerView != null && !mVisualizerView.hasRenders()) {
-                mVisualizerView.addRenderer(mBarGraphRenderer);
-                mVisualizerView.addRenderer(mCircleBarRenderer);
-                mVisualizerView.addRenderer(mCircleRenderer);
-                mVisualizerView.addRenderer(mLineRenderer);
-            }
         } else {
             mHandler.removeMessages(MSG_FRESH_SEEKBAR);
             if (mAnimator.isRunning()) {
@@ -360,11 +365,41 @@ public class PlayerActivity extends Activity implements StatusCallback {
             if (mPause.isPlaying()) {
                 mPause.pause();
             }
-            if (mVisualizerView != null && mVisualizerView.hasRenders()) {
-                mVisualizerView.clearRenderers();
+
+        }
+        toogleVisualizer(false);
+    }
+
+    private void toogleVisualizer(boolean forceStop) {
+        if (forceStop) {
+            stopVisualizer();
+            return;
+        }
+        int curPlayType = mApp.getPrefHelper().getAlbumType();
+        if (curPlayType != PrefHelper.PLAYING_ALBUM_PIC) {
+            if (mPlayer.isPlaying()) {
+                startVisualizer();
+            } else {
+                stopVisualizer();
             }
         }
     }
+
+    private void startVisualizer() {
+        if (mVisualizerView != null && !mVisualizerView.hasRenders()) {
+            mVisualizerView.addRenderer(mBarGraphRenderer);
+            mVisualizerView.addRenderer(mCircleBarRenderer);
+            mVisualizerView.addRenderer(mCircleRenderer);
+            mVisualizerView.addRenderer(mLineRenderer);
+        }
+    }
+
+    private void stopVisualizer() {
+        if (mVisualizerView != null && mVisualizerView.hasRenders()) {
+            mVisualizerView.clearRenderers();
+        }
+    }
+
 
     private void createAnimator() {
         mAnimator = ObjectAnimator.ofFloat(mAlbumPic, "rotation", 0f, 360f);
@@ -399,6 +434,7 @@ public class PlayerActivity extends Activity implements StatusCallback {
             mApp.getPrefHelper().setAlbumType(PrefHelper.PLAYING_ALBUM_PIC);
             animRemoveAdd(mPlayingAlbumBox, mAlbumPic, mVisualizerView, this::releaseVisualizerAndEqualizer);
         }
+        toogleVisualizer(false);
     }
 
     private void animRemoveAdd(RelativeLayout father, View add, View remove, Runnable run) {

@@ -24,6 +24,7 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
     private PlayService mService;
     private Song mCurSong;
     private List<StatusCallback> mCallbacks;
+    private List<OnSongChangeListener> mListeners;
     private MusicApp mApp;
     private List<Song> mCurSongList;
     private AudioManager mAudioManager;
@@ -32,8 +33,10 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
     private boolean mIsFirst;
     private Handler mHandler;
 
+
     public MusicPlayer(Context context, MusicApp app) {
         mCallbacks = new ArrayList<>();
+        mListeners = new ArrayList<>();
         mAudioManager = (AudioManager) context
                 .getSystemService(Context.AUDIO_SERVICE);
         mHasAudioFocus = false;
@@ -47,6 +50,12 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
         if (!mCallbacks.contains(callback)) {
             mCallbacks.add(callback);
             callback.onSongChanged(mCurSong);
+        }
+    }
+
+    public void addListener(OnSongChangeListener listener) {
+        if (!mListeners.contains(listener)) {
+            mListeners.add(listener);
         }
     }
 
@@ -92,6 +101,10 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
                 break;
         }
     };
+
+    public void rmListener(OnSongChangeListener listener) {
+        mListeners.remove(listener);
+    }
 
     public void rmCallback(StatusCallback callback) {
         mCallbacks.remove(callback);
@@ -190,6 +203,8 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
 
     }
 
+    private int mLastToogle;
+
     private class GetUrlThread extends Thread {
         private String url;
         private Song song;
@@ -205,7 +220,7 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
             String result = QQMusicApi.buildSongUrl(url);
             if (result.equals(QQMusicApi.SONG_GET_KEY_ERROR)) {
                 mCurSong = new Song(song);
-                mHandler.post(() -> toggleNextSong(1));
+                mHandler.post(() -> toggleNextSong(mLastToogle));
             } else {
                 String local = mApp.getServer().getProxyUrl(result);
                 long date = System.currentTimeMillis();
@@ -229,6 +244,7 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
     }
 
     private void toggleNextSong(int d) {
+        mLastToogle = d;
         String listPos = mApp.getListData().getPos();
         if (mCurSong == null) {
             return;
@@ -273,6 +289,9 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
                     songPos = tempPos;
                 }
                 break;
+        }
+        for (OnSongChangeListener listener : mListeners) {
+            listener.beforeChange(d);
         }
         prepare(mCurSongList.get(songPos), true);
     }
@@ -374,5 +393,9 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
                 callback.togglePlayer(false);
             }
         }
+    }
+
+    public interface OnSongChangeListener {
+        void beforeChange(int d);
     }
 }
