@@ -1,13 +1,10 @@
 package com.chshru.music.ui.tab.localtab;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.os.Handler;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -42,10 +39,9 @@ public class LocalTab extends BaseTab {
     private Handler mHandler;
     private MusicApp app;
     private ListQueryHandler mListQueryHandler;
-    private AlertDialog mAddListDialog;
-    private EditText mSongListIdInput;
     private LinearLayout mOnlinePart;
     private List<CardView> mOnlineCard;
+    private AddListDialog mAddListDialog;
 
     public LocalTab(StatusCallback callback, int resId) {
         super(callback, resId);
@@ -57,16 +53,36 @@ public class LocalTab extends BaseTab {
     private ListQueryHandler.OnFinishListener mListQueryListener = this::onListQueryFinish;
 
     private void onListQueryFinish(String result) {
+        int flag = -1;
         if (result != null && !result.isEmpty()) {
             OnlineList newList = QQMusicApi.getOnlineListFromResult(result);
-            List<Song> list = QQMusicApi.getOnlineSongForListFromResult(result);
-            app.getListData().addOnlineList(newList.id, list);
-            app.getListData().getOnlineList().add(newList);
-            app.getHelper().getOnlineList().insert(newList);
-            for (Song song : list) {
-                app.getHelper().getOnlineSong().insert(song, newList.id);
+            if (newList != null) {
+                for (OnlineList online : app.getListData().getOnlineList()) {
+                    if (newList.id.equals(online.id)) {
+                        flag = -2;
+                        break;
+                    }
+                }
+                if (flag != -2) {
+                    List<Song> list = QQMusicApi.getOnlineSongForListFromResult(result);
+                    app.getListData().addOnlineList(newList.id, list);
+                    app.getListData().getOnlineList().add(newList);
+                    app.getHelper().getOnlineList().insert(newList);
+                    for (Song song : list) {
+                        app.getHelper().getOnlineSong().insert(song, newList.id);
+                    }
+                    initOnlineLists();
+                    flag = 0;
+                }
+
             }
-            initOnlineLists();
+        }
+        if (flag == -1) {
+            mAddListDialog.setErrorTips("您的ID可能有点问题");
+        } else if (flag == -2) {
+            mAddListDialog.setErrorTips("该ID已经在列表中了");
+        } else {
+            mAddListDialog.setPassTips("添加成功");
         }
     }
 
@@ -100,8 +116,10 @@ public class LocalTab extends BaseTab {
             CardView listCard = view.findViewById(R.id.online_list);
             ImageView listLogo = listCard.findViewById(R.id.iv_icon);
             TextView listName = listCard.findViewById(R.id.tv_name);
+            TextView listNum = listCard.findViewById(R.id.tv_desc);
             Glide.with((Context) mCallback).load(list.logo).into(listLogo);
             listName.setText(list.name);
+            listNum.setText(mContext.getString(R.string.shou, Integer.valueOf(list.songnum)));
             root.removeView(listCard);
             mOnlinePart.addView(listCard);
             mOnlineCard.add(listCard);
@@ -116,33 +134,10 @@ public class LocalTab extends BaseTab {
 
     private void initOtherViews(View root) {
         mOnlinePart = root.findViewById(R.id.local_tab_online_part);
-        createAddListDailog();
         mHandler.postDelayed(mFreshRunnable, 2000);
+        mAddListDialog = new AddListDialog((Context) mCallback, mListQueryHandler).create();
         root.findViewById(R.id.add_list).setOnClickListener(
                 v -> mHandler.postDelayed(() -> mAddListDialog.show(), 100));
-    }
-
-    private void createAddListDailog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder((Context) mCallback);
-        View view = View.inflate((Context) mCallback, R.layout.dialog_search_list, null);
-        ImageButton cancel = view.findViewById(R.id.dialog_cancel);
-        ImageButton pass = view.findViewById(R.id.dialog_pass);
-        mSongListIdInput = view.findViewById(R.id.song_list_id);
-
-        builder.setView(view);
-        mAddListDialog = builder.create();
-        mAddListDialog.setCancelable(false);
-        cancel.setOnClickListener(v -> mAddListDialog.dismiss());
-        pass.setOnClickListener(v -> {
-            mAddListDialog.dismiss();
-            String id = mSongListIdInput.getText().toString().trim();
-            for (OnlineList list : app.getListData().getOnlineList()) {
-                if (list.id.equals(id)) {
-                    return;
-                }
-            }
-            new Thread(() -> QQMusicApi.getSongListContent(id, mListQueryHandler)).start();
-        });
     }
 
     private void initMyLoveList(View root) {

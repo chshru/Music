@@ -3,15 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
+    android:background="@color/white"
     android:orientation="vertical">
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="20dp" />
 
     <TextView
+        android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:gravity="center"
-        android:text="@string/input_song_list_id"/>
+        android:text="@string/input_song_list_id"
+        android:textSize="15sp" />
 
     <View
         android:layout_width="match_parent"
@@ -32,7 +37,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:inputType="text"
+            android:inputType="number"
             tools:ignore="LabelFor" />
 
         <View
@@ -46,26 +51,40 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center">
 
         <View
             android:layout_width="12dp"
             android:layout_height="match_parent" />
 
-        <ImageButton
+        <TextView
             android:id="@+id/dialog_cancel"
-            android:layout_width="100dp"
-            android:layout_height="40dp" />
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:background="@null"
+            android:gravity="center"
+            android:text="@string/close" />
 
-        <ImageButton
+        <View
+            android:layout_width="20dp"
+            android:layout_height="match_parent" />
+
+        <TextView
             android:id="@+id/dialog_pass"
-            android:layout_width="100dp"
-            android:layout_height="40dp" />
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:background="@null"
+            android:gravity="center"
+            android:text="@string/pass" />
+
 
         <View
             android:layout_width="12dp"
             android:layout_height="match_parent" />
     </LinearLayout>
 
-
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
 </LinearLayout>

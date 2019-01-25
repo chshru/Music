@@ -9,6 +9,11 @@
     <string name="history">播放历史</string>
     <string name="del_songs">删除歌曲</string>
     <string name="input_song_list_id">输入歌单ID</string>
+    <string name="cancel">取消</string>
+    <string name="close">关闭</string>
+    <string name="pass">确定</string>
+    <string name="add_song_list">添加歌单</string>
+    <string name="fresh_all">全部刷新</string>
 
 
 </resources>

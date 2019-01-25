@@ -22,6 +22,10 @@ public class ListQueryHandler {
         mHandler.post(() -> mListener.onFinish(result));
     }
 
+    public void postDelayed(Runnable runnable, int t) {
+        mHandler.postDelayed(runnable, t);
+    }
+
     public interface OnFinishListener {
         void onFinish(String result);
     }
