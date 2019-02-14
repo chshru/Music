@@ -283,6 +283,7 @@ public class DataHelper extends SQLiteOpenHelper {
             String sql = OnlineList._id + "=?";
             String[] args = {listId};
             db.delete(ONLINE_LIST_TABLE_NAME, sql, args);
+            mOnlineSong.delete(listId);
         }
 
         public Cursor query() {

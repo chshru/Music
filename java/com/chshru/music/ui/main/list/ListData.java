@@ -38,7 +38,14 @@ public class ListData {
     }
 
     public void addOnlineList(String key, List<Song> list) {
+        if (mList.containsKey(key)) {
+            mList.remove(key);
+        }
         mList.put(key, list);
+    }
+
+    public void removeOnlineList(String key) {
+        mList.remove(key);
     }
 
     public List<OnlineList> getOnlineList() {

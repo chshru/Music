@@ -25,6 +25,13 @@ public class OnlineList {
         this.songnum = songnum;
     }
 
+    public void copyFrom(OnlineList list) {
+        this.id = list.id;
+        this.name = list.name;
+        this.logo = list.logo;
+        this.songnum = list.songnum;
+    }
+
     @Override
     public String toString() {
         return "id = " + id + ", "

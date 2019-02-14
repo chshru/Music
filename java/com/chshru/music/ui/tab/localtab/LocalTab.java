@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.os.Handler;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.chshru.music.R;
@@ -42,28 +44,29 @@ public class LocalTab extends BaseTab {
     private LinearLayout mOnlinePart;
     private List<CardView> mOnlineCard;
     private AddListDialog mAddListDialog;
+    private Button mFreshOnlineList;
 
     public LocalTab(StatusCallback callback, int resId) {
         super(callback, resId);
         mHandler = new Handler(mCallback.getMainLooper());
         mOnlineCard = new ArrayList<>();
-        mListQueryHandler = new ListQueryHandler(mCallback.getMainLooper(), mListQueryListener);
+        mListQueryHandler = new ListQueryHandler(mCallback.getMainLooper(), this::onListQueryFinish);
     }
 
-    private ListQueryHandler.OnFinishListener mListQueryListener = this::onListQueryFinish;
-
     private void onListQueryFinish(String result) {
-        int flag = -1;
+        boolean isIdAvail = false;
+        boolean isIdRepeat = false;
         if (result != null && !result.isEmpty()) {
             OnlineList newList = QQMusicApi.getOnlineListFromResult(result);
             if (newList != null) {
+                isIdAvail = true;
                 for (OnlineList online : app.getListData().getOnlineList()) {
                     if (newList.id.equals(online.id)) {
-                        flag = -2;
+                        isIdRepeat = true;
                         break;
                     }
                 }
-                if (flag != -2) {
+                if (!isIdRepeat) {
                     List<Song> list = QQMusicApi.getOnlineSongForListFromResult(result);
                     app.getListData().addOnlineList(newList.id, list);
                     app.getListData().getOnlineList().add(newList);
@@ -72,17 +75,17 @@ public class LocalTab extends BaseTab {
                         app.getHelper().getOnlineSong().insert(song, newList.id);
                     }
                     initOnlineLists();
-                    flag = 0;
                 }
-
             }
         }
-        if (flag == -1) {
-            mAddListDialog.setErrorTips("您的ID可能有点问题");
-        } else if (flag == -2) {
-            mAddListDialog.setErrorTips("该ID已经在列表中了");
+        if (!isIdAvail) {
+            mAddListDialog.setErrorTips(R.string.fresh_fail);
         } else {
-            mAddListDialog.setPassTips("添加成功");
+            if (isIdRepeat) {
+                mAddListDialog.setPassTips(R.string.id_repeat);
+            } else {
+                mAddListDialog.setPassTips(R.string.add_seccuss);
+            }
         }
     }
 
@@ -109,6 +112,7 @@ public class LocalTab extends BaseTab {
         for (CardView card : mOnlineCard) {
             mOnlinePart.removeView(card);
         }
+        mOnlineCard.clear();
         List<OnlineList> listList = app.getListData().getOnlineList();
         for (OnlineList list : listList) {
             View view = View.inflate((Context) mCallback, R.layout.item_online_list, null);
@@ -132,12 +136,109 @@ public class LocalTab extends BaseTab {
         }
     }
 
+    private void onFreshQueryFinish(String result) {
+        boolean isIdAvail = false;
+        if (result != null && !result.isEmpty()) {
+            OnlineList newList = QQMusicApi.getOnlineListFromResult(result);
+            if (newList != null) {
+                isIdAvail = true;
+                for (OnlineList online : app.getListData().getOnlineList()) {
+                    if (newList.id.equals(online.id)) {
+                        online.copyFrom(newList);
+                        break;
+                    }
+                }
+                List<Song> list = QQMusicApi.getOnlineSongForListFromResult(result);
+                app.getListData().addOnlineList(newList.id, list);
+                app.getHelper().getOnlineList().delete(newList.id);
+                app.getHelper().getOnlineList().insert(newList);
+                app.getHelper().getOnlineSong().delete(newList.id);
+                for (Song song : list) {
+                    app.getHelper().getOnlineSong().insert(song, newList.id);
+                }
+                initOnlineLists();
+            }
+        }
+        mFreshOnlineListThread.setStatus(isIdAvail ? 1 : 0);
+    }
+
+    private void freshAllOnlineList() {
+        List<OnlineList> oldList = app.getListData().getOnlineList();
+
+        if (!oldList.isEmpty()) {
+            if (mFreshOnlineListThread != null) {
+                if (mFreshOnlineListThread.isAlive() || !mFreshOnlineListThread.isInterrupted()) {
+                    mFreshOnlineListThread.interrupt();
+                    mFreshOnlineListThread = null;
+                }
+            }
+            if (mFreshOnlineListThread == null) {
+                mFreshOnlineListThread = new FreshOnlineListThread(
+                        new ListQueryHandler(
+                                mCallback.getMainLooper(),
+                                this::onFreshQueryFinish
+                        ),
+                        oldList
+                );
+            }
+            mFreshOnlineListThread.start();
+        }
+    }
+
+    private FreshOnlineListThread mFreshOnlineListThread;
+
+    private class FreshOnlineListThread extends Thread {
+
+        public static final int STATUS_WAIT = -1;
+        public static final int STATUS_SECCUSS = 1;
+        public static final int STATUS_FAIL = 0;
+
+        private ListQueryHandler mHandler;
+        private List<OnlineList> mList;
+        private int mStatus;
+
+        public void setStatus(int status) {
+            mStatus = status;
+        }
+
+        public FreshOnlineListThread(ListQueryHandler handler, List<OnlineList> list) {
+            super();
+            mHandler = handler;
+            mList = list;
+        }
+
+        @Override
+        public void run() {
+            mStatus = STATUS_WAIT;
+            mHandler.postDelayed(() -> mFreshOnlineList.setClickable(false), 0);
+            mHandler.postDelayed(() -> mFreshOnlineList.setText(R.string.freshing), 0);
+            for (int i = 0; i < mList.size(); i++) {
+                QQMusicApi.getSongListContent(mList.get(i).id, mHandler);
+            }
+            mHandler.postDelayed(() -> mFreshOnlineList.setClickable(true), 0);
+            mHandler.postDelayed(() -> mFreshOnlineList.setText(R.string.fresh_all), 0);
+            long start = System.currentTimeMillis();
+            while (mStatus == STATUS_WAIT) {
+                if (System.currentTimeMillis() - start >= 3000) {
+                    break;
+                }
+            }
+            if (mStatus == STATUS_SECCUSS) {
+                mHandler.postDelayed(() -> Toast.makeText(mContext, R.string.fresh_seccuss, Toast.LENGTH_SHORT).show(), 0);
+            } else {
+                mHandler.postDelayed(() -> Toast.makeText(mContext, R.string.fresh_fail, Toast.LENGTH_SHORT).show(), 0);
+            }
+        }
+    }
+
     private void initOtherViews(View root) {
         mOnlinePart = root.findViewById(R.id.local_tab_online_part);
         mHandler.postDelayed(mFreshRunnable, 2000);
         mAddListDialog = new AddListDialog((Context) mCallback, mListQueryHandler).create();
         root.findViewById(R.id.add_list).setOnClickListener(
                 v -> mHandler.postDelayed(() -> mAddListDialog.show(), 100));
+        mFreshOnlineList = root.findViewById(R.id.fresh_list);
+        mFreshOnlineList.setOnClickListener(v -> freshAllOnlineList());
     }
 
     private void initMyLoveList(View root) {

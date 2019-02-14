@@ -41,13 +41,13 @@ public class AddListDialog {
         return mInput.getText().toString().trim();
     }
 
-    public void setErrorTips(String tips) {
+    public void setErrorTips(int tips) {
         mTitle.setText(tips);
         mTitle.setTextColor(mContext.getResources().getColor(R.color.app_red));
         mHandler.postDelayed(this::clearTips, 2500);
     }
 
-    public void setPassTips(String tips) {
+    public void setPassTips(int tips) {
         mTitle.setText(tips);
         mTitle.setTextColor(mContext.getResources().getColor(R.color.app_green));
         mHandler.postDelayed(this::dismiss, 1000);

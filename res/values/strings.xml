@@ -14,6 +14,11 @@
     <string name="pass">确定</string>
     <string name="add_song_list">添加歌单</string>
     <string name="fresh_all">全部刷新</string>
+    <string name="freshing">正在刷新</string>
+    <string name="fresh_seccuss">刷新完成</string>
+    <string name="fresh_fail">网络不佳或歌单失效</string>
+    <string name="id_repeat">该ID已经在列表中</string>
+    <string name="add_seccuss">添加成功</string>
 
 
 </resources>
