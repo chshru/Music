@@ -254,6 +254,10 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
             mApp.getListData().setPos(ListData.P_HISTORY);
         }
         mCurSongList = mApp.getListData().getList(listPos);
+        if (mCurSongList == null) {
+            mApp.getListData().setPos(ListData.P_HISTORY);
+            mCurSongList = mApp.getListData().getList(ListData.P_HISTORY);
+        }
         if (mCurSongList.size() == 0) return;
         int songPos = -1;
         for (int i = 0; i < mCurSongList.size(); i++) {

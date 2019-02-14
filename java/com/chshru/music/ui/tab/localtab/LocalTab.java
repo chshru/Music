@@ -1,5 +1,6 @@
 package com.chshru.music.ui.tab.localtab;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.CardView;
@@ -127,13 +128,42 @@ public class LocalTab extends BaseTab {
             root.removeView(listCard);
             mOnlinePart.addView(listCard);
             mOnlineCard.add(listCard);
+            listCard.setTag(list);
             listCard.setOnClickListener(v -> {
                 Intent intent = new Intent(mContext, ListActivity.class);
                 intent.putExtra(STARY_TYPE, list.id);
                 intent.putExtra(STARY_TITLE, list.name);
                 mContext.startActivity(intent);
             });
+            listCard.setOnLongClickListener(v -> {
+                OnlineList tempList = (OnlineList) v.getTag();
+                AlertDialog dialog = new AlertDialog.Builder((Context) mCallback)
+                        .setTitle(R.string.delete_song_list_title)
+                        .setMessage(mContext.getResources().getString(
+                                R.string.delete_song_list_message, tempList.name))
+                        .setPositiveButton(R.string.pass, (dialog12, which) -> {
+                            deleteOnlineList(tempList.id);
+                            initOnlineLists();
+                        })
+                        .setNegativeButton(R.string.cancel, (dialog1, which) -> dialog1.dismiss())
+                        .create();
+                dialog.show();
+                return true;
+            });
         }
+    }
+
+    private void deleteOnlineList(String id) {
+        app.getListData().removeOnlineList(id);
+        List<OnlineList> list = app.getListData().getOnlineList();
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).id.equals(id)) {
+                list.remove(i);
+                break;
+            }
+        }
+        app.getHelper().getOnlineList().delete(id);
+        app.getHelper().getOnlineSong().delete(id);
     }
 
     private void onFreshQueryFinish(String result) {

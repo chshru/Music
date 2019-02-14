@@ -19,6 +19,7 @@
     <string name="fresh_fail">网络不佳或歌单失效</string>
     <string name="id_repeat">该ID已经在列表中</string>
     <string name="add_seccuss">添加成功</string>
-
+    <string name="delete_song_list_title">确认操作</string>
+    <string name="delete_song_list_message">确认要删除歌单 \'%1$s\' 吗</string>
 
 </resources>
