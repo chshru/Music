@@ -108,7 +108,7 @@ public class ListActivity extends ActivityBase implements StatusCallback {
 
         @Override
         public void OnItemLongClick(View v) {
-            if (mStartType != ListData.P_LOCAL) {
+            if (mStartType == ListData.P_LOVE || mStartType == ListData.P_HISTORY) {
                 Intent intent = new Intent(ListActivity.this, DelActivity.class);
                 intent.putExtra(STARY_TYPE, mStartType);
                 startActivity(intent);
