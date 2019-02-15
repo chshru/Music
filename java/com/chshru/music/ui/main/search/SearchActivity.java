@@ -11,7 +11,7 @@ import com.chshru.music.base.ActivityBase;
 import com.chshru.music.base.MusicApp;
 import com.chshru.music.service.StatusCallback;
 import com.chshru.music.ui.main.list.ListData;
-import com.chshru.music.ui.main.search.SongListAdapter.OnItemClickListener;
+import com.chshru.music.ui.main.search.SearchAdapter.OnItemClickListener;
 import com.chshru.music.ui.view.ActionSearchView;
 import com.chshru.music.ui.view.ActionSearchView.OnTextChangeListener;
 import com.chshru.music.ui.view.RotateLoading;
@@ -30,7 +30,7 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
 
     private ActionSearchView mSearch;
     private RecyclerView mRecycler;
-    private SongListAdapter mAdapter;
+    private SearchAdapter mAdapter;
     private SongQueryHandler mSongQueryHandler;
     private MusicApp app;
     private int mQueriedPos;
@@ -38,7 +38,6 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
     private String mQueryString;
     private OnScrollListener mOnScrollListener;
     private RotateLoading mTopLoading;
-    private RotateLoading mBottomLoading;
     private Handler mHandler;
 
     @Override
@@ -60,7 +59,7 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
         mSearch = findViewById(R.id.sv_search_aty);
         mSearch.setOnQueryTextListener(mSearchListener);
         mRecycler = findViewById(R.id.search_aty_recycler);
-        mAdapter = new SongListAdapter(new ArrayList<>());
+        mAdapter = new SearchAdapter(new ArrayList<>());
         mAdapter.setOnItemClickListener(mItemClickListener);
         mLayoutManager = new LinearLayoutManager(this);
         mRecycler.setLayoutManager(mLayoutManager);
@@ -68,10 +67,6 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
         mRecycler.setHasFixedSize(true);
         mSongQueryHandler = new SongQueryHandler(getMainLooper(), mSongQueryListener);
         mTopLoading = findViewById(R.id.search_loading);
-        mBottomLoading = findViewById(R.id.more_loading);
-        int color = getResources().getColor(R.color.colorPrimary);
-        mTopLoading.setLoadingColor(color);
-        mBottomLoading.setLoadingColor(color);
         findViewById(R.id.back).setOnClickListener(view -> {
             mSearch.clearFocus();
             finish();
@@ -167,9 +162,7 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
     }
 
     private void onQueryMore() {
-        if (!mBottomLoading.isStart()) {
-            mBottomLoading.start();
-        }
+        mAdapter.setLoadState(SearchAdapter.STATE_LOADING);
         new Thread(() -> QQMusicApi.querySong(mQueriedPos, 60, mQueryString, mSongQueryHandler)).start();
     }
 
@@ -184,13 +177,14 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
                 break;
             }
         }
-        mAdapter.addAll(list);
-        mAdapter.notifyDataSetChanged();
+        if (list.size() == 0) {
+            mAdapter.setLoadState(SearchAdapter.STATE_NO_MORE);
+        } else {
+            mAdapter.addAll(list);
+            mAdapter.notifyDataSetChanged();
+        }
         if (mTopLoading.isStart()) {
             mTopLoading.stop();
-        }
-        if (mBottomLoading.isStart()) {
-            mBottomLoading.stop();
         }
     }
 
@@ -220,9 +214,6 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
             }
             if (mTopLoading.isStart()) {
                 mTopLoading.stop();
-            }
-            if (mBottomLoading.isStart()) {
-                mBottomLoading.stop();
             }
             return true;
         }

@@ -1,4 +1,4 @@
-package com.chshru.music.ui.main.search;
+package com.chshru.music.ui.main.list;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -19,12 +19,12 @@ import java.util.List;
  * Created by abc on 18-10-25.
  */
 
-public class SongListAdapter extends RecyclerView.Adapter {
+public class ListAdapter extends RecyclerView.Adapter {
 
     private List<Song> mSong;
     private OnItemClickListener mClickListener;
 
-    public SongListAdapter(List<Song> list) {
+    public ListAdapter(List<Song> list) {
         mSong = list;
     }
 

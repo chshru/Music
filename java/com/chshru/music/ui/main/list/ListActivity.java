@@ -12,8 +12,6 @@ import com.chshru.music.R;
 import com.chshru.music.base.ActivityBase;
 import com.chshru.music.base.MusicApp;
 import com.chshru.music.service.StatusCallback;
-import com.chshru.music.ui.main.search.SongListAdapter;
-import com.chshru.music.ui.main.search.SongListAdapter.OnItemClickListener;
 import com.chshru.music.ui.tab.localtab.LocalTab;
 import com.chshru.music.data.model.Song;
 
@@ -24,7 +22,7 @@ import static com.chshru.music.ui.tab.localtab.LocalTab.STARY_TYPE;
 public class ListActivity extends ActivityBase implements StatusCallback {
 
     private RecyclerView mRecycler;
-    private SongListAdapter mAdapter;
+    private ListAdapter mAdapter;
     private MusicApp mApp;
     private String mStartType;
     private Handler mHandler;
@@ -60,7 +58,7 @@ public class ListActivity extends ActivityBase implements StatusCallback {
         for (Song song : list) {
             song.playing = song.equals(curSong);
         }
-        mAdapter = new SongListAdapter(list);
+        mAdapter = new ListAdapter(list);
         mRecycler = findViewById(R.id.list_recycler);
         mRecycler.setLayoutManager(new LinearLayoutManager(this));
         mRecycler.setAdapter(mAdapter);
@@ -98,7 +96,7 @@ public class ListActivity extends ActivityBase implements StatusCallback {
 
     }
 
-    private OnItemClickListener mItemClick = new OnItemClickListener() {
+    private ListAdapter.OnItemClickListener mItemClick = new ListAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(View v) {
             mApp.getListData().setPos(mStartType);

@@ -21,5 +21,6 @@
     <string name="add_seccuss">添加成功</string>
     <string name="delete_song_list_title">确认操作</string>
     <string name="delete_song_list_message">确认要删除歌单 \'%1$s\' 吗</string>
+    <string name="load_complete">没有更多了</string>
 
 </resources>
