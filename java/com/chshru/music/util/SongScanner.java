@@ -5,10 +5,13 @@ import android.database.Cursor;
 import android.os.Handler;
 import android.provider.MediaStore.Audio.Media;
 
+import com.chshru.music.data.model.OnlineList;
 import com.chshru.music.data.model.Song;
 import com.chshru.music.data.sql.DataHelper;
+import com.chshru.music.ui.main.list.ListData;
 
 import java.text.Collator;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -176,4 +179,48 @@ public class SongScanner {
         return mChina.getPyHeadStr(str, true);
     }
 
+    private List<OnlineList> mOnlineList;
+
+    public void setOnlineList(List<OnlineList> list) {
+        this.mOnlineList = list;
+    }
+
+    public void scanOnlineList(DataHelper.OnlineSongHelper songHelper, DataHelper.OnlineListHelper listHelper,
+                               ListData listData) {
+        Cursor cursor = listHelper.query();
+        cursor.moveToFirst();
+        if (cursor.getCount() != 0) {
+            do {
+                String listId = cursor.getString(0);
+                String listName = cursor.getString(1);
+                String listLogo = cursor.getString(2);
+                String listNum = cursor.getString(3);
+                mOnlineList.add(new OnlineList(listId, listName, listLogo, listNum));
+            } while (cursor.moveToNext());
+            if (!mOnlineList.isEmpty()) {
+                for (OnlineList list : mOnlineList) {
+                    Cursor c = songHelper.query(list.id);
+                    c.moveToFirst();
+                    if (c.getCount() != 0) {
+                        List<Song> tempList = new ArrayList<>();
+                        do {
+                            int id = c.getInt(0);
+                            int type = c.getInt(1);
+                            String album = c.getString(2);
+                            String albumName = c.getString(3);
+                            String mid = c.getString(4);
+                            String title = c.getString(5);
+                            String artist = c.getString(6);
+                            String link = c.getString(7);
+                            Song song = new Song(id, type, album, albumName, mid, title, artist, link);
+                            tempList.add(song);
+                        } while (c.moveToNext());
+                        listData.addOnlineList(list.id, tempList);
+                    }
+                    c.close();
+                }
+            }
+        }
+        cursor.close();
+    }
 }

@@ -35,18 +35,15 @@ public class PrefHelper {
         mData = mContext.getSharedPreferences(NAME, Context.MODE_PRIVATE);
     }
 
-    public void setPlayTable(int p) {
-        mData.edit().putInt(PLAY_TABLE, p).apply();
-        if (p >= ListData.P_SEARCH) {
-            mData.edit().putInt(PLAY_TABLE, ListData.P_HISTORY).apply();
-        }
+    public void setPlayTable(String p) {
+        mData.edit().putString(PLAY_TABLE, p).apply();
     }
 
-    public void setAlbumType(int type){
+    public void setAlbumType(int type) {
         mData.edit().putInt(PLAY_ALBUM_TYPE, type).apply();
     }
 
-    public int getAlbumType(){
+    public int getAlbumType() {
         return mData.getInt(PLAY_ALBUM_TYPE, PLAYING_ALBUM_PIC);
     }
 
@@ -66,8 +63,8 @@ public class PrefHelper {
         mData.edit().putInt(PLAY_MODE, p).apply();
     }
 
-    private int getPlayTable() {
-        return mData.getInt(PLAY_TABLE, -1);
+    private String getPlayTable() {
+        return mData.getString(PLAY_TABLE, ListData.P_SEARCH);
     }
 
     private int getSongId() {
@@ -89,16 +86,19 @@ public class PrefHelper {
     public Song getSong() {
         Song song = null;
         int id = getSongId();
-        int table = getPlayTable();
-        if (id == -1 || table == -1) {
+        String table = getPlayTable();
+        if (table == null || table.isEmpty()) {
             return null;
         }
-        if (table >= ListData.P_SEARCH) {
+        if (table.equals(ListData.P_SEARCH)) {
             table = ListData.P_HISTORY;
         }
         mListData.setPos(table);
         mListData.setCurMode(getMode());
         List<Song> list = mListData.getList(table);
+        if (list == null) {
+            return null;
+        }
         for (Song s : list) {
             if (s.id == id) {
                 song = s;

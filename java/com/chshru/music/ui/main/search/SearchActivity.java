@@ -16,8 +16,7 @@ import com.chshru.music.ui.view.ActionSearchView;
 import com.chshru.music.ui.view.ActionSearchView.OnTextChangeListener;
 import com.chshru.music.ui.view.RotateLoading;
 import com.chshru.music.util.QQMusicApi;
-import com.chshru.music.util.QueryHandler;
-import com.chshru.music.util.QueryHandler.OnFinishRunnable;
+import com.chshru.music.util.SongQueryHandler;
 import com.chshru.music.data.model.Song;
 
 import java.util.ArrayList;
@@ -32,7 +31,7 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
     private ActionSearchView mSearch;
     private RecyclerView mRecycler;
     private SongListAdapter mAdapter;
-    private QueryHandler mQueryHandler;
+    private SongQueryHandler mSongQueryHandler;
     private MusicApp app;
     private int mQueriedPos;
     private LinearLayoutManager mLayoutManager;
@@ -67,7 +66,7 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
         mRecycler.setLayoutManager(mLayoutManager);
         mRecycler.setAdapter(mAdapter);
         mRecycler.setHasFixedSize(true);
-        mQueryHandler = new QueryHandler(getMainLooper(), mRunnable);
+        mSongQueryHandler = new SongQueryHandler(getMainLooper(), mSongQueryListener);
         mTopLoading = findViewById(R.id.search_loading);
         mBottomLoading = findViewById(R.id.more_loading);
         int color = getResources().getColor(R.color.colorPrimary);
@@ -155,12 +154,8 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
         }
     };
 
-    private OnFinishRunnable mRunnable = new OnFinishRunnable() {
-        @Override
-        public void run() {
-            onQueryComplete(getResult());
-        }
-    };
+    private SongQueryHandler.OnFinishListener mSongQueryListener = this::onQueryComplete;
+
 
     private void onQueryStart() {
         mQueriedPos = 1;
@@ -168,14 +163,14 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
         if (!mTopLoading.isStart()) {
             mTopLoading.start();
         }
-        new Thread(() -> QQMusicApi.query(mQueriedPos, 60, mQueryString, mQueryHandler)).start();
+        new Thread(() -> QQMusicApi.querySong(mQueriedPos, 60, mQueryString, mSongQueryHandler)).start();
     }
 
     private void onQueryMore() {
         if (!mBottomLoading.isStart()) {
             mBottomLoading.start();
         }
-        new Thread(() -> QQMusicApi.query(mQueriedPos, 60, mQueryString, mQueryHandler)).start();
+        new Thread(() -> QQMusicApi.querySong(mQueriedPos, 60, mQueryString, mSongQueryHandler)).start();
     }
 
     private void onQueryComplete(String result) {

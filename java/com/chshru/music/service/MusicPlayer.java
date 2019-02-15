@@ -24,6 +24,7 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
     private PlayService mService;
     private Song mCurSong;
     private List<StatusCallback> mCallbacks;
+    private List<OnSongChangeListener> mListeners;
     private MusicApp mApp;
     private List<Song> mCurSongList;
     private AudioManager mAudioManager;
@@ -32,8 +33,10 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
     private boolean mIsFirst;
     private Handler mHandler;
 
+
     public MusicPlayer(Context context, MusicApp app) {
         mCallbacks = new ArrayList<>();
+        mListeners = new ArrayList<>();
         mAudioManager = (AudioManager) context
                 .getSystemService(Context.AUDIO_SERVICE);
         mHasAudioFocus = false;
@@ -47,6 +50,12 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
         if (!mCallbacks.contains(callback)) {
             mCallbacks.add(callback);
             callback.onSongChanged(mCurSong);
+        }
+    }
+
+    public void addListener(OnSongChangeListener listener) {
+        if (!mListeners.contains(listener)) {
+            mListeners.add(listener);
         }
     }
 
@@ -93,6 +102,10 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
         }
     };
 
+    public void rmListener(OnSongChangeListener listener) {
+        mListeners.remove(listener);
+    }
+
     public void rmCallback(StatusCallback callback) {
         mCallbacks.remove(callback);
     }
@@ -118,9 +131,9 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
         mApp.getPrefHelper().setSong(mCurSong);
         mCurSong.type = Song.TYPE_LOCAL;
         mCurSong.time = String.valueOf(System.currentTimeMillis());
-        int table = mApp.getListData().getPos();
+        String table = mApp.getListData().getPos();
         mApp.getPrefHelper().setPlayTable(table);
-        if (table != ListData.P_HISTORY) {
+        if (!table.equals(ListData.P_HISTORY)) {
             List<Song> history = mApp.getListData().getList(ListData.P_HISTORY);
             Song tempSong = null;
             for (Song s : history) {
@@ -190,6 +203,8 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
 
     }
 
+    private int mLastToogle;
+
     private class GetUrlThread extends Thread {
         private String url;
         private Song song;
@@ -203,11 +218,16 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
         @Override
         public void run() {
             String result = QQMusicApi.buildSongUrl(url);
-            String local = mApp.getServer().getProxyUrl(result);
-            long date = System.currentTimeMillis();
-            Cache cache = new Cache(song.id, song.mid, result, String.valueOf(date));
-            mApp.getHelper().getCache().insert(cache);
-            mHandler.post(() -> prepareImpl(local, song));
+            if (result.equals(QQMusicApi.SONG_GET_KEY_ERROR)) {
+                mCurSong = new Song(song);
+                mHandler.post(() -> toggleNextSong(mLastToogle));
+            } else {
+                String local = mApp.getServer().getProxyUrl(result);
+                long date = System.currentTimeMillis();
+                Cache cache = new Cache(song.id, song.mid, result, String.valueOf(date));
+                mApp.getHelper().getCache().insert(cache);
+                mHandler.post(() -> prepareImpl(local, song));
+            }
         }
     }
 
@@ -224,15 +244,20 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
     }
 
     private void toggleNextSong(int d) {
-        int listPos = mApp.getListData().getPos();
+        mLastToogle = d;
+        String listPos = mApp.getListData().getPos();
         if (mCurSong == null) {
             return;
         }
-        if (listPos == ListData.P_SEARCH) {
+        if (listPos.equals(ListData.P_SEARCH)) {
             listPos = ListData.P_HISTORY;
             mApp.getListData().setPos(ListData.P_HISTORY);
         }
         mCurSongList = mApp.getListData().getList(listPos);
+        if (mCurSongList == null) {
+            mApp.getListData().setPos(ListData.P_HISTORY);
+            mCurSongList = mApp.getListData().getList(ListData.P_HISTORY);
+        }
         if (mCurSongList.size() == 0) return;
         int songPos = -1;
         for (int i = 0; i < mCurSongList.size(); i++) {
@@ -268,6 +293,9 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
                     songPos = tempPos;
                 }
                 break;
+        }
+        for (OnSongChangeListener listener : mListeners) {
+            listener.beforeChange(d);
         }
         prepare(mCurSongList.get(songPos), true);
     }
@@ -369,5 +397,9 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
                 callback.togglePlayer(false);
             }
         }
+    }
+
+    public interface OnSongChangeListener {
+        void beforeChange(int d);
     }
 }

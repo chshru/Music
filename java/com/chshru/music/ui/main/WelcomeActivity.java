@@ -45,10 +45,13 @@ public class WelcomeActivity extends ActivityBase {
             mScanner.setLocalList(app.getListData().getList(ListData.P_LOCAL));
             mScanner.startLocalScan();
         }
-        new Thread(() -> {
-            mScanner.startHistoryScan(app.getHelper().getHistory());
-            mScanner.startLoveScan(app.getHelper().getLove());
-        }).start();
+        mScanner.startHistoryScan(app.getHelper().getHistory());
+        mScanner.startLoveScan(app.getHelper().getLove());
+        mScanner.setOnlineList(app.getListData().getOnlineList());
+        mScanner.scanOnlineList(app.getHelper().getOnlineSong(),
+                app.getHelper().getOnlineList(),
+                app.getListData()
+        );
     }
 
     private void startActivityWithPm(boolean pm) {

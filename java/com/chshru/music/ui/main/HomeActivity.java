@@ -23,6 +23,7 @@ import com.chshru.music.service.MediaService;
 import com.chshru.music.service.MusicPlayer;
 import com.chshru.music.service.PlayService;
 import com.chshru.music.data.model.Song;
+import com.chshru.music.util.QQMusicApi;
 
 
 public class HomeActivity extends ActivityBase implements StatusCallback, BottomLayout.BottomController {

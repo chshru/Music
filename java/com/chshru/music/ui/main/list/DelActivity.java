@@ -21,7 +21,7 @@ public class DelActivity extends ActivityBase implements StatusCallback {
     private RecyclerView mRecycler;
     private DelAdapter mAdapter;
     private MusicApp mApp;
-    private int mStartType;
+    private String mStartType;
     private List<Song> mSong;
     private Handler mHandler;
     private SongHelper mHelper;
@@ -43,12 +43,12 @@ public class DelActivity extends ActivityBase implements StatusCallback {
     protected void initialize() {
         mHandler = new Handler();
         mApp = (MusicApp) getApplication();
-        mStartType = getIntent().getIntExtra(LocalTab.STARY_TYPE, -1);
-        if (mStartType == -1) {
+        mStartType = getIntent().getStringExtra(LocalTab.STARY_TYPE);
+        if (mStartType == null || mStartType.isEmpty()) {
             return;
-        } else if (mStartType == ListData.P_HISTORY) {
+        } else if (mStartType.equals(ListData.P_HISTORY)) {
             mHelper = mApp.getHelper().getHistory();
-        } else if (mStartType == ListData.P_LOVE) {
+        } else if (mStartType.equals(ListData.P_LOVE)) {
             mHelper = mApp.getHelper().getLove();
         }
 
