@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="1047dp"
+    android:height="1047dp"
+    android:viewportWidth="1047"
+    android:viewportHeight="1047">
+
+    <group
+        android:translateY="907"
+        android:translateX="140"
+        android:scaleX="0.1"
+        android:scaleY="-0.1">
+        <path
+            android:fillColor="#F45D5D"
+            android:strokeWidth="1"
+            android:pathData="M0 3835 l0 -3835 3835 0 3835 0 0 3835 0 3835 -3835 0 -3835 0 0 -3835z m5415 2865 c539 -144 983 -265 987 -269 7 -6 -213 -845 -224 -856 -3 -3 -317 80 -699 183 -382 104 -695 188 -697 186 -2 -1 175 -492 393 -1091 218 -598 414 -1144 436 -1213 52 -162 76 -272 94 -428 130 -1109 -578 -2143 -1660 -2422 -556 -143 -1153 -65 -1651 218 -587 335 -988 905 -1104 1572 -27 159 -37 425 -21 581 43 420 192 801 444 1139 92 122 305 336 427 426 305 228 624 364 1005 431 76 13 159 17 340 18 256 0 351 -10 545 -60 52 -13 97 -22 99 -19 3 3 -239 675 -484 1339 -46 127 -81 231 -77 233 183 74 824 301 842 298 14 -1 466 -121 1005 -266z" />
+        <path
+            android:fillColor="#F45D5D"
+            android:strokeWidth="1"
+            android:pathData="M3345 4279 c-235 -28 -463 -118 -656 -260 -90 -67 -242 -227 -307 -324 -151 -226 -223 -468 -223 -745 -1 -367 130 -682 390 -941 186 -186 378 -293 646 -361 80 -20 113 -23 300 -22 202 0 214 1 325 31 247 66 436 175 616 357 159 160 256 317 323 523 86 264 86 569 0 828 -154 462 -533 799 -1007 894 -118 24 -299 33 -407 20z" />
+    </group>
+
+    <group>
+        <path
+            android:fillColor="#F45D5D"
+            android:pathData="M0,0 L0,150 1047,150 1047,0"/>
+        <path
+            android:fillColor="#F45D5D"
+            android:pathData="M0,0 L150,0 150,1047 0,1047"/>
+        <path
+            android:fillColor="#F45D5D"
+            android:pathData="M0,1047 L1047,1047 1047,897 0,897"/>
+        <path
+            android:fillColor="#F45D5D"
+            android:pathData="M897,0 L1047,0 1047,1047 897,1047 "/>
+
+    </group>
+</vector>
