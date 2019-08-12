@@ -192,6 +192,11 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
         if (str.equals(mQueryString)) {
             return;
         }
+        if (mAdapter.getItemCount() != 0) {
+            mAdapter.clear();
+            mAdapter.notifyDataSetChanged();
+        }
+        mOnScrollListener.init();
         mQueryString = str;
         onQueryStart();
     }
@@ -201,17 +206,16 @@ public class SearchActivity extends ActivityBase implements StatusCallback {
         @Override
         public boolean onQueryTextSubmit(String queryText) {
             mSearch.clearFocus();
-            mOnScrollListener.init();
+            mSearch.setFocusable(false);
+            mSearch.setSubmitButtonEnabled(false);
             onQuerySubmit(queryText);
             return true;
         }
 
         @Override
         public boolean onQueryTextChange(String newText) {
-            if (mAdapter.getItemCount() != 0) {
-                mAdapter.clear();
-                mAdapter.notifyDataSetChanged();
-            }
+            mSearch.setFocusable(true);
+            mSearch.setSubmitButtonEnabled(true);
             if (mTopLoading.isStart()) {
                 mTopLoading.stop();
             }
