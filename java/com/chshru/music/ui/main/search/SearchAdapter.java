@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.chshru.music.R;
 import com.chshru.music.data.model.Song;
+import com.chshru.music.ui.main.listener.OnItemClickListener;
 import com.chshru.music.ui.view.RotateLoading;
 
 import java.util.List;
@@ -56,11 +57,13 @@ public class SearchAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == TYPE_ITEM) {
-            View v = LayoutInflater.from(parent.getContext())
+            View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.item_search_song, parent, false);
-            final ItemHolder itemHolder = new ItemHolder(v);
-            v.setOnClickListener(mOnClick);
-            v.setOnLongClickListener(mOnLongClick);
+            final ItemHolder itemHolder = new ItemHolder(view);
+            if (mClickListener != null) {
+                view.setOnClickListener(v -> mClickListener.onItemClick(v));
+                view.setOnLongClickListener(v -> {mClickListener.OnItemLongClick(v);return true;});
+            }
             return itemHolder;
         } else {
             View v = LayoutInflater.from(parent.getContext())
@@ -70,25 +73,6 @@ public class SearchAdapter extends RecyclerView.Adapter {
             return footerHolder;
         }
     }
-
-    private View.OnClickListener mOnClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (mClickListener != null) {
-                mClickListener.onItemClick(v);
-            }
-        }
-    };
-
-    private View.OnLongClickListener mOnLongClick = new View.OnLongClickListener() {
-        @Override
-        public boolean onLongClick(View v) {
-            if (mClickListener != null) {
-                mClickListener.OnItemLongClick(v);
-            }
-            return true;
-        }
-    };
 
     private RequestOptions options = new RequestOptions()
             .placeholder(R.drawable.default_album_cover)
@@ -104,22 +88,18 @@ public class SearchAdapter extends RecyclerView.Adapter {
                     .load(song.album)
                     .apply(options)
                     .into(h.album);
-
+            h.name.setText(song.title);
+            h.artist.setText(String.format("%s - %s", song.artist, song.albumName));
+            h.num.setText(String.valueOf(pos + 1));
             if (song.playing) {
                 h.playing.setVisibility(View.VISIBLE);
-                h.name.setText(song.title);
                 h.name.setTextColor(0xff05b962);
-                h.artist.setText(String.format("%s - %s", song.artist, song.albumName));
                 h.artist.setTextColor(0xff05b962);
-                h.num.setText(String.valueOf(pos + 1));
                 h.num.setTextColor(0xff05b962);
             } else {
                 h.playing.setVisibility(View.INVISIBLE);
-                h.name.setText(song.title);
                 h.name.setTextColor(0xff000000);
-                h.artist.setText(String.format("%s - %s", song.artist, song.albumName));
                 h.artist.setTextColor(0xff9e9e9e);
-                h.num.setText(String.valueOf(pos + 1));
                 h.num.setTextColor(0xff9e9e9e);
             }
         }
@@ -162,14 +142,6 @@ public class SearchAdapter extends RecyclerView.Adapter {
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         mClickListener = listener;
-    }
-
-    public static class OnItemClickListener {
-        public void onItemClick(View v) {
-        }
-
-        public void OnItemLongClick(View v) {
-        }
     }
 
     private static class ItemHolder extends RecyclerView.ViewHolder {

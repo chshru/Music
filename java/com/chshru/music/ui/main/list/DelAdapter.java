@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.chshru.music.R;
 import com.chshru.music.data.model.Song;
+import com.chshru.music.ui.main.listener.OnItemClickListener;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -39,25 +40,16 @@ public class DelAdapter extends RecyclerView.Adapter {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext())
+        View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_music_edit, parent, false);
-        final Holder holder = new Holder(v);
-        v.setOnClickListener(mOnClick);
+        final Holder holder = new Holder(view);
+        view.setOnClickListener(v -> mClickListener.onItemClick(v));
         return holder;
     }
 
     public boolean isCheck(int pos) {
         return mSelect.get(pos).playing;
     }
-
-    private View.OnClickListener mOnClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (mClickListener != null) {
-                mClickListener.onItemClick(v);
-            }
-        }
-    };
 
     private RequestOptions options = new RequestOptions()
             .placeholder(R.drawable.default_album_cover)
@@ -76,15 +68,13 @@ public class DelAdapter extends RecyclerView.Adapter {
                 .load(song.album)
                 .apply(options)
                 .into(h.album);
+        h.name.setText(song.title);
+        h.artist.setText(String.format("%s - %s", song.artist, song.albumName));
         if (song.playing) {
-            h.name.setText(song.title);
             h.name.setTextColor(0xff05b962);
-            h.artist.setText(String.format("%s - %s", song.artist, song.albumName));
             h.artist.setTextColor(0xff05b962);
         } else {
-            h.name.setText(song.title);
             h.name.setTextColor(0xff000000);
-            h.artist.setText(String.format("%s - %s", song.artist, song.albumName));
             h.artist.setTextColor(0xff9e9e9e);
         }
         h.check.setChecked(mSelect.get(pos).playing);
@@ -97,14 +87,6 @@ public class DelAdapter extends RecyclerView.Adapter {
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         mClickListener = listener;
-    }
-
-    public static class OnItemClickListener {
-        public void onItemClick(View v) {
-        }
-
-        public void OnItemLongClick(View v) {
-        }
     }
 
     private static class Holder extends RecyclerView.ViewHolder {

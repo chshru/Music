@@ -12,6 +12,7 @@ import com.chshru.music.R;
 import com.chshru.music.base.ActivityBase;
 import com.chshru.music.base.MusicApp;
 import com.chshru.music.service.StatusCallback;
+import com.chshru.music.ui.main.listener.OnItemClickListener;
 import com.chshru.music.ui.tab.localtab.LocalTab;
 import com.chshru.music.data.model.Song;
 
@@ -96,7 +97,7 @@ public class ListActivity extends ActivityBase implements StatusCallback {
 
     }
 
-    private ListAdapter.OnItemClickListener mItemClick = new ListAdapter.OnItemClickListener() {
+    private OnItemClickListener mItemClick = new OnItemClickListener() {
         @Override
         public void onItemClick(View v) {
             mApp.getListData().setPos(mStartType);

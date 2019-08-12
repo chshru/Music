@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.chshru.music.R;
 import com.chshru.music.data.model.Song;
+import com.chshru.music.ui.main.listener.OnItemClickListener;
 
 import java.util.List;
 
@@ -111,14 +112,6 @@ public class ListAdapter extends RecyclerView.Adapter {
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         mClickListener = listener;
-    }
-
-    public static class OnItemClickListener {
-        public void onItemClick(View v) {
-        }
-
-        public void OnItemLongClick(View v) {
-        }
     }
 
     private static class Holder extends RecyclerView.ViewHolder {

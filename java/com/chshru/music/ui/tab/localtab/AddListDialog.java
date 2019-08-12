@@ -62,6 +62,7 @@ public class AddListDialog {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         View view = View.inflate(mContext, R.layout.dialog_search_list, null);
         mInput = view.findViewById(R.id.song_list_id);
+        mInput.setTextColor(mContext.getResources().getColor(R.color.gray));
         mTitle = view.findViewById(R.id.title);
         builder.setView(view);
         mDialog = builder.create();

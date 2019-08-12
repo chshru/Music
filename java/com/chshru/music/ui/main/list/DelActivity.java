@@ -9,10 +9,10 @@ import com.chshru.music.R;
 import com.chshru.music.base.ActivityBase;
 import com.chshru.music.base.MusicApp;
 import com.chshru.music.service.StatusCallback;
+import com.chshru.music.ui.main.listener.OnItemClickListener;
 import com.chshru.music.ui.tab.localtab.LocalTab;
 import com.chshru.music.data.sql.SongHelper;
 import com.chshru.music.data.model.Song;
-import com.chshru.music.ui.main.list.DelAdapter.OnItemClickListener;
 
 import java.util.List;
 

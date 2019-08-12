@@ -11,7 +11,7 @@ import com.chshru.music.base.ActivityBase;
 import com.chshru.music.base.MusicApp;
 import com.chshru.music.service.StatusCallback;
 import com.chshru.music.ui.main.list.ListData;
-import com.chshru.music.ui.main.search.SearchAdapter.OnItemClickListener;
+import com.chshru.music.ui.main.listener.OnItemClickListener;
 import com.chshru.music.ui.view.ActionSearchView;
 import com.chshru.music.ui.view.ActionSearchView.OnTextChangeListener;
 import com.chshru.music.ui.view.RotateLoading;
