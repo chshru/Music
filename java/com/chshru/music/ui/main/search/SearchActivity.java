@@ -15,7 +15,7 @@ import com.chshru.music.ui.main.listener.OnItemClickListener;
 import com.chshru.music.ui.view.ActionSearchView;
 import com.chshru.music.ui.view.ActionSearchView.OnTextChangeListener;
 import com.chshru.music.ui.view.RotateLoading;
-import com.chshru.music.util.QQMusicApi;
+import com.chshru.music.api.QQMusicApi;
 import com.chshru.music.util.SongQueryHandler;
 import com.chshru.music.data.model.Song;
 

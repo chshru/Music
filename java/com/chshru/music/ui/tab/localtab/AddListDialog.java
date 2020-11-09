@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.chshru.music.R;
 import com.chshru.music.util.ListQueryHandler;
-import com.chshru.music.util.QQMusicApi;
+import com.chshru.music.api.QQMusicApi;
 
 /**
  * Created by abc on 19-1-25.

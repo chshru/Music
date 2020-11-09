@@ -76,12 +76,6 @@ public class WelcomeActivity extends ActivityBase {
             startActivityWithPm(true);
             return;
         }
-        rxPermissions.request(PM).subscribe(granted -> {
-            if (granted) {
-                startActivityWithPm(true);
-            } else {
-                startActivityWithPm(false);
-            }
-        });
+        rxPermissions.request(PM).subscribe(this::startActivityWithPm);
     }
 }

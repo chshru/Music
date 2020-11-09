@@ -9,7 +9,7 @@ import android.os.Handler;
 import com.chshru.music.base.MusicApp;
 import com.chshru.music.ui.main.list.ListData;
 import com.chshru.music.data.model.Cache;
-import com.chshru.music.util.QQMusicApi;
+import com.chshru.music.api.QQMusicApi;
 import com.chshru.music.data.model.Song;
 
 import java.util.ArrayList;
@@ -195,7 +195,7 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
                 }
             }
             if (local == null) {
-                new GetUrlThread(song.mid, song).start();
+                new GetUrlThread(song).start();
             }
         } else {
             prepareImpl(local, song);
@@ -206,27 +206,25 @@ public class MusicPlayer implements MediaPlayer.OnPreparedListener {
     private int mLastToogle;
 
     private class GetUrlThread extends Thread {
-        private String url;
-        private Song song;
+        private Song mSong;
 
-        GetUrlThread(String url, Song song) {
+        GetUrlThread(Song song) {
             super();
-            this.url = url;
-            this.song = song;
+            this.mSong = song;
         }
 
         @Override
         public void run() {
-            String result = QQMusicApi.buildSongUrl(url);
+            String result = QQMusicApi.buildSongUrl(mSong.mid);
             if (result.equals(QQMusicApi.SONG_GET_KEY_ERROR)) {
-                mCurSong = new Song(song);
+                mCurSong = new Song(mSong);
                 mHandler.post(() -> toggleNextSong(mLastToogle));
             } else {
                 String local = mApp.getServer().getProxyUrl(result);
                 long date = System.currentTimeMillis();
-                Cache cache = new Cache(song.id, song.mid, result, String.valueOf(date));
+                Cache cache = new Cache(mSong.id, mSong.mid, result, String.valueOf(date));
                 mApp.getHelper().getCache().insert(cache);
-                mHandler.post(() -> prepareImpl(local, song));
+                mHandler.post(() -> prepareImpl(local, mSong));
             }
         }
     }

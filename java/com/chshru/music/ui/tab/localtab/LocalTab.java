@@ -22,7 +22,7 @@ import com.chshru.music.ui.main.list.ListData;
 import com.chshru.music.ui.tab.BaseTab;
 import com.chshru.music.data.model.Song;
 import com.chshru.music.util.ListQueryHandler;
-import com.chshru.music.util.QQMusicApi;
+import com.chshru.music.api.QQMusicApi;
 
 import java.util.ArrayList;
 import java.util.List;
